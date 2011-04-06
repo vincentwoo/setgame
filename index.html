@@ -5,49 +5,88 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
     <style>
-      #board { width: 330px; border: 1px solid #444 }
-      .card  { border: 2px solid #444; float: left; margin: 5px;
+      html, body, div, p, ul, li {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      body {font: 1em 'Droid Sans',sans-serif; line-height: 1.7.em;
+            color: #EEE; background: #000505}
+    
+      #wrap {margin:50px auto; position:relative; width: 500px}
+      
+      #board { width: 330px; }
+      .card  { border: 2px solid #444; float: left; margin: 0 5px 5px 0;
                -webkit-user-select: none;
                -khtml-user-select: none;
                -moz-user-select: none;
                -o-user-select: none;
                user-select: none;}
       .red { border: 2px solid red }
+      
+      #side {position: absolute; top: 0; right: 0;
+             width: 150px; height: 400px;}
+      .player {font: 1.5em 'Goudy Bookletter 1911', serif; display: none}
+      .score {font-weight: bold}
+      .name {float:right}
     </style>
   </head>
   <body>
-    <div id="board">
-    <div style="clear:both"></div>
+    <div id="wrap">
+      <div id="board"></div>
+      <div id="side">
+        <ul id="scoreboard">
+        <li class="player" id="p0">
+          <span class="score">0</span> <span class="name">Player 1</span>
+        </li>
+        <li class="player" id="p1">
+          <span class="score">0</span> <span class="name">Player 2</span>
+        </li>
+        <li class="player" id="p2">
+          <span class="score">0</span> <span class="name">Player 3</span>
+        </li>
+        <li class="player" id="p3">
+          <span class="score">0</span> <span class="name">Player 4</span>
+        </li>
+        <li class="player" id="p4">
+          <span class="score">0</span> <span class="name">Player 5</span>
+        </li>
+        <li class="player" id="p5">
+          <span class="score">0</span> <span class="name">Player 6</span>
+        </li>
+        <li class="player" id="p6">
+          <span class="score">0</span> <span class="name">Player 7</span>
+        </li>
+        <li class="player" id="p7">
+          <span class="score">0</span> <span class="name">Player 8</span>
+        </li>
+        </ul>
+      </div>
     </div>
     <script>
-      var socket = new io.Socket(null, {port: 9980, rememberTransport: false});
+      var port = window.location.host.indexOf('duostack') != -1 ? 9980 : 80
+        , socket = new io.Socket(null, {port: port, rememberTransport: false})
+        , selected = []
+        , cards = [];
       
-      function message(obj){
-
-      }
-      
-      function send(){
-
-      }
-      
-      function esc(msg){
-
-      };
-      
-      var selected = [];
-      var cards = [];
+      socket.connect();
       
       function select (idx) {
         var search = selected.indexOf(idx);
         if (search != -1) {
-          var deselected = selected.splice(search, 1)[0];
-          cards[deselected].removeClass('red');
+          unselect(search);
         } else {
           var card = cards[idx];
           card.addClass('red');
           selected.push(idx);
           checkSet();
         }
+      }
+      
+      // takes index of selected array to unselect
+      function unselect(idx) {
+        var deselected = selected.splice(idx, 1)[0];
+        cards[deselected].removeClass('red');
       }
       
       function checkSet() {
@@ -60,32 +99,53 @@
         }
       }
       
-      socket.connect();
+      function updateScores(scores) {
+        // hard coding in max players on the clientside
+        for (var i = 0; i < 8; i++) {
+          var player = $('#p' + i);
+          if (i in scores) {  
+            var score = player.children('.score');
+            score.text('' + scores[i]);
+            player.show();
+          }
+        }
+      }
       
       socket.on('message', function(obj){
+        console.log(obj);
         if (!obj.action) return;
         if (obj.action === 'init') {
           $.each(obj.board, function(idx, card) {
             var c = $('<img/>', {
-              class: 'card',
-              src: '/cards/' + (1 + card.number  + card.color * 3 + card.shape * 9 + card.shading * 27) + '.gif',
-              click: function() { select(idx) }
+              class: 'card'
+            , src: '/cards/' + (1 + card.number  + card.color * 3 + card.shape * 9 + card.shading * 27) + '.gif'
             });
             cards.push(c);
-            c.prependTo('#board');
+            c.appendTo('#board');
           });
+          updateScores(obj.players);
           return;
         }
         if (obj.action === 'taken') {
           for (var i in obj.update) {
+            if (i in selected) unselect(i);
             var card = obj.update[i];
             cards[i].attr('src', '/cards/' + (1 + card.number  + card.color * 3 + card.shape * 9 + card.shading * 27) + '.gif');
           }
+          updateScores(obj.players);
           return;
         }
-        
         if (obj.action === 'setHash') {
           window.location.hash = '#!/' + obj.hash;
+          return;
+        }
+        if (obj.action === 'join') {
+          $('#p' + obj.player).show();
+          return;
+        }
+        if (obj.action === 'leave') {
+          $('#p' + obj.player).hide();
+          return;
         }
       });
       
@@ -98,10 +158,22 @@
         }
         socket.send(init);
       });
-      socket.on('disconnect', function(){ message({ message: ['System', 'Disconnected']})});
+      
+      $(document).bind('click', function() {
+        var target = $(event.target);
+        if (target.hasClass('card')) {
+          select(target.index());
+        } else { 
+          selected.forEach( function(idx) {
+            cards[idx].removeClass('red');
+          });
+          selected = [];
+        }
+      });
+      /*socket.on('disconnect', function(){ message({ message: ['System', 'Disconnected']})});
       socket.on('reconnect', function(){ message({ message: ['System', 'Reconnected to server']})});
       socket.on('reconnecting', function( nextRetry ){ message({ message: ['System', 'Attempting to re-connect to the server, next attempt in ' + nextRetry + 'ms']})});
-      socket.on('reconnect_failed', function(){ message({ message: ['System', 'Reconnected to server FAILED.']})});
+      socket.on('reconnect_failed', function(){ message({ message: ['System', 'Reconnected to server FAILED.']})});*/
     </script>
 
     

@@ -1,7 +1,7 @@
 module.exports = function Game(hash, client) {
   this.deck = [];
   this.board = [];
-  this.clients = [client];
+  this.players = [new Player(client), null, null, null, null, null, null, null];
   this.hash = hash;
   for (var i = 0; i < 81; i++) {
     this.deck.push( new Card(i) );
@@ -11,34 +11,70 @@ module.exports = function Game(hash, client) {
     this.board.push(this.deck.pop());
   }
   
+  this.getActivePlayers = function() {
+    return this.players.filter( function(player) { return player !== null; });
+  }
+  
+  this.numPlayers = function() {
+    return this.getActivePlayers().length;
+  }
+  
+  this.firstAvailablePlayerSlot = function() {
+    for (var i = 0; i < this.players.length; i++) {
+      if (this.players[i] === null) return i;
+    }
+    return 0;
+  }
+  
+  this.getPlayerIdx = function(client) {
+    for (var i = 0; i < this.players.length; i++) {
+      if (this.players[i] !== null &&
+          this.players[i].client.sessionId === client.sessionId)
+        return i;
+    }
+    return -1;
+  }
+  
+  this.playerScores = function() {
+    ret = {};
+    for (var i = 0; i < this.players.length; i++) {
+      if (this.players[i] !== null) ret[i] = this.players[i].score;
+    }
+    return ret;
+  }
+  
   this.registerClient = function(client) {
-    if (this.clients.every( function(c) {
-      return client.sessionId !== c.sesionId;
-    })) {
-      this.clients.push(client);
+    if (this.numPlayers() === this.players.length) return; //TODO ERROR CALLBACK
+    if (this.players.every( function(player) {
+      return (player === null || player.client.sessionId !== client.sesionId);
+    })) { 
+      var playerIdx = this.firstAvailablePlayerSlot();
+      this.broadcast({action: 'join', player: playerIdx});
+      this.players[playerIdx] = new Player(client);
     }
   }
   
   this.unregisterClient = function(client, gameOver) {
-    this.clients = this.clients.filter( function(c) {
-      return c.sessionId !== client.sessionId;
-    });
-    var clients = this.clients;
+    var playerIdx = this.getPlayerIdx(client);
+    this.players[playerIdx] = null;
+    this.broadcast({action: 'leave', player: playerIdx});
+    var that = this;
     setTimeout( function delayGameover() {
-      if (clients.length === 0) gameOver();
+      if (that.numPlayers() === 0) gameOver();
     }, 5000);
   }
   
   this.broadcast = function(message) {
-    this.clients.forEach( function(client) {
-      client.send(message);
+    this.players.forEach( function(player) {
+      if (player !== null) player.client.send(message);
     });
   }
   
   this.message = function(client, message) {
     if (message.action === 'init') {
-      client.send({ action: 'init',
-                    board: this.board })
+      client.send({ action: 'init'
+                  , board: this.board
+                  , players: this.playerScores() });
       return;
     }
     if (message.action === 'take') {
@@ -50,7 +86,13 @@ module.exports = function Game(hash, client) {
           update[val] = c;
           this.board[val] = c;
         }, this );
-        this.broadcast({action: 'taken', update: update});
+        var playerIdx = this.getPlayerIdx(client);
+        this.players[playerIdx].score += 3;
+        var playerUpdate = {};
+        playerUpdate[playerIdx] = this.players[playerIdx].score;
+        this.broadcast({action: 'taken'
+                      , update: update
+                      , players: playerUpdate});
       } else {
         console.log('take set failed');
       }
@@ -91,6 +133,11 @@ function Card(idx) {
   this.shape = idx % 3;
   idx = Math.floor(idx / 3);
   this.shading = idx % 3;
+}
+
+function Player(client) {
+  this.client = client;
+  this.score = 0;
 }
 
 //+ Jonas Raoni Soares Silva

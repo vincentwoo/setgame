@@ -1,11 +1,11 @@
 {
-  "name": "encrypted_node",
-  "description": "Basic node app undefined",
+  "name": "setgame",
+  "description": "Multiplayer realtime set card game",
   "version": "0.0.0",
   "repository": {
     "url": ""
   },
-  "author": "vwoo <akanet@gmail.com>",
+  "author": "vwoo <me@vincentwoo.com>",
   "directories": {
     "lib": "."
   },
