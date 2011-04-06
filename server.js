@@ -7,25 +7,20 @@ var http = require('http')
   , connect = require('connect')
   , sys = require(process.binding('natives').util ? 'util' : 'sys')
   , Game = require('game')
-  , server
-  , staticServer;
+  , server;
     
-staticServer = connect.createServer(
-  connect.static(__dirname, { maxAge: 604800000 })
+server = connect.createServer(
+    connect.logger()
+  , connect.static(__dirname, { maxAge: 604800000 })
 );
 
-staticServer.listen(80);
-io.listen(staticServer); //catch static js requests
-
-server = http.createServer();
-server.listen(9980);
+server.listen(80);
 
 var io = io.listen(server)
   , games = {}
   , clients = {};
   
 io.on('connection', function(client){
-console.log("here");
   var game;
   client.on('message', function(message){
     console.log(message);
