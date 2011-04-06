@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+  <head>
+    <title>set - the game</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+    <style>
+      #board { width: 330px; border: 1px solid #444 }
+      .card  { border: 2px solid #444; float: left; margin: 5px;
+               -webkit-user-select: none;
+               -khtml-user-select: none;
+               -moz-user-select: none;
+               -o-user-select: none;
+               user-select: none;}
+      .red { border: 2px solid red }
+    </style>
+  </head>
+  <body>
+    <div id="board">
+    <div style="clear:both"></div>
+    </div>
+    <script>
+      var socket = new io.Socket(null, {port: 80, rememberTransport: false});
+      
+      function message(obj){
+
+      }
+      
+      function send(){
+
+      }
+      
+      function esc(msg){
+
+      };
+      
+      var selected = [];
+      var cards = [];
+      
+      function select (idx) {
+        var search = selected.indexOf(idx);
+        if (search != -1) {
+          var deselected = selected.splice(search, 1)[0];
+          cards[deselected].removeClass('red');
+        } else {
+          var card = cards[idx];
+          card.addClass('red');
+          selected.push(idx);
+          checkSet();
+        }
+      }
+      
+      function checkSet() {
+        if (selected.length === 3) {
+          socket.send({action: 'take',
+                        selected: selected});
+          $.each(selected, function(idx, card) { cards[card].removeClass('red'); });
+          selected = [];
+          return;
+        }
+      }
+      
+      socket.connect();
+      
+      socket.on('message', function(obj){
+        if (!obj.action) return;
+        if (obj.action === 'init') {
+          $.each(obj.board, function(idx, card) {
+            var c = $('<img/>', {
+              class: 'card',
+              src: '/cards/' + (1 + card.number  + card.color * 3 + card.shape * 9 + card.shading * 27) + '.gif',
+              click: function() { select(idx) }
+            });
+            cards.push(c);
+            c.prependTo('#board');
+          });
+          return;
+        }
+        if (obj.action === 'taken') {
+          for (var i in obj.update) {
+            var card = obj.update[i];
+            cards[i].attr('src', '/cards/' + (1 + card.number  + card.color * 3 + card.shape * 9 + card.shading * 27) + '.gif');
+          }
+          return;
+        }
+        
+        if (obj.action === 'setHash') {
+          window.location.hash = '#!/' + obj.hash;
+        }
+      });
+      
+      socket.on('connect', function() {
+        var init = {action: 'init'};
+        var hash = window.location.hash;
+        if (hash) {
+          hash = hash.substring(hash.indexOf('#!/') + 3);
+          init['game'] = hash;
+        }
+        socket.send(init);
+      });
+      socket.on('disconnect', function(){ message({ message: ['System', 'Disconnected']})});
+      socket.on('reconnect', function(){ message({ message: ['System', 'Reconnected to server']})});
+      socket.on('reconnecting', function( nextRetry ){ message({ message: ['System', 'Attempting to re-connect to the server, next attempt in ' + nextRetry + 'ms']})});
+      socket.on('reconnect_failed', function(){ message({ message: ['System', 'Reconnected to server FAILED.']})});
+    </script>
+
+    
+  </body>
+</html>
