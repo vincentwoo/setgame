@@ -10,22 +10,22 @@ module.exports = function Game(hash, client) {
   for (var i = 0; i < 12; i++) {
     this.board.push(this.deck.pop());
   }
-  
+
   this.getActivePlayers = function() {
     return this.players.filter( function(player) { return player !== null; });
   }
-  
+
   this.numPlayers = function() {
     return this.getActivePlayers().length;
   }
-  
+
   this.firstAvailablePlayerSlot = function() {
     for (var i = 0; i < this.players.length; i++) {
       if (this.players[i] === null) return i;
     }
     return 0;
   }
-  
+
   this.getPlayerIdx = function(client) {
     for (var i = 0; i < this.players.length; i++) {
       if (this.players[i] !== null &&
@@ -34,7 +34,7 @@ module.exports = function Game(hash, client) {
     }
     return -1;
   }
-  
+
   this.playerScores = function() {
     ret = {};
     for (var i = 0; i < this.players.length; i++) {
@@ -42,18 +42,18 @@ module.exports = function Game(hash, client) {
     }
     return ret;
   }
-  
+
   this.registerClient = function(client) {
     if (this.numPlayers() === this.players.length) return; //TODO ERROR CALLBACK
     if (this.players.every( function(player) {
       return (player === null || player.client.sessionId !== client.sesionId);
-    })) { 
+    })) {
       var playerIdx = this.firstAvailablePlayerSlot();
       this.broadcast({action: 'join', player: playerIdx});
       this.players[playerIdx] = new Player(client);
     }
   }
-  
+
   this.unregisterClient = function(client, gameOver) {
     var playerIdx = this.getPlayerIdx(client);
     this.players[playerIdx] = null;
@@ -63,18 +63,19 @@ module.exports = function Game(hash, client) {
       if (that.numPlayers() === 0) gameOver();
     }, 5000);
   }
-  
+
   this.broadcast = function(message) {
     this.players.forEach( function(player) {
       if (player !== null) player.client.send(message);
     });
   }
-  
+
   this.message = function(client, message) {
     if (message.action === 'init') {
       client.send({ action: 'init'
                   , board: this.board
-                  , players: this.playerScores() });
+                  , players: this.playerScores()
+                  , you: this.getPlayerIdx(client) });
       return;
     }
     if (message.action === 'take') {
@@ -92,6 +93,7 @@ module.exports = function Game(hash, client) {
         playerUpdate[playerIdx] = this.players[playerIdx].score;
         this.broadcast({action: 'taken'
                       , update: update
+                      , player: playerIdx
                       , players: playerUpdate});
       } else {
         console.log('take set failed');
@@ -99,7 +101,7 @@ module.exports = function Game(hash, client) {
       return;
     }
   }
-  
+
   this.checkSet = function(indexes) {
     indexes = indexes.unique();
     if (indexes.length != 3) return false;
@@ -110,7 +112,7 @@ module.exports = function Game(hash, client) {
     }
     return this.verifySet(this.board[indexes[0]], this.board[indexes[1]], this.board[indexes[2]]);
   }
-  
+
   // hardcoding and unrolling all this for speed, possibly premature optimization
   this.verifySet = function(c0, c1, c2) {
     var s = c0.number + c1.number + c2.number;

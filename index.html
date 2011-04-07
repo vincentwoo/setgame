@@ -4,6 +4,7 @@
     <title>set - the game</title>
     <script src="/socket.io/socket.io.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+    <script src="/jquery.transform.lite.js"></script>
     <style>
       html, body, div, p, ul, li {
         margin: 0;
@@ -12,28 +13,31 @@
       }
       body {font: 1em 'Droid Sans',sans-serif; line-height: 1.7.em;
             color: #EEE; background: #000505}
-    
-      #wrap {margin:50px auto; position:relative; width: 500px}
-      
-      #board { width: 330px; }
-      .card  { border: 2px solid #444; float: left; margin: 0 5px 5px 0;
+
+      #wrap {margin:50px auto; position:relative; width: 520px}
+
+      #board {}
+      #board tr {height: 65px;}
+      #board td {width: 100px; position: relative;}
+      .card  { border: 2px solid #444; position: absolute; margin-top: -32px;
                -webkit-user-select: none;
                -khtml-user-select: none;
                -moz-user-select: none;
                -o-user-select: none;
                user-select: none;}
       .red { border: 2px solid red }
-      
+
       #side {position: absolute; top: 0; right: 0;
-             width: 150px; height: 400px;}
-      .player {font: 1.5em 'Goudy Bookletter 1911', serif; display: none}
+             width: 160px; height: 400px;}
+      .player {font: 1.5em 'Goudy Bookletter 1911', serif; display: none; height: 60px;}
       .score {font-weight: bold}
       .name {float:right}
+      .me-indicator {font-size: 0.8em; width:20px;margin-left:-20px; display:block; float:left}
     </style>
   </head>
   <body>
     <div id="wrap">
-      <div id="board"></div>
+      <table id="board"></div>
       <div id="side">
         <ul id="scoreboard">
         <li class="player" id="p0">
@@ -67,10 +71,11 @@
       var port = window.location.host.indexOf('duostack') != -1 ? 9980 : 80
         , socket = new io.Socket(null, {port: port, rememberTransport: false})
         , selected = []
-        , cards = [];
-      
+        , cards = []
+        , lastSets = {};
+
       socket.connect();
-      
+
       function select (idx) {
         var search = selected.indexOf(idx);
         if (search != -1) {
@@ -82,13 +87,13 @@
           checkSet();
         }
       }
-      
+
       // takes index of selected array to unselect
       function unselect(idx) {
         var deselected = selected.splice(idx, 1)[0];
         cards[deselected].removeClass('red');
       }
-      
+
       function checkSet() {
         if (selected.length === 3) {
           socket.send({action: 'take',
@@ -98,39 +103,65 @@
           return;
         }
       }
-      
+
       function updateScores(scores) {
         // hard coding in max players on the clientside
         for (var i = 0; i < 8; i++) {
           var player = $('#p' + i);
-          if (i in scores) {  
+          if (i in scores) {
             var score = player.children('.score');
             score.text('' + scores[i]);
             player.show();
           }
         }
       }
-      
+
       socket.on('message', function(obj){
         console.log(obj);
         if (!obj.action) return;
         if (obj.action === 'init') {
+          var tr = null;
           $.each(obj.board, function(idx, card) {
+            if (idx % 3 === 0) tr = $('<tr/>');
+            var td = $('<td/>');
             var c = $('<img/>', {
               class: 'card'
             , src: '/cards/' + (1 + card.number  + card.color * 3 + card.shape * 9 + card.shading * 27) + '.gif'
             });
             cards.push(c);
-            c.appendTo('#board');
+            td.append(c);
+            tr.append(td);
+            if (idx % 3 === 0) $('#board').append(tr);
           });
           updateScores(obj.players);
+          $('#p' + obj.you).prepend(
+            $('<span/>', {
+              html: '&raquo;'
+            , class: 'me-indicator' }));
           return;
         }
         if (obj.action === 'taken') {
+          var j = 0;
+          if (obj.player in lastSets) {
+            lastSets[obj.player].forEach( function(elem) {
+              elem.fadeOut(function() {$(this).remove()});
+            });
+          }
+          lastSets[obj.player] = [];
           for (var i in obj.update) {
             if (i in selected) unselect(i);
             var card = obj.update[i];
+            var dupe = cards[i].clone();
+            cards[i].after(dupe);
             cards[i].attr('src', '/cards/' + (1 + card.number  + card.color * 3 + card.shape * 9 + card.shading * 27) + '.gif');
+            var p = $('#p' + obj.player);
+            var offsx = p.width() - 25 + (j++) * 33 +
+                        p.offset().left - dupe.offset().left;
+            var offsy = p.offset().top - dupe.offset().top - 10;
+
+            dupe.animate({transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(450deg) scale(0.5)'},
+                         {duration: Math.random() * 1500 + 500, easing: 'easeOutQuad'});
+            lastSets[obj.player].push(dupe);
           }
           updateScores(obj.players);
           return;
@@ -148,7 +179,7 @@
           return;
         }
       });
-      
+
       socket.on('connect', function() {
         var init = {action: 'init'};
         var hash = window.location.hash;
@@ -158,24 +189,42 @@
         }
         socket.send(init);
       });
-      
-      $(document).bind('click', function() {
-        var target = $(event.target);
-        if (target.hasClass('card')) {
-          select(target.index());
-        } else { 
+
+      $(document).bind('click', function(event) {
+        var target = $(event.target)[0];
+        var idx = cards.map( function(v) { return v[0]; } ).indexOf(target);
+
+        if (idx != -1) {
+          select(idx);
+        } else {
           selected.forEach( function(idx) {
             cards[idx].removeClass('red');
           });
           selected = [];
         }
       });
+
+  jQuery.extend( jQuery.easing,
+  {
+    def: 'easeOutQuad',
+    swing: function (x, t, b, c, d) {
+      //alert(jQuery.easing.default);
+      return jQuery.easing[jQuery.easing.def](x, t, b, c, d);
+    },
+    easeOutQuad: function (x, t, b, c, d) {
+      return -c *(t/=d)*(t-2) + b;
+    },
+    easeOutBack: function (x, t, b, c, d, s) {
+      if (s == undefined) s = 1.70158;
+      return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
+    }
+  });
       /*socket.on('disconnect', function(){ message({ message: ['System', 'Disconnected']})});
       socket.on('reconnect', function(){ message({ message: ['System', 'Reconnected to server']})});
       socket.on('reconnecting', function( nextRetry ){ message({ message: ['System', 'Attempting to re-connect to the server, next attempt in ' + nextRetry + 'ms']})});
       socket.on('reconnect_failed', function(){ message({ message: ['System', 'Reconnected to server FAILED.']})});*/
     </script>
 
-    
+
   </body>
 </html>

@@ -8,7 +8,7 @@ var http = require('http')
   , sys = require(process.binding('natives').util ? 'util' : 'sys')
   , Game = require('game')
   , server;
-    
+
 server = connect.createServer(
     connect.logger()
   , connect.static(__dirname, { maxAge: 604800000 })
@@ -19,7 +19,7 @@ server.listen(80);
 var io = io.listen(server)
   , games = {}
   , clients = {};
-  
+
 io.on('connection', function(client){
   var game;
   client.on('message', function(message){
@@ -41,12 +41,12 @@ io.on('connection', function(client){
   client.on('disconnect', function(){
     if (!(client.sessionId in clients))
       return;
-    
+
     var hash = game.hash;
     game.unregisterClient(client, function gameOver() {
       delete games[hash];
     });
-    
+
     delete clients[client.sessionId];
     game = null;
   });
@@ -55,7 +55,7 @@ io.on('connection', function(client){
 
 var CHARSET = ['2','3','4','6','7','9','A','C','D','E','F','G','H','J','K','L','M','N','P','Q','R',
               'T','V','W','X','Y','Z'];
-              
+
 function randString(size) {
   var ret = "";
   while (size-- > 0) {
