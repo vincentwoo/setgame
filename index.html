@@ -27,9 +27,8 @@
                user-select: none;}
       .red { border: 2px solid red }
 
-      #side {position: absolute; top: 0; right: 0;
-             width: 160px; height: 400px;}
-      .player {font: 1.5em 'Goudy Bookletter 1911', serif; display: none; height: 60px;}
+      #side {position: absolute; top: 0; right: 0; height: 400px;}
+      .player {font: 1.5em 'Goudy Bookletter 1911', serif; display: none; width:160px; height: 60px; position: relative; background:red;}
       .score {font-weight: bold}
       .name {float:right}
       .me-indicator {font-size: 0.8em; width:20px;margin-left:-20px; display:block; float:left}
@@ -107,17 +106,26 @@
       function updateScores(scores) {
         // hard coding in max players on the clientside
         for (var i = 0; i < 8; i++) {
-          var player = $('#p' + i);
           if (i in scores) {
+            var player = $('#p' + i);
             var score = player.children('.score');
             score.text('' + scores[i]);
-            player.show();
+            player.slideDown();
           }
         }
       }
+      
+      function fadeOutLastSet(player) {
+        if (player in lastSets) {
+          lastSets[player].forEach( function(elem) {
+            elem.fadeOut(function() {$(this).remove()});
+          });
+        }
+        lastSets[player] = [];
+      }
 
       socket.on('message', function(obj){
-        console.log(obj);
+        log(obj);
         if (!obj.action) return;
         if (obj.action === 'init') {
           var tr = null;
@@ -142,25 +150,28 @@
         }
         if (obj.action === 'taken') {
           var j = 0;
-          if (obj.player in lastSets) {
-            lastSets[obj.player].forEach( function(elem) {
-              elem.fadeOut(function() {$(this).remove()});
-            });
-          }
-          lastSets[obj.player] = [];
+          fadeOutLastSet(obj.player);
           for (var i in obj.update) {
             if (i in selected) unselect(i);
-            var card = obj.update[i];
-            var dupe = cards[i].clone();
+            var card = obj.update[i]
+              , dupe = cards[i].clone()
+              , p = $('#p' + obj.player);
             cards[i].after(dupe);
             cards[i].attr('src', '/cards/' + (1 + card.number  + card.color * 3 + card.shape * 9 + card.shading * 27) + '.gif');
-            var p = $('#p' + obj.player);
+            
             var offsx = p.width() - 25 + (j++) * 33 +
                         p.offset().left - dupe.offset().left;
             var offsy = p.offset().top - dupe.offset().top - 10;
-
+            
+            (function (j) {
             dupe.animate({transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(450deg) scale(0.5)'},
-                         {duration: Math.random() * 1500 + 500, easing: 'easeOutQuad'});
+                         {duration: Math.random() * 1500 + 500
+                        , easing: 'easeOutQuad'
+                        , complete: function() {
+                            $(this).css('transform', 'translateX('+(85 + j * 33)+'px) translateY(24px) rotate(450deg) scale(0.5)');
+                            $(this).appendTo(p);
+                          }});
+            })(j);
             lastSets[obj.player].push(dupe);
           }
           updateScores(obj.players);
@@ -171,11 +182,14 @@
           return;
         }
         if (obj.action === 'join') {
-          $('#p' + obj.player).show();
+          var update = {};
+          update[obj.player] = 0;
+          updateScores(update);
           return;
         }
         if (obj.action === 'leave') {
-          $('#p' + obj.player).hide();
+          $('#p' + obj.player).fadeOut();
+          fadeOutLastSet(obj.player);
           return;
         }
       });
@@ -219,6 +233,10 @@
       return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
     }
   });
+  
+  function log(m) {
+    if (typeof console !== 'undefined') console.log(m);
+  }
       /*socket.on('disconnect', function(){ message({ message: ['System', 'Disconnected']})});
       socket.on('reconnect', function(){ message({ message: ['System', 'Reconnected to server']})});
       socket.on('reconnecting', function( nextRetry ){ message({ message: ['System', 'Attempting to re-connect to the server, next attempt in ' + nextRetry + 'ms']})});
