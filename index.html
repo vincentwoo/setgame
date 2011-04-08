@@ -28,7 +28,7 @@
       .red { border: 2px solid red }
 
       #side {position: absolute; top: 0; right: 0; height: 400px;}
-      .player {font: 1.5em 'Goudy Bookletter 1911', serif; display: none; width:160px; height: 60px; position: relative; background:red;}
+      .player {font: 1.5em 'Goudy Bookletter 1911', serif; display: none; width:160px; height: 60px; position: relative; }
       .score {font-weight: bold}
       .name {float:right}
       .me-indicator {font-size: 0.8em; width:20px;margin-left:-20px; display:block; float:left}
@@ -168,7 +168,9 @@
                          {duration: Math.random() * 1500 + 500
                         , easing: 'easeOutQuad'
                         , complete: function() {
-                            $(this).css('transform', 'translateX('+(85 + j * 33)+'px) translateY(24px) rotate(450deg) scale(0.5)');
+                            $(this).css('transform', 'translateX(0px) translateY(0px) rotate(450deg) scale(0.5)');
+                            $(this).css('top', 24 + 'px')
+                            $(this).css('left', (100 + j * 33) + 'px')
                             $(this).appendTo(p);
                           }});
             })(j);
