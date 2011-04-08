@@ -6,32 +6,98 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
     <script src="/jquery.transform.lite.js"></script>
     <style>
-      html, body, div, p, ul, li {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+      html, body, div, p, ul, li, a {
+          margin: 0;
+          padding: 0;
+          list-style: none;
       }
-      body {font: 1em 'Droid Sans',sans-serif; line-height: 1.7.em;
-            color: #EEE; background: #000505}
+      body {
+          font: 1em 'Droid Sans',sans-serif;
+          line-height: 1.7.em;
+          color: #EEE;
+          background: #000505;
+      }
+      #wrap {
+          margin: 50px auto;
+          position: relative;
+          width: 520px;
+      }
+      #board {
 
-      #wrap {margin:50px auto; position:relative; width: 520px}
-
-      #board {}
-      #board tr {height: 65px;}
-      #board td {width: 100px; position: relative;}
-      .card  { border: 2px solid #444; position: absolute; margin-top: -32px;
-               -webkit-user-select: none;
-               -khtml-user-select: none;
-               -moz-user-select: none;
-               -o-user-select: none;
-               user-select: none;}
-      .red { border: 2px solid red }
-
-      #side {position: absolute; top: 0; right: 0; height: 400px;}
-      .player {font: 1.5em 'Goudy Bookletter 1911', serif; display: none; width:160px; height: 60px; position: relative; }
-      .score {font-weight: bold}
-      .name {float:right}
-      .me-indicator {font-size: 0.8em; width:20px;margin-left:-20px; display:block; float:left}
+      }
+       #board tr {
+           height: 65px
+       }
+       #board td {
+           width: 100px;
+           position: relative;
+       }
+      .card {
+          border: 2px solid #444;
+          position: absolute;
+          margin-top: -32px;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -o-user-select: none;
+          user-select: none;
+      }
+      .red {
+          border: 2px solid red
+      }
+      #side {
+          position: absolute;
+          top: 0;
+          right: 0;
+          height: 400px;
+      }
+      .player {
+          font: 1.3em 'Goudy Bookletter 1911', serif;
+          display: none;
+          width: 160px;
+          height: 50px;
+          margin-bottom: 15px;
+          position: relative;
+      }
+      .score {
+          font-weight: bold
+      }
+      .name {
+          float: right
+      }
+      .me-indicator {
+          font-size: 0.8em;
+          width: 20px;
+          margin-left: -20px;
+          display: block;
+          float: left;
+      }
+      .button {
+          display: block;
+          color: #EEE;
+          background: #152525;
+          font-size: 0.8em;
+          border-radius: 5px;
+          -moz-border-radius: 5px;
+          text-decoration: none;
+          border: 2px solid #152525;
+      }
+      .button:hover {
+          border-color: #220500;
+          background: #150400;
+      }
+      .button span {
+          display: block;
+          padding-left: 5px;
+          border-radius: 4px;
+          -moz-border-radius: 4px;
+          border: 1px solid #000505;
+      }
+      .puzzled {
+        font-size: 0.7em;
+        text-align: right;
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -41,27 +107,35 @@
         <ul id="scoreboard">
         <li class="player" id="p0">
           <span class="score">0</span> <span class="name">Player 1</span>
+          <div class="puzzled">&hellip; doubts the existence of a set</div>
         </li>
         <li class="player" id="p1">
           <span class="score">0</span> <span class="name">Player 2</span>
+          <div class="puzzled">&hellip; doesn't see a set</div>
         </li>
         <li class="player" id="p2">
           <span class="score">0</span> <span class="name">Player 3</span>
+          <div class="puzzled">&hellip; could use a hint</div>
         </li>
         <li class="player" id="p3">
           <span class="score">0</span> <span class="name">Player 4</span>
+          <div class="puzzled">&hellip; thinks we should deal out a few more</div>
         </li>
         <li class="player" id="p4">
           <span class="score">0</span> <span class="name">Player 5</span>
+          <div class="puzzled">&hellip; grows impatient</div>
         </li>
         <li class="player" id="p5">
           <span class="score">0</span> <span class="name">Player 6</span>
+          <div class="puzzled">&hellip; needs a hand</div>
         </li>
         <li class="player" id="p6">
           <span class="score">0</span> <span class="name">Player 7</span>
+          <div class="puzzled">&hellip; is sure no set exists</div>
         </li>
         <li class="player" id="p7">
           <span class="score">0</span> <span class="name">Player 8</span>
+          <div class="puzzled">&hellip; is honestly just here for the free food</div>
         </li>
         </ul>
       </div>
@@ -71,11 +145,28 @@
         , socket = new io.Socket(null, {port: port, rememberTransport: false})
         , selected = []
         , cards = []
-        , lastSets = {};
+        , lastSets = {}
+        , me;
 
       socket.connect();
 
-      function select (idx) {
+      function addCards(newCards) {
+        var tr = null;
+        $.each(newCards, function(idx, card) {
+          if (idx % 3 === 0) tr = $('<tr/>');
+          var td = $('<td/>');
+          var c = $('<img/>', {
+            class: 'card'
+          , src: '/cards/' + (1 + card.number  + card.color * 3 + card.shape * 9 + card.shading * 27) + '.gif'
+          });
+          cards.push(c);
+          td.append(c);
+          tr.append(td);
+          if (idx % 3 === 0) $('#board').append(tr);
+        });
+      }
+      
+      function select(idx) {
         var search = selected.indexOf(idx);
         if (search != -1) {
           unselect(search);
@@ -97,7 +188,9 @@
         if (selected.length === 3) {
           socket.send({action: 'take',
                         selected: selected});
-          $.each(selected, function(idx, card) { cards[card].removeClass('red'); });
+          $.each(selected, function(idx, card) {
+            setTimeout(function() {cards[card].removeClass('red');}, 250);
+          });
           selected = [];
           return;
         }
@@ -123,60 +216,112 @@
         }
         lastSets[player] = [];
       }
+      
+      function hint() {
+        socket.send({action: 'hint'});
+        $('#hint').hide();
+        showPuzzled(me);
+        return false;
+      }
+      
+      function showPuzzled(player) {
+        $('#p' + player + ' .puzzled').fadeIn();
+      }
+      
+      function hideAllPuzzled() {
+        $('.puzzled').fadeOut(600);
+        setTimeout(function() { $('#hint').show(); }, 610);
+      }
 
       socket.on('message', function(obj){
         log(obj);
         if (!obj.action) return;
         if (obj.action === 'init') {
-          var tr = null;
-          $.each(obj.board, function(idx, card) {
-            if (idx % 3 === 0) tr = $('<tr/>');
-            var td = $('<td/>');
-            var c = $('<img/>', {
-              class: 'card'
-            , src: '/cards/' + (1 + card.number  + card.color * 3 + card.shape * 9 + card.shading * 27) + '.gif'
-            });
-            cards.push(c);
-            td.append(c);
-            tr.append(td);
-            if (idx % 3 === 0) $('#board').append(tr);
-          });
+          addCards(obj.board);
           updateScores(obj.players);
-          $('#p' + obj.you).prepend(
+          me = obj.you;
+          var p = $('#p' + me);
+          p.prepend(
             $('<span/>', {
               html: '&raquo;'
             , class: 'me-indicator' }));
+            
+          p.append($('<a/>', {
+                    href: ''
+                  , id: 'hint'
+                  , class: 'button'
+                  , html: '<span>I don\'t see a set!</span></button>'
+                  , click: hint }));
           return;
         }
         if (obj.action === 'taken') {
           var j = 0;
           fadeOutLastSet(obj.player);
+          var deleteLastRow = 0;
           for (var i in obj.update) {
             if (i in selected) unselect(i);
             var card = obj.update[i]
               , dupe = cards[i].clone()
-              , p = $('#p' + obj.player);
+              , p = $('#p' + obj.player)
+              , offsx
+              , offsy;
             cards[i].after(dupe);
-            cards[i].attr('src', '/cards/' + (1 + card.number  + card.color * 3 + card.shape * 9 + card.shading * 27) + '.gif');
+            if (typeof card === 'number') {
+              var replace = cards[card];
+              offsx = cards[i].offset().left - replace.offset().left;
+              offsy = cards[i].offset().top - replace.offset().top;
+              deleteLastRow++;
+              (function (i) {
+                replace.css('z-index', '10');
+                replace.animate({
+                    transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(360deg)'}
+                  , { duration: Math.random() * 1000 + 250
+                    , easing: 'easeOutQuad'
+                    , complete: function() {
+                        $(this).css('transform', 'translateX(0px) translateY(0px)');
+                        cards[i].hide();
+                        cards[i].after($(this));
+                        cards[i].remove();
+                        cards[i] = $(this);
+                        deleteLastRow--;
+                        if (deleteLastRow == 0) {
+                          $('#board tr:last').remove();
+                          cards.splice(cards.length-3, 3);
+                          selected = [];
+                        }
+                      }
+                });
+              })(i);
+            } else if (card) {
+              cards[i].attr('src', '/cards/' + (1 + card.number  + card.color * 3 + card.shape * 9 +
+                  card.shading * 27) + '.gif');
+            } else {
+              cards[i].fadeOut('fast');
+            }
             
-            var offsx = p.width() - 25 + (j++) * 33 +
+            offsx = p.width() - 25 + (j++) * 33 +
                         p.offset().left - dupe.offset().left;
-            var offsy = p.offset().top - dupe.offset().top - 10;
+            offsy = p.offset().top - dupe.offset().top - 10;
             
             (function (j) {
-            dupe.animate({transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(450deg) scale(0.5)'},
-                         {duration: Math.random() * 1500 + 500
-                        , easing: 'easeOutQuad'
-                        , complete: function() {
-                            $(this).css('transform', 'translateX(0px) translateY(0px) rotate(450deg) scale(0.5)');
-                            $(this).css('top', 24 + 'px')
-                            $(this).css('left', (100 + j * 33) + 'px')
-                            $(this).appendTo(p);
-                          }});
+              dupe.removeClass('red');
+              dupe.css('z-index', '10');
+              dupe.animate({
+                  transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(450deg) scale(0.5)'}
+                , { duration: Math.random() * 1500 + 500
+                  , easing: 'easeOutQuad'
+                  , complete: function() {
+                      $(this).css('transform', 'translateX(0px) translateY(0px) rotate(450deg) scale(0.5)');
+                      $(this).css('top', 24 + 'px');
+                      $(this).css('left', (100 + j * 33) + 'px');
+                      $(this).appendTo(p);
+                    }
+              });
             })(j);
             lastSets[obj.player].push(dupe);
           }
           updateScores(obj.players);
+          hideAllPuzzled();
           return;
         }
         if (obj.action === 'setHash') {
@@ -192,6 +337,17 @@
         if (obj.action === 'leave') {
           $('#p' + obj.player).fadeOut();
           fadeOutLastSet(obj.player);
+          return;
+        }
+        
+        if (obj.action === 'puzzled') {
+          if (obj.player != me) showPuzzled(obj.player);
+          return;
+        }
+        
+        if (obj.action === 'add') {
+          hideAllPuzzled();
+          addCards(obj.cards);
           return;
         }
       });
@@ -220,25 +376,25 @@
         }
       });
 
-  jQuery.extend( jQuery.easing,
-  {
-    def: 'easeOutQuad',
-    swing: function (x, t, b, c, d) {
-      //alert(jQuery.easing.default);
-      return jQuery.easing[jQuery.easing.def](x, t, b, c, d);
-    },
-    easeOutQuad: function (x, t, b, c, d) {
-      return -c *(t/=d)*(t-2) + b;
-    },
-    easeOutBack: function (x, t, b, c, d, s) {
-      if (s == undefined) s = 1.70158;
-      return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
-    }
-  });
-  
-  function log(m) {
-    if (typeof console !== 'undefined') console.log(m);
-  }
+      jQuery.extend( jQuery.easing,
+      {
+        def: 'easeOutQuad',
+        swing: function (x, t, b, c, d) {
+          //alert(jQuery.easing.default);
+          return jQuery.easing[jQuery.easing.def](x, t, b, c, d);
+        },
+        easeOutQuad: function (x, t, b, c, d) {
+          return -c *(t/=d)*(t-2) + b;
+        },
+        easeOutBack: function (x, t, b, c, d, s) {
+          if (s == undefined) s = 1.70158;
+          return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
+        }
+      });
+      
+      function log(m) {
+        if (typeof console !== 'undefined') console.log(m);
+      }
       /*socket.on('disconnect', function(){ message({ message: ['System', 'Disconnected']})});
       socket.on('reconnect', function(){ message({ message: ['System', 'Reconnected to server']})});
       socket.on('reconnecting', function( nextRetry ){ message({ message: ['System', 'Attempting to re-connect to the server, next attempt in ' + nextRetry + 'ms']})});

@@ -3,6 +3,7 @@ module.exports = function Game(hash, client) {
   this.board = [];
   this.players = [new Player(client), null, null, null, null, null, null, null];
   this.hash = hash;
+  this.puzzled = [];
   for (var i = 0; i < 81; i++) {
     this.deck.push( new Card(i) );
   }
@@ -71,34 +72,78 @@ module.exports = function Game(hash, client) {
   }
 
   this.message = function(client, message) {
+    if (!message.action) return;
+    var player = this.getPlayerIdx(client);
     if (message.action === 'init') {
-      client.send({ action: 'init'
-                  , board: this.board
-                  , players: this.playerScores()
-                  , you: this.getPlayerIdx(client) });
+      client.send({
+          action: 'init'
+        , board: this.board
+        , players: this.playerScores()
+        , you: player
+      });
       return;
     }
     if (message.action === 'take') {
       if (this.checkSet(message.selected)) {
         console.log('take set succeed');
         var update = {};
-        message.selected.forEach( function(val) {
-          var c = this.deck.pop();
-          update[val] = c;
-          this.board[val] = c;
-        }, this );
-        var playerIdx = this.getPlayerIdx(client);
-        this.players[playerIdx].score += 3;
+        if (this.board.length <= 12) {
+          message.selected.forEach( function(val) {
+            var c = this.deck.pop();
+            update[val] = c;
+            this.board[val] = c;
+          }, this );
+        } else {
+          var lastRow = this.board.length - 3
+          var lastReplace = this.board.length - 1;
+          message.selected.sort( function reverse(a, b) { return b - a; } );
+          message.selected.forEach( function(val) {
+            if (val >= lastRow) {
+              update[val] = false;
+            } else {
+              while (message.selected.indexOf(lastReplace) != -1)
+                lastReplace--;
+              update[val] = lastReplace--;
+              this.board[val] = this.board[update[val]];
+            }
+          }, this);
+          this.board.splice(lastRow, 3);
+        }
+        this.players[player].score += 3;
         var playerUpdate = {};
-        playerUpdate[playerIdx] = this.players[playerIdx].score;
-        this.broadcast({action: 'taken'
-                      , update: update
-                      , player: playerIdx
-                      , players: playerUpdate});
+        playerUpdate[player] = this.players[player].score;
+        this.puzzled = [];
+        this.broadcast({
+            action: 'taken'
+          , update: update
+          , player: player
+          , players: playerUpdate
+        });
       } else {
         console.log('take set failed');
       }
       return;
+    }
+    
+    if (message.action === 'hint') {
+      if (this.puzzled.indexOf(player) != -1) return;
+      this.puzzled.push(player);
+      this.broadcast({
+          action: 'puzzled'
+        , player: player
+      });
+      var that = this;
+      setTimeout(function() {
+        if (that.puzzled.length < Math.floor(that.numPlayers() * 0.75)) return;
+        var newCards = [];
+        for (var i = 0; i < 3; i++) newCards.push(that.deck.pop());
+        that.board = that.board.concat(newCards);
+        that.broadcast({
+          action: 'add',
+          cards: newCards
+        });
+        that.puzzled = [];
+      }, 1000);
     }
   }
 
