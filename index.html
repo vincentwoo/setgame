@@ -3,7 +3,7 @@
   <head>
     <title>set - the game</title>
     <link rel="shortcut icon" href="http://vincentwoo.com/favicon.ico" />
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="/_socket.io.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
     <script src="/jquery.transform.lite.js"></script>
     <style>
@@ -142,8 +142,20 @@
       </div>
     </div>
     <script>
-      var socket = new io.Socket(null, {
-          transports: ['htmlfile', 'xhr-polling', 'jsonp-polling']
+      var socketPort = window.location.host.indexOf('setgame') != -1 ? 9980 : 80
+        , socket = new io.Socket(null, {
+              port: 80
+            , rememberTransport: false
+            , transportOptions: {
+                  websocket: {
+                    port: socketPort
+                  , timeout: 3000
+                  }
+                , flashsocket: {
+                    port: socketPort
+                  , timeout: 3000
+                  }
+              }
         })
         , selected = []
         , cards = []
