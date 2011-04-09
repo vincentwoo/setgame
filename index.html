@@ -146,13 +146,12 @@
         , socket = new io.Socket(null, {
               port: 80
             , rememberTransport: false
+            , transports: ['websocket', 'flashsocket', 'xhr-polling', 'jsonp-polling']
             , transportOptions: {
-                  websocket: {
-                    port: socketPort
-                  }
-                , flashsocket: {
-                    port: socketPort
-                  }
+                  websocket: { port: socketPort }
+                , flashsocket: { port: socketPort }
+                , 'xhr-polling': { timeout: 25000 } // kludge, merge isn't recursive?
+                , 'jsonp-polling': { timeout: 25000 }
               }
         })
         , selected = []
