@@ -142,15 +142,19 @@
     </div>
     <script>
       var socket = new io.Socket(null, {
-          transports: ['flashsocket', 'htmlfile', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
+          transports: ['flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling']
         })
         , selected = []
         , cards = []
         , lastSets = {}
         , me;
-
-      socket.connect();
-
+       
+      $(document.body).ready( function() {
+        setTimeout(function() {
+          socket.connect();
+        }, 250); 
+      });
+        
       function addCards(newCards) {
         var tr = null;
         $.each(newCards, function(idx, card) {
