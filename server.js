@@ -18,7 +18,7 @@ server.listen(80);
 
 var io = io.listen(server, {
       flashPolicyServer: false
-    , transports: ['flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling']
+    , transports: ['htmlfile', 'xhr-polling', 'jsonp-polling']
   })
   , games = {}
   , clients = {};
