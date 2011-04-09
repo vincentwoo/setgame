@@ -134,7 +134,7 @@ module.exports = function Game(hash, client) {
       });
       var that = this;
       setTimeout(function() {
-        if (that.puzzled.length < Math.floor(that.numPlayers() * 0.75)) return;
+        if (that.puzzled.length < Math.ceil(that.numPlayers() * 0.51)) return;
         var newCards = [];
         for (var i = 0; i < 3; i++) newCards.push(that.deck.pop());
         that.board = that.board.concat(newCards);
