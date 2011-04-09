@@ -149,8 +149,6 @@
             , transports: ['websocket', 'xhr-polling', 'jsonp-polling']
             , transportOptions: {
                   websocket: { port: socketPort }
-                , 'xhr-polling': { timeout: 25000 } // kludge, merge isn't recursive?
-                , 'jsonp-polling': { timeout: 25000 }
               }
         })
         , selected = []

@@ -71,8 +71,12 @@ if (typeof window != 'undefined'){
 		
     merge: function(target, additional){
       for (var i in additional)
-        if (additional.hasOwnProperty(i))
-          target[i] = additional[i];
+        if (additional.hasOwnProperty(i)) {
+          if (typeof target[i] !== 'object')
+            target[i] = additional[i];
+          else
+            this.merge(target[i], additional[i]);
+        }
     }
 
 	};
