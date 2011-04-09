@@ -16,7 +16,10 @@ server = connect.createServer(
 
 server.listen(80);
 
-var io = io.listen(server)
+var io = io.listen(server, {
+      flashPolicyServer: false
+    , transports: ['flashsocket', 'htmlfile', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
+  })
   , games = {}
   , clients = {};
 
