@@ -96,7 +96,7 @@ module.exports = function Game(hash, client) {
               this.board[val] = c;
             }, this );
         } else {
-          var lastRow = this.board.length - 3
+          var lastRow = this.board.length - 3;
           var lastReplace = this.board.length - 1;
           message.selected.sort( function reverse(a, b) { return b - a; } );
           message.selected.forEach( function(val) {
@@ -171,10 +171,11 @@ module.exports = function Game(hash, client) {
   }
   
   this.checkSetExistence = function() {
+    if (this.board.length < 3) return false;
     for (var i = 0; i < this.board.length - 2; i++) {
     for (var j = i + 1; j < this.board.length - 1; j++) {
     for (var k = j + 1; k < this.board.length; k++) {
-      if (this.checkSet([i,j,k])) return [i,j,k];
+      if (this.verifySet(this.board[i],this.board[j],this.board[k]])) return [i,j,k];
     }}}
     return false;
   }
