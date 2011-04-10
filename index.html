@@ -199,6 +199,13 @@
         var deselected = selected.splice(idx, 1)[0];
         cards[deselected].removeClass('red');
       }
+      
+      function clearSelected() {
+        selected.forEach( function(idx) {
+          cards[idx].removeClass('red');
+        });
+        selected = [];
+      }
 
       function checkSet() {
         if (selected.length === 3) {
@@ -278,16 +285,17 @@
             if (i in selected) unselect(i);
             var card = obj.update[i]
               , dupe = cards[i].clone()
-              , p = $('#p' + obj.player)
-              , offsx
-              , offsy;
+              , p = $('#p' + obj.player);
             cards[i].after(dupe);
+            
             if (typeof card === 'number') {
-              var replace = cards[card];
-              offsx = cards[i].offset().left - replace.offset().left;
-              offsy = cards[i].offset().top - replace.offset().top;
+              var replace = cards[card]
+                , old = cards[i];
+              cards[i] = replace;
               deleteLastRow++;
-              (function (i) {
+              (function (old) {
+                var offsx = old.offset().left - replace.offset().left
+                  , offsy = old.offset().top - replace.offset().top;
                 replace.css('z-index', '10');
                 replace.animate({
                     transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(360deg)'}
@@ -295,19 +303,17 @@
                     , easing: 'easeOutQuad'
                     , complete: function() {
                         $(this).css('transform', 'translateX(0px) translateY(0px)');
-                        cards[i].hide();
-                        cards[i].after($(this));
-                        cards[i].remove();
-                        cards[i] = $(this);
+                        old.hide();
+                        old.after($(this));
+                        old.remove();
                         deleteLastRow--;
                         if (deleteLastRow == 0) {
                           $('#board tr:last').remove();
                           cards.splice(cards.length-3, 3);
-                          selected = [];
                         }
                       }
                 });
-              })(i);
+              })(old);
             } else if (card) {
               cards[i].attr('src', '/cards/' + (1 + card.number  + card.color * 3 + card.shape * 9 +
                   card.shading * 27) + '.gif');
@@ -315,11 +321,12 @@
               cards[i].fadeOut('fast');
             }
             
-            offsx = p.width() - 25 + (j++) * 33 +
-                        p.offset().left - dupe.offset().left;
-            offsy = p.offset().top - dupe.offset().top - 10;
+            
             
             (function (j) {
+              var offsx = p.width() - 23 + (j * 33) +
+                          p.offset().left - dupe.offset().left
+                , offsy = p.offset().top - dupe.offset().top - 10;
               dupe.removeClass('red');
               dupe.css('z-index', '10');
               dupe.animate({
@@ -329,11 +336,11 @@
                   , complete: function() {
                       $(this).css('transform', 'translateX(0px) translateY(0px) rotate(450deg) scale(0.5)');
                       $(this).css('top', 24 + 'px');
-                      $(this).css('left', (100 + j * 33) + 'px');
+                      $(this).css('left', (133 + j * 33) + 'px');
                       $(this).appendTo(p);
                     }
               });
-            })(j);
+            })(j++);
             lastSets[obj.player].push(dupe);
           }
           updateScores(obj.players);
@@ -393,17 +400,15 @@
         socket.send(init);
       });
 
-      $(document).bind('click', function(event) {
+      $(document).bind('mousedown', function(event) {
         var target = $(event.target)[0];
         var idx = cards.map( function(v) { return v[0]; } ).indexOf(target);
+        log(idx);
 
         if (idx != -1) {
           select(idx);
         } else {
-          selected.forEach( function(idx) {
-            cards[idx].removeClass('red');
-          });
-          selected = [];
+          clearSelected();
         }
       });
 

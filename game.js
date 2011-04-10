@@ -4,10 +4,10 @@ module.exports = function Game(hash, client) {
   this.players = [new Player(client), null, null, null, null, null, null, null];
   this.hash = hash;
   this.puzzled = [];
-  for (var i = 0; i < 81; i++) {
+  for (var i = 0; i < 18; i++) {
     this.deck.push( new Card(i) );
   }
-  shuffle(this.deck);
+  //shuffle(this.deck);
   for (var i = 0; i < 12; i++) {
     this.board.push(this.deck.pop());
   }
