@@ -45,7 +45,7 @@ module.exports = function Game(hash, client) {
   }
 
   this.registerClient = function(client) {
-    if (this.numPlayers() === this.players.length) return; //TODO ERROR CALLBACK
+    if (this.numPlayers() >= this.players.length) return false;
     if (this.players.every( function(player) {
       return (player === null || player.client.sessionId !== client.sesionId);
     })) {
@@ -53,6 +53,7 @@ module.exports = function Game(hash, client) {
       this.broadcast({action: 'join', player: playerIdx});
       this.players[playerIdx] = new Player(client);
     }
+    return true;
   }
 
   this.unregisterClient = function(client, gameOver) {
@@ -74,6 +75,7 @@ module.exports = function Game(hash, client) {
   this.message = function(client, message) {
     if (!message.action) return;
     var player = this.getPlayerIdx(client);
+    if (player === -1) return;
     if (message.action === 'init') {
       client.send({
           action: 'init'
