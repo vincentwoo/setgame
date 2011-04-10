@@ -4,10 +4,10 @@ module.exports = function Game(hash, client) {
   this.players = [new Player(client), null, null, null, null, null, null, null];
   this.hash = hash;
   this.puzzled = [];
-  for (var i = 0; i < 81; i++) {
+  for (var i = 0; i < 18; i++) {
     this.deck.push( new Card(i) );
   }
-  shuffle(this.deck);
+  //shuffle(this.deck);
   for (var i = 0; i < 12; i++) {
     this.board.push(this.deck.pop());
   }
@@ -87,12 +87,12 @@ module.exports = function Game(hash, client) {
       if (this.checkSet(message.selected)) {
         console.log('take set succeed');
         var update = {};
-        if (this.board.length <= 12) {
-          message.selected.forEach( function(val) {
-            var c = this.deck.pop();
-            update[val] = c;
-            this.board[val] = c;
-          }, this );
+        if (this.board.length <= 12 && this.deck.length > 0) {
+            message.selected.forEach( function(val) {
+              var c = this.deck.pop();
+              update[val] = c;
+              this.board[val] = c;
+            }, this );
         } else {
           var lastRow = this.board.length - 3
           var lastReplace = this.board.length - 1;
@@ -119,6 +119,19 @@ module.exports = function Game(hash, client) {
           , player: player
           , players: playerUpdate
         });
+        
+        if (this.deck.length === 0 && !this.checkSetExistence()) {
+          var message = {
+              action: 'win'
+            , player: this.players.reduce(function(prev, cur, idx, arr) {
+                if (cur === null) return prev;
+                if (prev === null || cur.score > arr[prev].score) return idx;
+                return prev;
+              }, null)
+          };
+          var that = this;
+          setTimeout(function() { that.broadcast(message); }, 2000);
+        }
       } else {
         console.log('take set failed');
       }
@@ -141,7 +154,7 @@ module.exports = function Game(hash, client) {
               action: 'hint'
             , card: setExists[Math.floor(Math.random()*3)]
           });
-        } else {
+        } else if (that.deck.length > 0) {
           var newCards = [];
           for (var i = 0; i < 3; i++) newCards.push(that.deck.pop());
           that.board = that.board.concat(newCards);

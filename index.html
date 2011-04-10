@@ -373,6 +373,14 @@
           cards[obj.card].parent().addClass('hint');
           return;
         }
+        
+        if (obj.action === 'win') {
+          hideAllPuzzled();
+          $('#board').fadeOut('slow', function () {
+            $('#board').html('<h1>Player ' + (obj.player + 1)+ ' wins!</h1>');
+            $('#board').show();
+          });
+        }
       });
 
       socket.on('connect', function() {
