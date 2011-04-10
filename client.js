@@ -123,12 +123,13 @@ socket.on('message', function(obj){
         html: '&raquo;'
       , 'class': 'me-indicator' }));
       
-    p.append($('<a/>', {
-              href: ''
-            , id: 'hint'
-            , 'class': 'button'
-            , html: '<span>I don\'t see a set!</span></button>'
-            , click: hint }));
+    p.append(
+        $('<a/>', {
+        href: ''
+      , id: 'hint'
+      , 'class': 'button'
+      , html: '<span>I don\'t see a set!</span>'
+      , click: hint }));
     return;
   }
   if (obj.action === 'taken') {

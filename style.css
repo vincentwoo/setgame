@@ -1,28 +1,30 @@
 html, body, div, p, ul, li, a {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 body {
-    font: 1em 'Droid Sans',sans-serif;
-    line-height: 1.7.em;
-    color: #EEE;
-    background: #000505;
+  font: 1em Verdana, sans-serif;
+  line-height: 1.3em;
+  color: #EEE;
+  background: #000505;
 }
 #wrap {
-    margin: 50px auto;
-    position: relative;
-    width: 540px;
+  margin: 50px auto;
+  position: relative;
+  width: 540px;
 }
-#board {}
+#board {
+
+}
  #board tr {
-     height: 75px
+   height: 75px
  }
  #board td {
-     width: 110px;
-     height: 75px;
-     position: relative;
-     top: 0;
+   width: 110px;
+   height: 75px;
+   position: relative;
+   top: 0;
  }
 .cardwrap {
   position: relative;
@@ -30,72 +32,78 @@ body {
   height: 100%;
 }
 .card {
-    border: 2px solid #444;
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -o-user-select: none;
-    user-select: none;
+  border: 2px solid #444;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 .red {
-    border: 2px solid red !important
+  border: 2px solid red !important
 }
 .hint {
-    background: #BDF271;
+  background: #BDF271
 }
 #side {
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 400px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 400px;
 }
 .player {
-    font: 1.3em 'Goudy Bookletter 1911', serif;
-    display: none;
-    width: 160px;
-    height: 50px;
-    margin-bottom: 15px;
-    position: relative;
+  font-size: 1.1em;
+  display: none;
+  width: 160px;
+  height: 50px;
+  margin-bottom: 15px;
+  position: relative;
 }
 .score {
-    font-weight: bold
+  font-weight: bold
 }
 .name {
-    float: right
+  float: right
 }
 .me-indicator {
-    font-size: 0.8em;
-    width: 20px;
-    margin-left: -20px;
-    display: block;
-    float: left;
+  font-size: 0.8em;
+  width: 20px;
+  margin-left: -20px;
+  display: block;
+  float: left;
+}
+#hint {
+  margin-top: 5px
 }
 .button {
-    display: block;
-    color: #EEE;
-    background: #152525;
-    font-size: 0.8em;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    text-decoration: none;
-    border: 2px solid #152525;
+  display: block;
+  color: #EEE;
+  background: #152525;
+  font-size: 0.8em;
+  line-height: 1.2em;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  text-decoration: none;
+  border: 2px solid #152525;
 }
 .button:hover {
-    border-color: #220500;
-    background: #150400;
+  border-color: #220500;
+  background: #150400;
 }
 .button span {
-    display: block;
-    padding-left: 5px;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    border: 1px solid #000505;
+  display: block;
+  padding: 2px 4px 2px 4px;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  border: 1px solid #000505;
 }
 .puzzled {
+  margin-top: 5px;
   font-size: 0.7em;
+  line-height: 1em;
   text-align: right;
   display: none;
 }
