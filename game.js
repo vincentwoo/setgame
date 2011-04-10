@@ -175,7 +175,7 @@ module.exports = function Game(hash, client) {
     for (var i = 0; i < this.board.length - 2; i++) {
     for (var j = i + 1; j < this.board.length - 1; j++) {
     for (var k = j + 1; k < this.board.length; k++) {
-      if (this.verifySet(this.board[i],this.board[j],this.board[k]])) return [i,j,k];
+      if (this.verifySet(this.board[i],this.board[j],this.board[k])) return [i,j,k];
     }}}
     return false;
   }
