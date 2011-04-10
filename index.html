@@ -21,22 +21,23 @@
       #wrap {
           margin: 50px auto;
           position: relative;
-          width: 520px;
+          width: 540px;
       }
       #board {
 
       }
        #board tr {
-           height: 65px
+           height: 75px
        }
        #board td {
-           width: 100px;
+           width: 110px;
            position: relative;
        }
       .card {
           border: 2px solid #444;
           position: absolute;
-          margin-top: -32px;
+          margin-top: -33px;
+          margin-left: 6px;
           -webkit-user-select: none;
           -khtml-user-select: none;
           -moz-user-select: none;
@@ -44,7 +45,10 @@
           user-select: none;
       }
       .red {
-          border: 2px solid red
+          border: 2px solid red !important
+      }
+      .hint {
+          background: #BDF271;
       }
       #side {
           position: absolute;
@@ -334,6 +338,7 @@
           }
           updateScores(obj.players);
           hideAllPuzzled();
+          $('.hint').removeClass('hint');
           return;
         }
         if (obj.action === 'setHash') {
@@ -360,6 +365,12 @@
         if (obj.action === 'add') {
           hideAllPuzzled();
           addCards(obj.cards);
+          return;
+        }
+        
+        if (obj.action === 'hint') {
+          hideAllPuzzled();
+          cards[obj.card].parent().addClass('hint');
           return;
         }
       });

@@ -135,16 +135,33 @@ module.exports = function Game(hash, client) {
       var that = this;
       setTimeout(function() {
         if (that.puzzled.length < Math.ceil(that.numPlayers() * 0.51)) return;
-        var newCards = [];
-        for (var i = 0; i < 3; i++) newCards.push(that.deck.pop());
-        that.board = that.board.concat(newCards);
-        that.broadcast({
-          action: 'add',
-          cards: newCards
-        });
+        var setExists = that.checkSetExistence();
+        if (setExists) {
+          that.broadcast({
+              action: 'hint'
+            , card: setExists[Math.floor(Math.random()*3)]
+          });
+        } else {
+          var newCards = [];
+          for (var i = 0; i < 3; i++) newCards.push(that.deck.pop());
+          that.board = that.board.concat(newCards);
+          that.broadcast({
+              action: 'add'
+            , cards: newCards
+          });
+        }
         that.puzzled = [];
       }, 1000);
     }
+  }
+  
+  this.checkSetExistence = function() {
+    for (var i = 0; i < this.board.length - 2; i++) {
+    for (var j = i + 1; j < this.board.length - 1; j++) {
+    for (var k = j + 1; k < this.board.length; k++) {
+      if (this.checkSet([i,j,k])) return [i,j,k];
+    }}}
+    return false;
   }
 
   this.checkSet = function(indexes) {
