@@ -11,7 +11,7 @@ var http = require('http')
 
 server = connect.createServer(
     connect.logger()
-  , connect.static(__dirname, { maxAge: 86400000 })
+  , connect.static(__dirname + '/client', { maxAge: 86400000 })
 );
 
 server.listen(80);
