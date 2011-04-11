@@ -4,7 +4,7 @@ module.exports = function Game(hash, client) {
   this.players = [new Player(client), null, null, null, null, null, null, null];
   this.hash = hash;
   this.puzzled = [];
-  for (var i = 0; i < 61; i++) {
+  for (var i = 0; i < 81; i++) {
     this.deck.push( new Card(i) );
   }
   shuffle(this.deck);
@@ -67,6 +67,8 @@ module.exports = function Game(hash, client) {
   }
 
   this.broadcast = function(message) {
+    console.log(this.hash + ' broadcasting: ');
+    console.log(message);
     this.players.forEach( function(player) {
       if (player !== null) player.client.send(message);
     });
@@ -76,6 +78,8 @@ module.exports = function Game(hash, client) {
     if (!message.action) return;
     var player = this.getPlayerIdx(client);
     if (player === -1) return;
+    console.log('player ' + player + ' sends: ');
+    console.log(message);
     if (message.action === 'init') {
       client.send({
           action: 'init'
@@ -149,6 +153,7 @@ module.exports = function Game(hash, client) {
       });
       var that = this;
       setTimeout(function() {
+        console.log('hint timeout executing');
         if (that.puzzled.length < Math.ceil(that.numPlayers() * 0.51)) return;
         var setExists = that.checkSetExistence();
         if (setExists) {
