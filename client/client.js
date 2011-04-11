@@ -11,13 +11,14 @@ var socketPort = window.location.host.indexOf('setgame') != -1 ? 9980 : 80
   , cards = []
   , lastSets = {}
   , me;
- 
+
 $(document.body).ready( function() {
   setTimeout(function() {
     socket.connect();
-  }, 250); 
+  }, 250);
+  $('#hint').click(hint);
 });
-  
+
 function addCards(newCards) {
   var tr = null;
   $.each(newCards, function(idx, card) {
@@ -78,7 +79,7 @@ function updateScores(scores) {
   for (var i = 0; i < 8; i++) {
     if (i in scores) {
       var player = $('#p' + i);
-      var score = player.children('.score');
+      var score = player.children('h2');
       score.text('' + scores[i]);
       player.slideDown();
     }
@@ -117,19 +118,8 @@ socket.on('message', function(obj){
     addCards(obj.board);
     updateScores(obj.players);
     me = obj.you;
-    var p = $('#p' + me);
-    p.prepend(
-      $('<span/>', {
-        html: '&raquo;'
-      , 'class': 'me-indicator' }));
-      
-    p.append(
-        $('<a/>', {
-        href: ''
-      , id: 'hint'
-      , 'class': 'button'
-      , html: '<span>I don\'t see a set!</span>'
-      , click: hint }));
+    $('#me-indicator').prependTo($('#p' + me));
+    $('#hint').css('display', 'block');
     return;
   }
   if (obj.action === 'taken') {
@@ -142,7 +132,7 @@ socket.on('message', function(obj){
         , dupe = cards[i].clone()
         , p = $('#p' + obj.player);
       cards[i].after(dupe);
-      
+
       if (typeof card === 'number') {
         var replace = cards[card]
           , old = cards[i];
@@ -174,11 +164,11 @@ socket.on('message', function(obj){
       } else {
         cards[i].fadeOut('fast');
       }
-      
+
       (function (j) {
-        var offsx = p.width() - 23 + (j * 33) +
+        var offsx = (j * 33) + 40 +
                     p.offset().left - dupe.offset().left
-          , offsy = p.offset().top - dupe.offset().top - 5;
+          , offsy = p.offset().top - dupe.offset().top - 4;
         dupe.removeClass('red');
         dupe.css('z-index', '10');
         dupe.animate({
@@ -186,9 +176,9 @@ socket.on('message', function(obj){
           , { duration: 1000
             , easing: 'easeOutQuad'
             , complete: function() {
-                $(this).css('transform', 'translateX(0px) translateY(0px) rotate(450deg) scale(0.5)');
-                $(this).css('top', '-5px');
-                $(this).css('left', (133 + j * 33) + 'px');
+                $(this).css('transform', 'translateX(0px) translateY(0px) rotate(90deg) scale(0.5)');
+                $(this).css('top', -4);
+                $(this).css('left', j * 33 + 40);
                 $(this).appendTo(p);
               }
         });
@@ -215,24 +205,24 @@ socket.on('message', function(obj){
     fadeOutLastSet(obj.player);
     return;
   }
-  
+
   if (obj.action === 'puzzled') {
     if (obj.player != me) showPuzzled(obj.player);
     return;
   }
-  
+
   if (obj.action === 'add') {
     hideAllPuzzled();
     addCards(obj.cards);
     return;
   }
-  
+
   if (obj.action === 'hint') {
     hideAllPuzzled();
     cards[obj.card].parent().addClass('hint');
     return;
   }
-  
+
   if (obj.action === 'win') {
     hideAllPuzzled();
     $('#board').fadeOut('slow', function () {

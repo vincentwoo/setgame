@@ -1,13 +1,13 @@
-html, body, div, p, ul, li, a {
+html, body, div, p, ul, li, a, h1, h2, h3, table {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 body {
-  font: 1em Verdana, sans-serif;
+  font: 1em Tahoma, Geneva, sans-serif;
   line-height: 1.3em;
-  color: #EEE;
-  background: #000505;
+  color: #222;
+  background: #464646;
 }
 #wrap {
   margin: 50px auto;
@@ -17,25 +17,25 @@ body {
 #board {
 
 }
- #board tr {
-   height: 75px
- }
- #board td {
-   width: 110px;
-   height: 75px;
-   position: relative;
-   top: 0;
- }
+  #board tr {
+    height: 75px
+  }
+  #board td {
+    width: 110px;
+    height: 75px;
+    position: relative;
+    top: 0;
+  }
 .cardwrap {
   position: relative;
   width: 100%;
   height: 100%;
 }
 .card {
-  border: 2px solid #444;
+  border: 2px solid #111;
   position: absolute;
-  margin-top: 5px;
-  margin-left: 5px;
+  top: 5px;
+  left: 5px;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -54,21 +54,23 @@ body {
   right: 0;
   height: 400px;
 }
-.player {
+#scoreboard li {
   font-size: 1.1em;
   display: none;
-  width: 160px;
-  height: 50px;
-  margin-bottom: 15px;
+  width: 172px;
+  margin-bottom: 20px;
   position: relative;
 }
-.score {
-  font-weight: bold
-}
-.name {
-  float: right
-}
-.me-indicator {
+  #scoreboard li h2 {
+    font: bold 2em/1em "Arial Black", sans-serif;
+    text-shadow: 0px 2px 3px #555;
+  }
+  #scoreboard li h3 {
+    font-weight: bold;
+    font-size: 0.9em;
+    text-shadow: 0px 2px 3px #555;
+  }
+#me-indicator {
   font-size: 0.8em;
   width: 20px;
   margin-left: -20px;
@@ -76,9 +78,10 @@ body {
   float: left;
 }
 #hint {
-  margin-top: 5px
+  display: none;
 }
 .button {
+  width: 110px;
   display: block;
   color: #EEE;
   background: #152525;
@@ -88,6 +91,8 @@ body {
   -moz-border-radius: 5px;
   text-decoration: none;
   border: 2px solid #152525;
+  opacity: 0.7;
+  filter: alpha(opacity=70);
 }
 .button:hover {
   border-color: #220500;
@@ -98,12 +103,18 @@ body {
   padding: 2px 4px 2px 4px;
   border-radius: 4px;
   -moz-border-radius: 4px;
-  border: 1px solid #000505;
+  border: 1px solid #464646;
 }
 .puzzled {
-  margin-top: 5px;
+  display: none;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  background: #152525;
   font-size: 0.7em;
   line-height: 1em;
-  text-align: right;
-  display: none;
+  padding: 4px;
+  color: #EEE;
+  position: absolute;
+  top: 7px;
+  left: 52px;
 }
