@@ -154,15 +154,14 @@ socket.on('message', function(obj){
           replace.css('z-index', '10');
           replace.animate({
               transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(360deg)'}
-            , { duration: Math.random() * 1000 + 250
+            , { duration: 1250
               , easing: 'easeOutQuad'
               , complete: function() {
                   $(this).css('transform', 'translateX(0px) translateY(0px)');
                   old.hide();
                   old.after($(this));
                   old.remove();
-                  deleteLastRow--;
-                  if (deleteLastRow == 0) {
+                  if (--deleteLastRow === 0) {
                     $('#board tr:last').remove();
                     cards.splice(cards.length-3, 3);
                   }
@@ -176,17 +175,15 @@ socket.on('message', function(obj){
         cards[i].fadeOut('fast');
       }
       
-      
-      
       (function (j) {
         var offsx = p.width() - 23 + (j * 33) +
                     p.offset().left - dupe.offset().left
-          , offsy = p.offset().top - dupe.offset().top - 10;
+          , offsy = p.offset().top - dupe.offset().top - 5;
         dupe.removeClass('red');
         dupe.css('z-index', '10');
         dupe.animate({
             transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(450deg) scale(0.5)'}
-          , { duration: Math.random() * 1500 + 500
+          , { duration: 1000
             , easing: 'easeOutQuad'
             , complete: function() {
                 $(this).css('transform', 'translateX(0px) translateY(0px) rotate(450deg) scale(0.5)');
