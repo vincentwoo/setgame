@@ -10,7 +10,9 @@ var socketPort = window.location.host.indexOf('setgame') != -1 ? 9980 : 80
   , selected = []
   , cards = []
   , lastSets = {}
-  , me;
+  , me
+  , colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728",
+              "#9467bd", "#e377c2", "#bcbd22", "#17becf"];
 
 $(document.body).ready( function() {
   setTimeout(function() {
@@ -130,7 +132,8 @@ function message(obj) {
   var m = $('<li>' +
     (obj.event ?
       '' :
-      '<div class="name">Player ' + (obj.player+1) + '</div>') +
+      '<div class="name" style="color:' + colors[obj.player] + 
+      '">Player ' +(obj.player+1) + '</div>') +
     '<div class="message' + (obj.event ? ' event' : '') + '">' +
     obj.msg + '</div></li>'
   );
@@ -230,13 +233,11 @@ socket.on('message', function(obj){
     var update = {};
     update[obj.player] = 0;
     updateScores(update);
-    message({event: true, msg: 'Player ' + (obj.player + 1) + ' has joined'});
     return;
   }
   if (obj.action === 'leave') {
     $('#p' + obj.player).fadeOut();
     fadeOutLastSet(obj.player);
-    message({event: true, msg: 'Player ' + (obj.player + 1) + ' has left'});
     return;
   }
 

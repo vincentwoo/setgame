@@ -56,8 +56,17 @@ h1 {
       clear: both;
       font-weight: bold;
       font-size: 0.9em;
-      text-shadow: 0px 2px 2px #555;
+      text-shadow: 0px 1px 1px #999;
     }
+    #p0 h3 {color: #1f77b4}
+    #p1 h3 {color: #ff7f0e}
+    #p2 h3 {color: #2ca02c}
+    #p3 h3 {color: #d62728}
+    #p4 h3 {color: #9467bd}
+    #p5 h3 {color: #e377c2}
+    #p6 h3 {color: #bcbd22}
+    #p7 h3 {color: #17becf}
+    
 .puzzled {
   display: none;
   border-radius: 4px;

@@ -52,6 +52,7 @@ module.exports = function Game(hash, client) {
     })) {
       var playerIdx = this.firstAvailablePlayerSlot();
       this.broadcast({action: 'join', player: playerIdx});
+      this.sendMsg({event: true, msg: 'Player ' + (playerIdx + 1) + ' has joined'});
       this.players[playerIdx] = new Player(client);
     }
     return true;
@@ -61,6 +62,7 @@ module.exports = function Game(hash, client) {
     var playerIdx = this.getPlayerIdx(client);
     this.players[playerIdx] = null;
     this.broadcast({action: 'leave', player: playerIdx});
+    this.sendMsg({event: true, msg: 'Player ' + (playerIdx + 1) + ' has left'});
     var that = this;
     setTimeout( function delayGameover() {
       if (that.numPlayers() === 0) gameOver();
@@ -73,6 +75,13 @@ module.exports = function Game(hash, client) {
     this.players.forEach( function(player) {
       if (player !== null) player.client.send(message);
     });
+  }
+  
+  this.sendMsg = function(msg) {
+    this.messages.push(msg);
+    if (this.messages.length > 15) this.messages.shift();
+    msg.action = 'msg';
+    this.broadcast(msg);
   }
 
   this.message = function(client, message) {
@@ -179,13 +188,7 @@ module.exports = function Game(hash, client) {
     
     if (message.action === 'msg') {
       var msg = message.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
-      this.messages.push({ player: player, msg: msg });
-      if (this.messages.length > 15) this.messages.shift();
-      this.broadcast({
-          action: 'msg'
-        , player: player
-        , msg: msg
-      });
+      this.sendMsg({ player: player, msg: msg });
       return;
     }
   }
