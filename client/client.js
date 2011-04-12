@@ -20,6 +20,12 @@ $(document.body).ready( function() {
   }, 250);
   $('#hint').click(hint);
   $('#input').keydown(input);
+  $('#input').focus();
+  $('#input').blur(function() { 
+    setTimeout(function() {
+      $('#input').focus(); 
+    }, 50);
+  });
 });
 
 function addCards(newCards) {
