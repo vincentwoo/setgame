@@ -12,8 +12,9 @@ var socketPort = window.location.host.indexOf('setgame') != -1 ? 9980 : 80
   , lastSets = {}
   , me
   , colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728",
-              "#9467bd", "#e377c2", "#bcbd22", "#17becf"];
-
+              "#9467bd", "#e377c2", "#bcbd22", "#17becf"]
+  , lastMsg;
+  
 $(document.body).ready( function() {
   setTimeout(function() {
     socket.connect();
@@ -26,6 +27,9 @@ $(document.body).ready( function() {
       $('#input').focus(); 
     }, 50);
   });
+  setTimeout(function () {
+    message({event: true, msg: 'Chat in realtime while you play.'});
+  }, 2000);
 });
 
 function addCards(newCards) {
@@ -135,20 +139,27 @@ function input(e) {
 }
 
 function message(obj) {
+  var skipName = obj.event !== undefined;
+  if (lastMsg !== null && !obj.event &&
+  obj.player === lastMsg.player) {
+    skipName = true;
+    var last = $('#chat li:last .message');
+    last.css('margin-bottom', 0);
+    last.removeClass('cornered');
+    log(last.hasClass('message'));
+  }
   var m = $('<li>' +
-    (obj.event ?
+    (skipName ?
       '' :
       '<div class="name" style="color:' + colors[obj.player] + 
       '">Player ' +(obj.player+1) + '</div>') +
-    '<div class="message' + (obj.event ? ' event' : '') + '">' +
+    '<div class="message cornered' + (obj.event ? ' event' : '') + '">' +
     obj.msg + '</div></li>'
   );
-  m.hide();
+  lastMsg = obj;
   $('#chat').append(m);
-  m.slideDown(function (){
-    $('html, body').stop();
-    $('html, body').animate({ scrollTop: $(document).height() }, 200);
-  });
+  $('html, body').stop();
+  $('html, body').animate({ scrollTop: $(document).height() }, 200);
 }
 
 socket.on('message', function(obj){

@@ -86,7 +86,7 @@ h1 {
   margin-bottom: 110px;
 }
   #chat li {
-    margin-bottom: 5px;
+    
   }
     #chat li .name {
       padding-top: 10px;
@@ -98,12 +98,15 @@ h1 {
       margin-left: 65px;
       padding: 10px;
       background: #fff;
-      -moz-border-radius: 0 0 10px 0;
-      -webkit-border-radius: 0 0 10px 0;
-      border-radius: 0 0 10px 0;
+      margin-bottom: 5px;
       box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
       -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
       -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+    }
+    #chat li .cornered {
+      -moz-border-radius: 0 0 10px 0;
+      -webkit-border-radius: 0 0 10px 0;
+      border-radius: 0 0 10px 0;
     }
     #chat li .event {
       font-style:italic;
