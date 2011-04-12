@@ -4,6 +4,7 @@ module.exports = function Game(hash, client) {
   this.players = [new Player(client), null, null, null, null, null, null, null];
   this.hash = hash;
   this.puzzled = [];
+  this.messages = [];
   for (var i = 0; i < 81; i++) {
     this.deck.push( new Card(i) );
   }
@@ -86,6 +87,7 @@ module.exports = function Game(hash, client) {
         , board: this.board
         , players: this.playerScores()
         , you: player
+        , msgs: this.messages
       });
       return;
     }
@@ -172,6 +174,19 @@ module.exports = function Game(hash, client) {
         }
         that.puzzled = [];
       }, 1000);
+      return;
+    }
+    
+    if (message.action === 'msg') {
+      var msg = message.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
+      this.messages.push({ player: player, msg: msg });
+      if (this.messages.length > 15) this.messages.shift();
+      this.broadcast({
+          action: 'msg'
+        , player: player
+        , msg: msg
+      });
+      return;
     }
   }
   

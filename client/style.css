@@ -1,4 +1,4 @@
-html, body, div, p, ul, li, a, h1, h2, h3, table {
+html, body, div, p, ul, li, a, h1, h2, h3, table, form, input {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -6,23 +6,143 @@ html, body, div, p, ul, li, a, h1, h2, h3, table {
 body {
   font: 1em Tahoma, Geneva, sans-serif;
   line-height: 1.3em;
-  color: #222;
-  background: #464646;
+  color: #333;
+  background: #E6E6E6 url('/radialgradient.png');
+  background-attachment: fixed;
+}
+textarea {
+  font: 1em Tahoma, Geneva, sans-serif;
+  line-height: 1.3em;
+  color: #333;
+  -webkit-appearance: textarea;
+  -webkit-rtl-ordering: logical;
+  -webkit-user-select: text;
+  -webkit-box-orient: vertical;
+  resize: none;
+  cursor: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+h1 {
+  font: bold 2.5em/1.2em "Arial Black", sans-serif;
+  text-shadow: 0px 2px 3px #555;
 }
 #wrap {
   margin: 50px auto;
   position: relative;
-  width: 540px;
+  width: 100%;
+  min-width: 880px;
 }
-#board {
-
+#scoreboard {
+  width: 190px;
+  position: fixed;
+  left: 20px;
 }
-  #board tr {
-    height: 75px
+  #scoreboard li {
+    font-size: 1.1em;
+    display: none;
+    margin-bottom: 20px;
+    position: relative;
+    text-align: right;
   }
+    #scoreboard li h2 {
+      float: right;
+      text-align: left;  
+      width: 70px;
+      font: bold 2em/1em "Arial Black", sans-serif;
+      text-shadow: 0px 2px 3px #555;
+    }
+    #scoreboard li h3 {
+      clear: both;
+      font-weight: bold;
+      font-size: 0.9em;
+      text-shadow: 0px 2px 2px #555;
+    }
+.puzzled {
+  display: none;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  background: #152525;
+  font-size: 0.7em;
+  line-height: 1em;
+  padding: 4px;
+  color: #EEE;
+  position: absolute;
+  top: 7px;
+  right: 0px;
+}
+#chat {
+  margin-left: 570px;
+  margin-right: 25px;
+  margin-bottom: 110px;
+}
+  #chat li {
+    margin-bottom: 5px;
+  }
+    #chat li .name {
+      padding-top: 10px;
+      float: left;
+      font-weight: bold;
+      font-size: 0.8em;
+    }
+    #chat li .message {
+      margin-left: 65px;
+      padding: 10px;
+      background: #fff;
+      -moz-border-radius: 0 0 10px 0;
+      -webkit-border-radius: 0 0 10px 0;
+      border-radius: 0 0 10px 0;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+      -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+      -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+    }
+    #chat li .event {
+      font-style:italic;
+    }
+#footer {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  height: 60px;
+  box-shadow: 0 -4px 0 0 rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 -4px 0 0 rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 -4px 0 0 rgba(0, 0, 0, 0.1);
+  background: #E6E6E6;
+}
+  #footer form {
+    min-width: 220px;
+    margin-left: 635px;
+    margin-right: 25px;
+  }
+    #footer form #input {
+      height: 55px;
+      width: 100%;
+      border: 0;
+      overflow: auto;
+      vertical-align: baseline;
+      outline: 0;
+      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+      -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+      box-sizing: border-box;
+    }
+    #footer form label {
+      font-weight: bold;
+      font-size: 0.8em;
+      float: left;
+      width: 150px;
+      margin-left: -170px;
+      text-align: right;
+    }
+#board {
+  width: 330px;
+  position: fixed;
+  left: 230px;
+  margin-top: -4px;
+}
   #board td {
     width: 110px;
-    height: 75px;
+    height: 70px;
     position: relative;
     top: 0;
   }
@@ -32,44 +152,23 @@ body {
   height: 100%;
 }
 .card {
-  border: 2px solid #111;
+  border: 2px solid #333;
   position: absolute;
-  top: 5px;
-  left: 5px;
+  top: 2px;
+  left: 2px;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -o-user-select: none;
   user-select: none;
 }
+.clear { clear: both }
 .red {
   border: 2px solid red !important
 }
 .hint {
   background: #BDF271
 }
-#side {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 400px;
-}
-#scoreboard li {
-  font-size: 1.1em;
-  display: none;
-  width: 172px;
-  margin-bottom: 20px;
-  position: relative;
-}
-  #scoreboard li h2 {
-    font: bold 2em/1em "Arial Black", sans-serif;
-    text-shadow: 0px 2px 3px #555;
-  }
-  #scoreboard li h3 {
-    font-weight: bold;
-    font-size: 0.9em;
-    text-shadow: 0px 2px 3px #555;
-  }
 #me-indicator {
   font-size: 0.8em;
   width: 20px;
@@ -79,6 +178,7 @@ body {
 }
 #hint {
   display: none;
+  float: right;
 }
 .button {
   width: 110px;
@@ -103,18 +203,5 @@ body {
   padding: 2px 4px 2px 4px;
   border-radius: 4px;
   -moz-border-radius: 4px;
-  border: 1px solid #464646;
-}
-.puzzled {
-  display: none;
-  border-radius: 4px;
-  -moz-border-radius: 4px;
-  background: #152525;
-  font-size: 0.7em;
-  line-height: 1em;
-  padding: 4px;
-  color: #EEE;
-  position: absolute;
-  top: 7px;
-  left: 52px;
+  border: 1px solid #f6f4f4;
 }

@@ -15,9 +15,8 @@
   </head>
   <body>
     <div id="wrap">
-      <table id="board"></table>
-      <div id="side">
-        <ul id="scoreboard">
+      <div id="scoreboard">
+        <ul>
         <li id="p0">
           <h2>0</h2>
           <h3>Player 1</h3>
@@ -62,6 +61,17 @@
         <a href="" id="hint" class="button"><span>I don't see a set!</span></a>
         <span id="me-indicator">&raquo;</span>
       </div>
+      <table id="board"></table>      
+      <ul id="chat">
+        <li>
+          <div class="message event">Chat in realtime while you play.</div></li>
+      </ul>
+    </div>
+    <div id="footer">
+      <form id="form">
+        <label for="input">Type here to chat:</label>
+        <textarea rows="10" cols="10" wrap="hard" autocomplete="off" id="input"></textarea>
+      </form>
     </div>
   </body>
 </html>

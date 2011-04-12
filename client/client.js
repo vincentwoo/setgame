@@ -17,6 +17,7 @@ $(document.body).ready( function() {
     socket.connect();
   }, 250);
   $('#hint').click(hint);
+  $('#input').keydown(input);
 });
 
 function addCards(newCards) {
@@ -111,6 +112,36 @@ function hideAllPuzzled() {
   setTimeout(function() { $('#hint').show(); }, 610);
 }
 
+function input(e) {
+  e = e || event;
+  if (e.keyCode === 13) {
+    if (!e.ctrlKey) {
+      if (this.value !== "") socket.send({action: 'msg', msg: this.value});
+      this.value = "";
+    } else {
+      this.value += "\n";
+    }
+    return false;
+  }
+  return true;
+}
+
+function message(obj) {
+  var m = $('<li>' +
+    (obj.event ?
+      '' :
+      '<div class="name">Player ' + (obj.player+1) + '</div>') +
+    '<div class="message' + (obj.event ? ' event' : '') + '">' +
+    obj.msg + '</div></li>'
+  );
+  m.hide();
+  $('#chat').append(m);
+  m.slideDown(function (){
+    $('html, body').stop();
+    $('html, body').animate({ scrollTop: $(document).height() }, 200);
+  });
+}
+
 socket.on('message', function(obj){
   log(obj);
   if (!obj.action) return;
@@ -118,6 +149,7 @@ socket.on('message', function(obj){
     addCards(obj.board);
     updateScores(obj.players);
     me = obj.you;
+    obj.msgs.forEach(message);
     $('#me-indicator').prependTo($('#p' + me));
     $('#hint').css('display', 'block');
     return;
@@ -166,7 +198,7 @@ socket.on('message', function(obj){
       }
 
       (function (j) {
-        var offsx = (j * 33) + 40 +
+        var offsx = (j * 36) - 30 +
                     p.offset().left - dupe.offset().left
           , offsy = p.offset().top - dupe.offset().top - 4;
         dupe.removeClass('red');
@@ -178,7 +210,7 @@ socket.on('message', function(obj){
             , complete: function() {
                 $(this).css('transform', 'translateX(0px) translateY(0px) rotate(90deg) scale(0.5)');
                 $(this).css('top', -4);
-                $(this).css('left', j * 33 + 40);
+                $(this).css('left', j * 36 - 30);
                 $(this).appendTo(p);
               }
         });
@@ -198,11 +230,13 @@ socket.on('message', function(obj){
     var update = {};
     update[obj.player] = 0;
     updateScores(update);
+    message({event: true, msg: 'Player ' + (obj.player + 1) + ' has joined'});
     return;
   }
   if (obj.action === 'leave') {
     $('#p' + obj.player).fadeOut();
     fadeOutLastSet(obj.player);
+    message({event: true, msg: 'Player ' + (obj.player + 1) + ' has left'});
     return;
   }
 
@@ -220,6 +254,11 @@ socket.on('message', function(obj){
   if (obj.action === 'hint') {
     hideAllPuzzled();
     cards[obj.card].parent().addClass('hint');
+    return;
+  }
+  
+  if (obj.action === 'msg') {
+    message(obj);
     return;
   }
 
