@@ -131,6 +131,7 @@ h1 {
       overflow: auto;
       vertical-align: baseline;
       outline: 0;
+      padding: 10px;
       -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
       -moz-box-sizing: border-box;    /* Firefox, other Gecko */
       box-sizing: border-box;
@@ -192,6 +193,7 @@ h1 {
 .button {
   width: 110px;
   display: block;
+  margin-right: 5px;
   color: #EEE;
   background: #152525;
   font-size: 0.8em;
