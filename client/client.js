@@ -20,16 +20,31 @@ $(document.body).ready( function() {
     socket.connect();
   }, 250);
   $('#hint').click(hint);
-  $('#input').keydown(input);
+  $('#input').keypress(input);
   $('#input').focus();
-  $('#input').blur(function() { 
+  $(window).hashchange(initGame);
+  
+  $(document).bind('mousedown', function(event) {
+    var target = $(event.target)
+      , id = target.attr('id');
+    
+    if (id === 'hint' |
+        target.parent().attr('id') === 'hint'  ||
+        id === 'input')
+      return;
+    var idx = cards.map( function(v) { return v[0]; } ).indexOf(target[0]);
+    if (idx != -1) {
+      select(idx);
+    } else {
+      clearSelected();
+    }
+  });
+
+  $(document).bind('mouseup', function(event) {
     setTimeout(function() {
       $('#input').focus(); 
-    }, 50);
+    }, 50);  
   });
-  setTimeout(function () {
-    message({event: true, msg: 'Chat in realtime while you play.'});
-  }, 2000);
 });
 
 function addCards(newCards) {
@@ -108,6 +123,12 @@ function fadeOutLastSet(player) {
   lastSets[player] = [];
 }
 
+function fadeOutAllLastSets() {
+  for (var player in lastSets) {
+    fadeOutLastSet(player);
+  }
+}
+
 function hint() {
   socket.send({action: 'hint'});
   $('#hint').hide();
@@ -126,13 +147,14 @@ function hideAllPuzzled() {
 
 function input(e) {
   e = e || event;
-  if (e.keyCode === 13) {
+  if (e.which === 13) {
     if (!e.ctrlKey) {
       if (this.value !== "") socket.send({action: 'msg', msg: this.value});
       this.value = "";
     } else {
       this.value += "\n";
     }
+    e.preventDefault();
     return false;
   }
   return true;
@@ -140,13 +162,12 @@ function input(e) {
 
 function message(obj) {
   var skipName = obj.event !== undefined;
-  if (lastMsg !== null && !obj.event &&
-  obj.player === lastMsg.player) {
+  if (lastMsg && !obj.event && obj.player === lastMsg.player)
+  {
     skipName = true;
     var last = $('#chat li:last .message');
     last.css('margin-bottom', 0);
     last.removeClass('cornered');
-    log(last.hasClass('message'));
   }
   var m = $('<li>' +
     (skipName ?
@@ -156,7 +177,7 @@ function message(obj) {
     '<div class="message cornered' + (obj.event ? ' event' : '') + '">' +
     obj.msg + '</div></li>'
   );
-  lastMsg = obj;
+  lastMsg = {player: obj.player, event: obj.event};
   $('#chat').append(m);
   $('html, body').stop();
   $('html, body').animate({ scrollTop: $(document).height() }, 200);
@@ -166,12 +187,15 @@ socket.on('message', function(obj){
   log(obj);
   if (!obj.action) return;
   if (obj.action === 'init') {
-    addCards(obj.board);
-    updateScores(obj.players);
-    me = obj.you;
-    obj.msgs.forEach(message);
+    cards = [];
+    $('#board tr').remove();
+    if (obj.board) addCards(obj.board);
+    if (obj.players) updateScores(obj.players);
+    if (obj.you) me = obj.you;
+    if (obj.msgs && !lastMsg) obj.msgs.forEach(message);
     $('#me-indicator').prependTo($('#p' + me));
-    $('#hint').css('display', 'block');
+    $('#hint').show();
+    fadeOutAllLastSets();
     return;
   }
   if (obj.action === 'taken') {
@@ -279,17 +303,32 @@ socket.on('message', function(obj){
     message(obj);
     return;
   }
-
+  
   if (obj.action === 'win') {
     hideAllPuzzled();
-    $('#board').fadeOut('slow', function () {
-      $('#board').html('<h1>Player ' + (obj.player + 1)+ ' wins!</h1>');
+    $('#board').fadeOut(650, function () {
+      $('#board tr').remove();
+      $('#board').append('<tr><td class="announcement"><h1>Player ' +
+        (obj.player + 1)+ ' wins!</h1></td></tr>' +
+        '<tr><td><span id="timer">15</span> seconds until the next round</td></tr>');
+      resetTimer(15);
       $('#board').show();
+      $('#hint').hide();
+      message({event: true, msg: 'Player ' + (obj.player + 1)+ ' has won this round'});
     });
   }
 });
 
-socket.on('connect', function() {
+function resetTimer(seconds) {
+  $('#timer').text('' + seconds);
+  if (seconds >= 0)
+    setTimeout(function() {resetTimer(seconds-1);}, 1000);
+  else
+    initGame();
+}
+
+function initGame() {
+  log('initting game');
   var init = {action: 'init'};
   var hash = window.location.hash;
   if (hash) {
@@ -297,17 +336,21 @@ socket.on('connect', function() {
     init['game'] = hash;
   }
   socket.send(init);
+}
+
+socket.on('connect', initGame);
+
+socket.on('disconnect', function() {
+  message({event:true, msg: 'Disconnected'})
 });
-
-$(document).bind('mousedown', function(event) {
-  var target = $(event.target)[0];
-  var idx = cards.map( function(v) { return v[0]; } ).indexOf(target);
-
-  if (idx != -1) {
-    select(idx);
-  } else {
-    clearSelected();
-  }
+socket.on('reconnect', function() {
+  message({event:true, msg: 'Reconnected to server'})
+});
+socket.on('reconnecting', function(nextRetry) {
+  message({event:true, msg: ('Attempting to re-connect to the server, next attempt in ' + nextRetry + 'ms')})
+});
+socket.on('reconnect_failed', function() {
+  message({event:true, msg: 'Reconnect to server FAILED.'})
 });
 
 jQuery.extend( jQuery.easing,
@@ -329,7 +372,3 @@ jQuery.extend( jQuery.easing,
 function log(m) {
   if (typeof console !== 'undefined') console.log(m);
 }
-/*socket.on('disconnect', function(){ message({ message: ['System', 'Disconnected']})});
-socket.on('reconnect', function(){ message({ message: ['System', 'Reconnected to server']})});
-socket.on('reconnecting', function( nextRetry ){ message({ message: ['System', 'Attempting to re-connect to the server, next attempt in ' + nextRetry + 'ms']})});
-socket.on('reconnect_failed', function(){ message({ message: ['System', 'Reconnected to server FAILED.']})});*/

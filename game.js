@@ -1,17 +1,26 @@
 module.exports = function Game(hash, client) {
-  this.deck = [];
-  this.board = [];
+
   this.players = [new Player(client), null, null, null, null, null, null, null];
   this.hash = hash;
   this.puzzled = [];
   this.messages = [];
-  for (var i = 0; i < 81; i++) {
-    this.deck.push( new Card(i) );
+  
+  this.reset = function() {
+    this.deck = [];
+    this.board = [];
+    this.players.forEach(function(player) {
+      if (player !== null) player.score = 0;
+    });
+    for (var i = 0; i < 81; i++) {
+      this.deck.push( new Card(i) );
+    }
+    shuffle(this.deck);
+    for (var i = 0; i < 12; i++) {
+      this.board.push(this.deck.pop());
+    }    
   }
-  shuffle(this.deck);
-  for (var i = 0; i < 12; i++) {
-    this.board.push(this.deck.pop());
-  }
+  
+  this.reset();
 
   this.getActivePlayers = function() {
     return this.players.filter( function(player) { return player !== null; });
@@ -48,7 +57,7 @@ module.exports = function Game(hash, client) {
   this.registerClient = function(client) {
     if (this.numPlayers() >= this.players.length) return false;
     if (this.players.every( function(player) {
-      return (player === null || player.client.sessionId !== client.sesionId);
+      return (player === null || player.client.sessionId !== client.sessionId);
     })) {
       var playerIdx = this.firstAvailablePlayerSlot();
       this.broadcast({action: 'join', player: playerIdx});
@@ -148,6 +157,7 @@ module.exports = function Game(hash, client) {
           };
           var that = this;
           setTimeout(function() { that.broadcast(message); }, 2000);
+          this.reset();
         }
       } else {
         console.log('take set failed');

@@ -9,8 +9,9 @@
     <script src="/ie.js"></script>
     <![endif]-->
     <script src="/_socket.io.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="/jquery.transform.lite.js"></script>
+    <script src="/jquery.ba-bbq.min.js"></script>
     <script src="client.js"></script>
   </head>
   <body>
@@ -60,12 +61,14 @@
         </ul>
         <span id="me-indicator">&raquo;</span>
       </div>
-      <table id="board">
-        <tfoot><tr><td colspan="3">
-          <a href="" id="hint" class="button"><span>I don't see a set!</span></a>
-        </td></tr></tfoot>
-      </table>      
+      <div id="boardwrap">
+        <table id="board"></table>      
+        <a href="" id="hint" class="button"><span>I don't see a set!</span></a>
+      </div>
       <ul id="chat">
+        <li>
+          <div class="message event">Chat in realtime while you play.</div>
+        </li>
       </ul>
     </div>
     <div id="footer">

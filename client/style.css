@@ -31,7 +31,7 @@ h1 {
   margin: 50px auto;
   position: relative;
   width: 100%;
-  min-width: 880px;
+  min-width: 900px;
 }
 #scoreboard {
   width: 190px;
@@ -81,7 +81,7 @@ h1 {
   right: 0px;
 }
 #chat {
-  margin-left: 570px;
+  margin-left: 580px;
   margin-right: 25px;
   margin-bottom: 110px;
 }
@@ -96,7 +96,7 @@ h1 {
     }
     #chat li .message {
       margin-left: 65px;
-      padding: 10px;
+      padding: 5px 10px;
       background: #fff;
       margin-bottom: 5px;
       box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
@@ -109,7 +109,9 @@ h1 {
       border-radius: 0 0 10px 0;
     }
     #chat li .event {
-      font-style:italic;
+      margin-left: 0px;
+      text-align: right;
+      font-style: italic;
     }
 #footer {
   position: fixed;
@@ -147,17 +149,23 @@ h1 {
       margin-left: -170px;
       text-align: right;
     }
-#board {
+#boardwrap {
   width: 330px;
   position: fixed;
   left: 230px;
   margin-top: -4px;
+}
+#board {
+  margin-bottom: 10px;
 }
   #board td {
     width: 110px;
     height: 70px;
     position: relative;
     top: 0;
+  }
+  #board td.announcement {
+    width: 100%;
   }
 .cardwrap {
   position: relative;
@@ -181,6 +189,11 @@ h1 {
 }
 .hint {
   background: #BDF271
+}
+#timer {
+  font-size: 1.5em;
+  font-weight: bold;
+  text-shadow: 0px 2px 3px #555;
 }
 #me-indicator {
   font-size: 0.8em;

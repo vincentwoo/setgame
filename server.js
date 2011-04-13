@@ -38,6 +38,7 @@ io.on('connection', function(client){
         do { hash = randString(6); } while (hash in games);
         game = games[hash] = clients[client.sessionId] = new Game(hash, client);
         client.send({action: 'setHash', hash: hash});
+        return;
       }
     }
     game.message(client, message);
