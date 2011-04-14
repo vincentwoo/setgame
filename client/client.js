@@ -191,10 +191,10 @@ socket.on('message', function(obj){
   if (obj.action === 'init') {
     cards = [];
     $('#board tr').remove();
-    if (obj.board) addCards(obj.board);
-    if (obj.players) updateScores(obj.players);
-    if (obj.you) me = obj.you;
-    if (obj.msgs && !lastMsg) obj.msgs.forEach(message);
+    if ('board' in obj) addCards(obj.board);
+    if ('players' in obj) updateScores(obj.players);
+    if ('you' in obj) me = obj.you;
+    if ('msgs' in obj && !lastMsg) obj.msgs.forEach(message);
     $('#me-indicator').prependTo($('#p' + me));
     $('#hint').show();
     fadeOutAllLastSets();
