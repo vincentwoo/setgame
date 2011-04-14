@@ -5,12 +5,35 @@ var http = require('http')
   , fs = require('fs')
   , io = require('socket.io')
   , connect = require('connect')
+  , assetManager = require('connect-assetmanager')
   , sys = require(process.binding('natives').util ? 'util' : 'sys')
   , Game = require('game')
   , server;
 
+var assetManagerGroups = {
+  js: {
+      route: /\/static\/client\.js/
+    , path: __dirname + '/client/'
+    , dataType: 'javascript'
+    , files: [
+        '_socket.io.js'
+      , 'http://code.jquery.com/jquery-latest.js'
+      , /jquery.*/
+      , 'ie.js'
+      , 'client.js'
+      ]
+  },
+  css: {
+      route: /\/static\/style\.css/
+    , path: __dirname + '/client/'
+    , dataType: 'css'
+    , files: ['style.css']
+  }
+}
+  
 server = connect.createServer(
     connect.logger()
+  , assetManager(assetManagerGroups)
   , connect.static(__dirname + '/client', { maxAge: 86400000 })
 );
 
