@@ -41,9 +41,11 @@ $(document.body).ready( function() {
   });
 
   $(document).bind('mouseup', function(event) {
-    setTimeout(function() {
-      $('#input').focus(); 
-    }, 50);  
+    if (getSelText() == '') {
+      setTimeout(function() {
+        $('#input').focus(); 
+      }, 50);  
+    }
   });
 });
 
@@ -368,6 +370,18 @@ jQuery.extend( jQuery.easing,
     return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
   }
 });
+
+function getSelText() {
+  var txt = '';
+  if (window.getSelection) {
+    txt = window.getSelection();
+  } else if (document.getSelection) {
+    txt = document.getSelection();
+  } else if (document.selection) {
+    txt = document.selection.createRange().text;
+  }
+  return txt;
+}
 
 function log(m) {
   if (typeof console !== 'undefined') console.log(m);
