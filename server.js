@@ -30,10 +30,19 @@ var assetManagerGroups = {
     , files: ['style.css']
   }
 }
-  
+
+function niceify(req, res, next){
+    if (/^\/game/.exec(req.url)) {
+      console.log (req.url);
+      req.url = '/game.html';
+    }
+    next();
+}
+
 server = connect.createServer(
     connect.logger()
   , assetManager(assetManagerGroups)
+  , niceify
   , connect.static(__dirname + '/client', { maxAge: 86400000 })
 );
 

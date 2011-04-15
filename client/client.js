@@ -1,4 +1,4 @@
-var socketPort = window.location.host.indexOf('setgame') != -1 ? 9980 : 80
+var socketPort = window.location.host.indexOf('setgame') !== -1 ? 9980 : 80
   , socket = new io.Socket(null, {
         port: 80
       , transports: ['websocket', 'xhr-polling', 'jsonp-polling']
@@ -144,7 +144,7 @@ function showPuzzled(player) {
 
 function hideAllPuzzled() {
   $('.puzzled').fadeOut(600);
-  setTimeout(function() { $('#hint').show(); }, 610);
+  setTimeout(function() { $('#hint').slideDown(); }, 610);
 }
 
 function input(e) {
@@ -168,7 +168,6 @@ function message(obj) {
   {
     skipName = true;
     var last = $('#chat li:last .message');
-    last.css('margin-bottom', 0);
     last.removeClass('cornered');
   }
   var m = $('<li>' +
@@ -176,7 +175,7 @@ function message(obj) {
       '' :
       '<div class="name" style="color:' + colors[obj.player] + 
       '">Player ' +(obj.player+1) + '</div>') +
-    '<div class="message cornered' + (obj.event ? ' event' : '') + '">' +
+    '<div class="message cornered ' + (obj.event ? 'event' : 'player-message') + '">' +
     obj.msg + '</div></li>'
   );
   lastMsg = {player: obj.player, event: obj.event};
@@ -196,7 +195,7 @@ socket.on('message', function(obj){
     if ('you' in obj) me = obj.you;
     if ('msgs' in obj && !lastMsg) obj.msgs.forEach(message);
     $('#me-indicator').prependTo($('#p' + me));
-    $('#hint').show();
+    $('#hint').slideDown();
     fadeOutAllLastSets();
     return;
   }

@@ -5,70 +5,31 @@
     <title>set - the game</title>
     <link rel="stylesheet" href="/static/style.css" />
     <link rel="shortcut icon" href="http://vincentwoo.com/favicon.ico" />
-    <script src="/static/client.js"></script>
   </head>
   <body>
-    <div id="wrap">
-      <div id="scoreboard">
-        <ul>
-        <li id="p0">
-          <h2>0</h2>
-          <h3>Player 1</h3>
-          <span class="puzzled">?</span>
-        </li>
-        <li id="p1">
-          <h2>0</h2> 
-          <h3>Player 2</h3>
-          <span class="puzzled">?</span>
-        </li>
-        <li id="p2">
-          <h2>0</h2>
-          <h3>Player 3</h3>
-          <span class="puzzled">?</span>
-        </li>
-        <li id="p3">
-          <h2>0</h2>
-          <h3>Player 4</h3>
-          <span class="puzzled">?</span>
-        </li>
-        <li id="p4">
-          <h2>0</h2>
-          <h3>Player 5</h3>
-          <span class="puzzled">?</span>
-        </li>
-        <li id="p5">
-          <h2>0</h2>
-          <h3>Player 6</h3>
-          <span class="puzzled">?</span>
-        </li>
-        <li id="p6">
-          <h2>0</h2>
-          <h3>Player 7</h3>
-          <span class="puzzled">?</span>
-        </li>
-        <li id="p7">
-          <h2>0</h2>
-          <h3>Player 8</h3>
-          <span class="puzzled">?</span>
-        </li>
-        </ul>
-        <span id="me-indicator">&raquo;</span>
-      </div>
-      <div id="boardwrap">
-        <table id="board"></table>      
-        <a href="" id="hint" class="button"><span>I don't see a set!</span></a>
-      </div>
-      <ul id="chat">
-        <li>
-          <div class="message event">Chat in realtime while you play.</div>
-        </li>
-      </ul>
-    </div>
-    <div id="footer">
-      <form id="form">
-        <label for="input">Type here to chat:</label>
-        <textarea wrap="hard" autocomplete="off" spellcheck="false" id="input"></textarea>
-      </form>
-    </div>
+  <div id="wrap">
+    <ul style="width: 225px; float: left; position: fixed">
+      <li class="message cornered">
+        <a href="/game/">join a public game</a>
+      </li>
+      <li class="message cornered">
+        <a href="/game/">create a private session</a>
+      </li>
+    </ul>
+    <ul style="margin:0 200px 0 250px;">
+      <li class="message cornered">
+      Set is a game about pattern matching.
+      </li>
+      <li class="message cornered">
+      Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus ullamcorper felis ac mi vulputate luctus. Quisque lectus libero, sollicitudin et condimentum vitae, malesuada vel metus. Donec nulla velit, tempus at semper sit amet, sodales in libero. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque mattis tellus ac arcu adipiscing ut posuere metus ultrices. Donec feugiat ultricies ornare. Proin ac ante nisl. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nam lacinia nisi vehicula turpis pulvinar in faucibus elit condimentum. Vestibulum sollicitudin leo quis nisi consequat sed imperdiet orci pharetra. Etiam eget luctus purus. Nunc feugiat libero non nibh laoreet eget commodo lorem interdum. Vivamus semper enim eu augue posuere sed sagittis enim porttitor. Aenean iaculis, metus a auctor ultrices, turpis odio faucibus est, ut molestie lorem sapien et lorem. Nulla dapibus, lectus non porttitor tristique, lectus orci pulvinar urna, vitae semper lectus nisl a magna. Vestibulum tempor urna ut nulla bibendum faucibus. Praesent eu volutpat massa. 
+      </li>
+      <li class="message cornered">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempor molestie convallis. Sed in dui ante. Fusce mollis, lorem vitae laoreet mollis, ligula ipsum congue elit, vitae ultricies sem erat id nunc. Aenean a velit eget augue rhoncus elementum nec vitae nunc. Donec eget arcu eros. Nunc viverra cursus laoreet. Maecenas ac velit vel neque tincidunt aliquet. Vestibulum et risus eu sem scelerisque vestibulum. Nullam imperdiet eleifend nulla et ornare. Nam aliquam sapien quis neque laoreet ac aliquet sapien imperdiet. Donec iaculis, nisi ac pellentesque ultrices, turpis dui cursus nisl, id varius quam dui imperdiet ante.
+      </li>
+      <li class="message cornered">
+      Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus ullamcorper felis ac mi vulputate luctus. Quisque lectus libero, sollicitudin et condimentum vitae, malesuada vel metus. Donec nulla velit, tempus at semper sit amet, sodales in libero. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque mattis tellus ac arcu adipiscing ut posuere metus ultrices. Donec feugiat ultricies ornare. Proin ac ante nisl. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nam lacinia nisi vehicula turpis pulvinar in faucibus elit condimentum. Vestibulum sollicitudin leo quis nisi consequat sed imperdiet orci pharetra. Etiam eget luctus purus. Nunc feugiat libero non nibh laoreet eget commodo lorem interdum. Vivamus semper enim eu augue posuere sed sagittis enim porttitor. Aenean iaculis, metus a auctor ultrices, turpis odio faucibus est, ut molestie lorem sapien et lorem. Nulla dapibus, lectus non porttitor tristique, lectus orci pulvinar urna, vitae semper lectus nisl a magna. Vestibulum tempor urna ut nulla bibendum faucibus. Praesent eu volutpat massa. 
+      </li>
+    </ul>
+  </div>
   </body>
 </html>

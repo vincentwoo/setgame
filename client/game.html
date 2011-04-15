@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>set - the game</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="shortcut icon" href="http://vincentwoo.com/favicon.ico" />
+    <script src="/static/client.js"></script>
+  </head>
+  <body>
+    <div id="wrap">
+      <div id="scoreboard">
+        <ul>
+        <li id="p0">
+          <h2>0</h2>
+          <h3>Player 1</h3>
+          <span class="puzzled">?</span>
+        </li>
+        <li id="p1">
+          <h2>0</h2> 
+          <h3>Player 2</h3>
+          <span class="puzzled">?</span>
+        </li>
+        <li id="p2">
+          <h2>0</h2>
+          <h3>Player 3</h3>
+          <span class="puzzled">?</span>
+        </li>
+        <li id="p3">
+          <h2>0</h2>
+          <h3>Player 4</h3>
+          <span class="puzzled">?</span>
+        </li>
+        <li id="p4">
+          <h2>0</h2>
+          <h3>Player 5</h3>
+          <span class="puzzled">?</span>
+        </li>
+        <li id="p5">
+          <h2>0</h2>
+          <h3>Player 6</h3>
+          <span class="puzzled">?</span>
+        </li>
+        <li id="p6">
+          <h2>0</h2>
+          <h3>Player 7</h3>
+          <span class="puzzled">?</span>
+        </li>
+        <li id="p7">
+          <h2>0</h2>
+          <h3>Player 8</h3>
+          <span class="puzzled">?</span>
+        </li>
+        </ul>
+        <span id="me-indicator">&raquo;</span>
+      </div>
+      <div id="boardwrap">
+        <table id="board"></table>      
+        <ul>
+          <li id="hint" class="message cornered">
+            <a>Click me if you need a hint</a>
+          </li>
+          <li class="message cornered">
+            Share this URL to invite others to join:
+            <pre>http://localhost/game/#!/A77DRT</pre>
+          </li>
+        </ul>
+      </div>
+      <ul id="chat">
+        <li>
+          <div class="message event cornered">Chat in realtime while you play.</div>
+        </li>
+      </ul>
+    </div>
+    <div id="footer">
+      <form id="form">
+        <label for="input">Type here to chat:</label>
+        <textarea wrap="hard" autocomplete="off" spellcheck="false" id="input"></textarea>
+      </form>
+    </div>
+  </body>
+</html>
