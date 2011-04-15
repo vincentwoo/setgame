@@ -16,7 +16,6 @@ var assetManagerGroups = {
     , path: __dirname + '/client/'
     , dataType: 'javascript'
     , files: [
-        '_socket.io.js'
       , 'http://code.jquery.com/jquery-latest.js'
       , /jquery.*/
       , 'ie.js'
@@ -48,12 +47,7 @@ server = connect.createServer(
 
 server.listen(80);
 
-var io = io.listen(server, {
-      flashPolicyServer: false
-    , transports: ['websocket', 'flashsocket'
-                , 'htmlfile'
-                , 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
-    })
+var io = io.listen(server)
   , games = {}
   , clients = {};
 

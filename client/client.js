@@ -1,11 +1,6 @@
-var socketPort = window.location.host.indexOf('setgame') !== -1 ? 9980 : 80
-  , socket = new io.Socket(null, {
+var socket = new io.Socket(null, {
         port: 80
-      , transports: ['websocket', 'xhr-polling', 'jsonp-polling']
       , rememberTransport: false
-      , transportOptions: {
-            websocket: { port: socketPort }
-        }
   })
   , selected = []
   , cards = []
