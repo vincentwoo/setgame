@@ -10,7 +10,7 @@ var socket = new io.Socket(null, {
   , colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728",
               "#9467bd", "#e377c2", "#bcbd22", "#17becf"]
   , lastMsg;
-  
+
 $(document.body).ready( function() {
   setTimeout(function() {
     socket.connect();
@@ -19,11 +19,11 @@ $(document.body).ready( function() {
   $('#input').keypress(input);
   $('#input').focus();
   $(window).hashchange(initGame);
-  
+
   $(document).bind('mousedown', function(event) {
     var target = $(event.target)
       , id = target.attr('id');
-    
+
     if (id === 'hint' |
         target.parent().attr('id') === 'hint'  ||
         id === 'input')
@@ -37,11 +37,15 @@ $(document.body).ready( function() {
   });
 
   $(document).bind('mouseup', function(event) {
-    if (getSelText() == '') {
-      setTimeout(function() {
-        $('#input').focus(); 
-      }, 50);  
-    }
+    setTimeout(function() {
+      if (getSelText() == '') {
+        $('#input').focus();
+      }
+    }, 50);
+  });
+
+  $('#share').bind('click', function(event) {
+    $('#share input')[0].select();
   });
 });
 
@@ -169,7 +173,7 @@ function message(obj) {
   var m = $('<li>' +
     (skipName ?
       '' :
-      '<div class="name" style="color:' + colors[obj.player] + 
+      '<div class="name" style="color:' + colors[obj.player] +
       '">Player ' +(obj.player+1) + '</div>') +
     '<div class="message cornered ' + (obj.event ? 'event' : 'player-message') + '">' +
     obj.msg + '</div></li>'
@@ -295,12 +299,12 @@ socket.on('message', function(obj){
     cards[obj.card].parent().addClass('hint');
     return;
   }
-  
+
   if (obj.action === 'msg') {
     message(obj);
     return;
   }
-  
+
   if (obj.action === 'win') {
     hideAllPuzzled();
     $('#board').fadeOut(650, function () {
@@ -331,8 +335,8 @@ function initGame() {
   if (hash) {
     hash = hash.substring(hash.indexOf('#!/') + 3);
     init['game'] = hash;
-    $('#share pre').text(window.location.href.substring(7));
-    
+    $('#share input').attr('value', window.location.href);
+
   }
   socket.send(init);
 }
@@ -378,6 +382,25 @@ function getSelText() {
     txt = document.selection.createRange().text;
   }
   return txt;
+}
+
+jQuery.fn.selText = function() {
+    var obj = this[0];
+    if ($.browser.msie) {
+        var range = obj.offsetParent.createTextRange();
+        range.moveToElementText(obj);
+        range.select();
+    } else if ($.browser.mozilla || $.browser.opera) {
+        var selection = obj.ownerDocument.defaultView.getSelection();
+        var range = obj.ownerDocument.createRange();
+        range.selectNodeContents(obj);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    } else if ($.browser.safari) {
+        var selection = obj.ownerDocument.defaultView.getSelection();
+        selection.setBaseAndExtent(obj, 0, obj, 1);
+    }
+    return this;
 }
 
 function log(m) {

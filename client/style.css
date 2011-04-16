@@ -216,7 +216,10 @@ h1 {
 #share {
   display: none;
 }
-pre { font-family: 'Courier', monospace }
+#share input {
+  width: 100%;
+  font-family: 'Courier', monospace
+}
 li a { width: 100%; height: 100%; display:block }
 li a:hover { background: #eee }
 .centered { margin: 0 auto; }
