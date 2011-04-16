@@ -1,6 +1,7 @@
 var socket = new io.Socket(null, {
         port: 80
       , rememberTransport: false
+      , transports: ['websocket', 'flashsocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
   })
   , selected = []
   , cards = []
@@ -190,7 +191,7 @@ socket.on('message', function(obj){
     if ('you' in obj) me = obj.you;
     if ('msgs' in obj && !lastMsg) obj.msgs.forEach(message);
     $('#me-indicator').prependTo($('#p' + me));
-    $('#hint').slideDown();
+    $('#hint, #share').slideDown();
     fadeOutAllLastSets();
     return;
   }
@@ -330,6 +331,8 @@ function initGame() {
   if (hash) {
     hash = hash.substring(hash.indexOf('#!/') + 3);
     init['game'] = hash;
+    $('#share pre').text(window.location.href.substring(7));
+    
   }
   socket.send(init);
 }

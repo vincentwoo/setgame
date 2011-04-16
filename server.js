@@ -31,11 +31,19 @@ var assetManagerGroups = {
 }
 
 function niceify(req, res, next){
-    if (/^\/game/.exec(req.url)) {
-      console.log (req.url);
-      req.url = '/game.html';
-    }
-    next();
+  if (/^www\./.exec(req.headers.host)) {
+    var host = req.headers.host.substring(req.headers.host.indexOf('.') + 1)
+      , url  = 'http://' + host + req.url
+    res.writeHead(302, {
+      'Location': url
+    });
+    res.end();
+    return;
+  }
+  if (/^\/game/.exec(req.url)) {
+    req.url = '/game.html';
+  }
+  next();
 }
 
 server = connect.createServer(

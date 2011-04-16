@@ -213,6 +213,10 @@ h1 {
   display: none;
   cursor: pointer;
 }
+#share {
+  display: none;
+}
+pre { font-family: 'Courier', monospace }
 li a { width: 100%; height: 100%; display:block }
 li a:hover { background: #eee }
 .centered { margin: 0 auto; }
