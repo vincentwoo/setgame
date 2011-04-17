@@ -15,6 +15,7 @@
   "dependencies": {
     "socket.io" : "*",
     "connect"   : "*",
-    "connect-assetmanager" : "*"
+    "connect-assetmanager" : "*",
+    "cookies" : "*"
   }
 }
