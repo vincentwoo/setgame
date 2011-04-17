@@ -5,6 +5,7 @@ var http = require('http')
   , fs = require('fs')
   , io = require('socket.io')
   , connect = require('connect')
+  , Cookies = require('cookies')
   , assetManager = require('connect-assetmanager')
   , sys = require(process.binding('natives').util ? 'util' : 'sys')
   , Game = require('game')
@@ -18,7 +19,7 @@ var assetManagerGroups = {
     , files: [
       , 'http://code.jquery.com/jquery-latest.js'
       , /jquery.*/
-      , 'ie.js'
+      , 'util.js'
       , 'client.js'
       ]
   },
@@ -30,7 +31,7 @@ var assetManagerGroups = {
   }
 }
 
-function niceify(req, res, next){
+function niceifyURL(req, res, next){
   if (/^www\./.exec(req.headers.host)) {
     var host = req.headers.host.substring(req.headers.host.indexOf('.') + 1)
       , url  = 'http://' + host + req.url
@@ -46,11 +47,26 @@ function niceify(req, res, next){
   next();
 }
 
+function sessionHandler(req, res, next) {
+  var cookies = new Cookies(req, res);
+  if (!cookies.get('sess')) {
+    cookies.set('sess', randString(10), {httpOnly: false});
+  }
+  next();
+}
+
+function disableCache(req, res, next) {
+  if (req.url !== '/game.html') return;
+   res.setHeader('Cache-Control', 'public, max-age=0');
+}
+
 server = connect.createServer(
     connect.logger()
   , assetManager(assetManagerGroups)
-  , niceify
+  , niceifyURL
+  , sessionHandler
   , connect.static(__dirname + '/client', { maxAge: 86400000 })
+  , disableCache
 );
 
 server.listen(80);
@@ -60,22 +76,23 @@ var io = io.listen(server)
   , clients = {};
 
 io.on('connection', function(client){
-  var game;
+  var game
+    , dcTimeout;
   client.on('message', function(message){
     console.log(message);
     if (message.action === 'init') {
       if (message.game && message.game in games) {
         game = clients[client.sessionId] = games[message.game];
-        game.registerClient(client);
+        game.registerClient(client, message.sess);
       } else {
         var hash;
         do { hash = randString(6); } while (hash in games);
-        game = games[hash] = clients[client.sessionId] = new Game(hash, client);
+        game = games[hash] = clients[client.sessionId] = new Game(hash, client, message.sess);
         client.send({action: 'setHash', hash: hash});
         return;
       }
     }
-    game.message(client, message);
+    if (game !== null) game.message(client, message);
   });
 
   client.on('disconnect', function(){
@@ -84,6 +101,7 @@ io.on('connection', function(client){
 
     var hash = game.hash;
     game.unregisterClient(client, function gameOver() {
+      console.log('gameover called');
       delete games[hash];
     });
 

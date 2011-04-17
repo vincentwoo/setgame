@@ -277,9 +277,12 @@ socket.on('message', function(obj){
     updateScores(update);
     return;
   }
+  if (obj.action === 'rejoin') {
+    $('#p' + obj.player + ' .offline').fadeOut(1000);
+    return;
+  }
   if (obj.action === 'leave') {
-    $('#p' + obj.player).fadeOut();
-    fadeOutLastSet(obj.player);
+    $('#p' + obj.player + ' .offline').fadeIn(1000);
     return;
   }
 
@@ -311,8 +314,8 @@ socket.on('message', function(obj){
       $('#board tr').remove();
       $('#board').append('<tr><td class="announcement"><h1>Player ' +
         (obj.player + 1)+ ' wins!</h1></td></tr>' +
-        '<tr><td><span id="timer">15</span> seconds until the next round</td></tr>');
-      resetTimer(15);
+        '<tr><td><span id="timer">30</span> seconds until the next round</td></tr>');
+      resetTimer(30);
       $('#board').show();
       $('#hint').hide();
       message({event: true, msg: 'Player ' + (obj.player + 1)+ ' has won this round'});
@@ -322,7 +325,7 @@ socket.on('message', function(obj){
 
 function resetTimer(seconds) {
   $('#timer').text('' + seconds);
-  if (seconds >= 0)
+  if (seconds > 0)
     setTimeout(function() {resetTimer(seconds-1);}, 1000);
   else
     initGame();
@@ -330,13 +333,13 @@ function resetTimer(seconds) {
 
 function initGame() {
   log('initting game');
-  var init = {action: 'init'};
-  var hash = window.location.hash;
+  log('c: ' + getCookie('sess'))
+  var init = {action: 'init', sess: getCookie('sess')}
+    , hash = window.location.hash;
   if (hash) {
     hash = hash.substring(hash.indexOf('#!/') + 3);
-    init['game'] = hash;
+    init.game = hash;
     $('#share input').attr('value', window.location.href);
-
   }
   socket.send(init);
 }
@@ -344,7 +347,7 @@ function initGame() {
 socket.on('connect', initGame);
 
 socket.on('disconnect', function() {
-  message({event:true, msg: 'Disconnected'})
+  message({event:true, msg: 'You have been disconnected'})
 });
 socket.on('reconnect', function() {
   message({event:true, msg: 'Reconnected to server'})
@@ -355,54 +358,3 @@ socket.on('reconnecting', function(nextRetry) {
 socket.on('reconnect_failed', function() {
   message({event:true, msg: 'Reconnect to server FAILED.'})
 });
-
-jQuery.extend( jQuery.easing,
-{
-  def: 'easeOutQuad',
-  swing: function (x, t, b, c, d) {
-    //alert(jQuery.easing.default);
-    return jQuery.easing[jQuery.easing.def](x, t, b, c, d);
-  },
-  easeOutQuad: function (x, t, b, c, d) {
-    return -c *(t/=d)*(t-2) + b;
-  },
-  easeOutBack: function (x, t, b, c, d, s) {
-    if (s == undefined) s = 1.70158;
-    return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
-  }
-});
-
-function getSelText() {
-  var txt = '';
-  if (window.getSelection) {
-    txt = window.getSelection();
-  } else if (document.getSelection) {
-    txt = document.getSelection();
-  } else if (document.selection) {
-    txt = document.selection.createRange().text;
-  }
-  return txt;
-}
-
-jQuery.fn.selText = function() {
-    var obj = this[0];
-    if ($.browser.msie) {
-        var range = obj.offsetParent.createTextRange();
-        range.moveToElementText(obj);
-        range.select();
-    } else if ($.browser.mozilla || $.browser.opera) {
-        var selection = obj.ownerDocument.defaultView.getSelection();
-        var range = obj.ownerDocument.createRange();
-        range.selectNodeContents(obj);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    } else if ($.browser.safari) {
-        var selection = obj.ownerDocument.defaultView.getSelection();
-        selection.setBaseAndExtent(obj, 0, obj, 1);
-    }
-    return this;
-}
-
-function log(m) {
-  if (typeof console !== 'undefined') console.log(m);
-}

@@ -89,6 +89,24 @@ h1 {
   top: 7px;
   right: 0px;
 }
+.offline {
+  display: none;
+  font-size: 2em;
+  font-weight: bold;
+  color: #FFF;
+  background: #333;
+  position: absolute;
+  text-align: left;
+  padding: 15px 0px 0px 20px;
+  top: 0px;
+  left: 0px;
+  width: 170px;
+  height: 40px;;
+  -moz-opacity: .70;
+  filter:alpha(opacity=70);
+  opacity: .70;
+  z-index: 20;
+}
 #chat {
   margin-left: 580px;
   margin-right: 25px;

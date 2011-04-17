@@ -1,10 +1,10 @@
-module.exports = function Game(hash, client) {
+module.exports = function Game(hash, client, sess) {
 
-  this.players = [new Player(client), null, null, null, null, null, null, null];
+  this.players = [new Player(client, sess), null, null, null, null, null, null, null];
   this.hash = hash;
   this.puzzled = [];
   this.messages = [];
-  
+
   this.reset = function() {
     this.deck = [];
     this.board = [];
@@ -17,13 +17,15 @@ module.exports = function Game(hash, client) {
     shuffle(this.deck);
     for (var i = 0; i < 12; i++) {
       this.board.push(this.deck.pop());
-    }    
+    }
   }
-  
+
   this.reset();
 
   this.getActivePlayers = function() {
-    return this.players.filter( function(player) { return player !== null; });
+    return this.players.filter( function(player) {
+      return player !== null && player.online;
+    });
   }
 
   this.numPlayers = function() {
@@ -54,28 +56,39 @@ module.exports = function Game(hash, client) {
     return ret;
   }
 
-  this.registerClient = function(client) {
+  this.registerClient = function(client, sess) {
     if (this.numPlayers() >= this.players.length) return false;
-    if (this.players.every( function(player) {
-      return (player === null || player.client.sessionId !== client.sessionId);
-    })) {
-      var playerIdx = this.firstAvailablePlayerSlot();
-      this.broadcast({action: 'join', player: playerIdx});
-      this.sendMsg({event: true, msg: 'Player ' + (playerIdx + 1) + ' has joined'});
-      this.players[playerIdx] = new Player(client);
+
+    for (var i = 0; i < this.players.length; i++) {
+      var player = this.players[i];
+      if (player === null) continue;
+      if (player.client.sessionId === client.sessionId || player.sess === sess) {
+        player.online = true;
+        player.client = client;
+        player.sess = sess;
+        this.broadcast({action: 'rejoin', player: i});
+        this.sendMsg({event: true, msg: 'Player ' + (i + 1) + ' has reconnected.'});
+        return true;
+      }
     }
+
+    var playerIdx = this.firstAvailablePlayerSlot();
+    this.broadcast({action: 'join', player: playerIdx});
+    this.sendMsg({event: true, msg: 'Player ' + (playerIdx + 1) + ' has joined.'});
+    this.players[playerIdx] = new Player(client, sess);
     return true;
   }
 
   this.unregisterClient = function(client, gameOver) {
     var playerIdx = this.getPlayerIdx(client);
-    this.players[playerIdx] = null;
+    if (playerIdx === -1) return;
+    this.players[playerIdx].online = false;
     this.broadcast({action: 'leave', player: playerIdx});
-    this.sendMsg({event: true, msg: 'Player ' + (playerIdx + 1) + ' has left'});
+    this.sendMsg({event: true, msg: 'Player ' + (playerIdx + 1) + ' has disconnected.'});
     var that = this;
     setTimeout( function delayGameover() {
       if (that.numPlayers() === 0) gameOver();
-    }, 5000);
+    }, 60000);
   }
 
   this.broadcast = function(message) {
@@ -85,7 +98,7 @@ module.exports = function Game(hash, client) {
       if (player !== null) player.client.send(message);
     });
   }
-  
+
   this.sendMsg = function(msg) {
     this.messages.push(msg);
     if (this.messages.length > 15) this.messages.shift();
@@ -145,7 +158,7 @@ module.exports = function Game(hash, client) {
           , player: player
           , players: playerUpdate
         });
-        
+
         if (this.deck.length === 0 && !this.checkSetExistence()) {
           var message = {
               action: 'win'
@@ -164,7 +177,7 @@ module.exports = function Game(hash, client) {
       }
       return;
     }
-    
+
     if (message.action === 'hint') {
       if (this.puzzled.indexOf(player) != -1) return;
       this.puzzled.push(player);
@@ -195,14 +208,14 @@ module.exports = function Game(hash, client) {
       }, 1000);
       return;
     }
-    
+
     if (message.action === 'msg') {
       var msg = message.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
       this.sendMsg({ player: player, msg: msg });
       return;
     }
   }
-  
+
   this.checkSetExistence = function() {
     if (this.board.length < 3) return false;
     for (var i = 0; i < this.board.length - 2; i++) {
@@ -248,9 +261,11 @@ function Card(idx) {
   this.shading = idx % 3;
 }
 
-function Player(client) {
+function Player(client, sess) {
   this.client = client;
   this.score = 0;
+  this.sess = sess;
+  this.online = true;
 }
 
 //+ Jonas Raoni Soares Silva
