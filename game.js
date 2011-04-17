@@ -63,11 +63,11 @@ module.exports = function Game(hash, client, sess) {
       var player = this.players[i];
       if (player === null) continue;
       if (player.client.sessionId === client.sessionId || player.sess === sess) {
+        this.broadcast({action: 'rejoin', player: i});
+        this.sendMsg({event: true, msg: 'Player ' + (i + 1) + ' has reconnected.'});
         player.online = true;
         player.client = client;
         player.sess = sess;
-        this.broadcast({action: 'rejoin', player: i});
-        this.sendMsg({event: true, msg: 'Player ' + (i + 1) + ' has reconnected.'});
         return true;
       }
     }

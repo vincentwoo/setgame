@@ -48,9 +48,18 @@ function niceifyURL(req, res, next){
 }
 
 function sessionHandler(req, res, next) {
-  var cookies = new Cookies(req, res);
+  var cookies = new Cookies(req, res)
+    , expiry = new Date();
+  expiry.setHours(expiry.getHours() + 1);
   if (!cookies.get('sess')) {
-    cookies.set('sess', randString(10), {httpOnly: false});
+    cookies.set(
+      'sess'
+    , randString(10)
+    , {
+        httpOnly: false
+      , expires: expiry
+      }
+    );
   }
   next();
 }
