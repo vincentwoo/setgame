@@ -13,6 +13,7 @@ npm dependencies are
 
     connect
     socket.io
+    connect-assetmanager
 
 [1]: http://en.wikipedia.org/wiki/Set_(game)
 [2]: http://socket.io/
