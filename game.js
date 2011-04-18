@@ -36,6 +36,9 @@ module.exports = function Game(hash, client, sess) {
     for (var i = 0; i < this.players.length; i++) {
       if (this.players[i] === null) return i;
     }
+    for (var i = 0; i < this.players.length; i++) {
+      if (!this.players[i].online) return i;
+    }
     return 0;
   }
 
@@ -48,10 +51,16 @@ module.exports = function Game(hash, client, sess) {
     return -1;
   }
 
-  this.playerScores = function() {
+  this.playerData = function() {
     ret = {};
     for (var i = 0; i < this.players.length; i++) {
-      if (this.players[i] !== null) ret[i] = this.players[i].score;
+      var player = this.players[i];
+      if (player !== null) {
+        ret[i] = {
+          score: player.score
+        , online: player.online
+        };
+      }
     }
     return ret;
   }
@@ -63,8 +72,10 @@ module.exports = function Game(hash, client, sess) {
       var player = this.players[i];
       if (player === null) continue;
       if (player.client.sessionId === client.sessionId || player.sess === sess) {
-        this.broadcast({action: 'rejoin', player: i});
-        this.sendMsg({event: true, msg: 'Player ' + (i + 1) + ' has reconnected.'});
+        if (!player.online) {
+          this.broadcast({action: 'rejoin', player: i});
+          this.sendMsg({event: true, msg: 'Player ' + (i + 1) + ' has reconnected.'});
+        }
         player.online = true;
         player.client = client;
         player.sess = sess;
@@ -88,7 +99,7 @@ module.exports = function Game(hash, client, sess) {
     var that = this;
     setTimeout( function delayGameover() {
       if (that.numPlayers() === 0) gameOver();
-    }, 60000);
+    }, 3600000);
   }
 
   this.broadcast = function(message) {
@@ -116,7 +127,7 @@ module.exports = function Game(hash, client, sess) {
       client.send({
           action: 'init'
         , board: this.board
-        , players: this.playerScores()
+        , players: this.playerData()
         , you: player
         , msgs: this.messages
       });
@@ -150,7 +161,7 @@ module.exports = function Game(hash, client, sess) {
         }
         this.players[player].score += 3;
         var playerUpdate = {};
-        playerUpdate[player] = this.players[player].score;
+        playerUpdate[player] = {score: this.players[player].score};
         this.puzzled = [];
         this.broadcast({
             action: 'taken'

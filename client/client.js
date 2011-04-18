@@ -104,15 +104,15 @@ function checkSet() {
   }
 }
 
-function updateScores(scores) {
-  // hard coding in max players on the clientside
-  for (var i = 0; i < 8; i++) {
-    if (i in scores) {
-      var player = $('#p' + i);
-      var score = player.children('h2');
-      score.text('' + scores[i]);
-      player.slideDown();
+function updatePlayers(playerData) {
+  for (var i in playerData) {
+    var player = $('#p' + i);
+    if ('score' in playerData[i]) player.children('h2').text('' + playerData[i].score);
+    if ('online' in playerData[i]) {
+      if (playerData[i].online) player.children('.offline').fadeOut(1000);
+      else player.children('.offline').fadeIn(1000);
     }
+    player.slideDown();
   }
 }
 
@@ -131,11 +131,11 @@ function fadeOutAllLastSets() {
   }
 }
 
-function hint() {
+function hint(event) {
   socket.send({action: 'hint'});
   $('#hint').hide();
   showPuzzled(me);
-  return false;
+  event.preventDefault();
 }
 
 function showPuzzled(player) {
@@ -157,9 +157,7 @@ function input(e) {
       this.value += "\n";
     }
     e.preventDefault();
-    return false;
   }
-  return true;
 }
 
 function message(obj) {
@@ -191,7 +189,7 @@ socket.on('message', function(obj){
     cards = [];
     $('#board tr').remove();
     if ('board' in obj) addCards(obj.board);
-    if ('players' in obj) updateScores(obj.players);
+    if ('players' in obj) updatePlayers(obj.players);
     if ('you' in obj) me = obj.you;
     if ('msgs' in obj && !lastMsg) obj.msgs.forEach(message);
     $('#me-indicator').prependTo($('#p' + me));
@@ -262,7 +260,7 @@ socket.on('message', function(obj){
       })(j++);
       lastSets[obj.player].push(dupe);
     }
-    updateScores(obj.players);
+    updatePlayers(obj.players);
     hideAllPuzzled();
     $('.hint').removeClass('hint');
     return;
@@ -273,16 +271,20 @@ socket.on('message', function(obj){
   }
   if (obj.action === 'join') {
     var update = {};
-    update[obj.player] = 0;
-    updateScores(update);
+    update[obj.player] = {score: 0, online: true};
+    updatePlayers(update);
     return;
   }
   if (obj.action === 'rejoin') {
-    $('#p' + obj.player + ' .offline').fadeOut(1000);
+    var update = {};
+    update[obj.player] = {online: true};
+    updatePlayers(update);
     return;
   }
   if (obj.action === 'leave') {
-    $('#p' + obj.player + ' .offline').fadeIn(1000);
+    var update = {};
+    update[obj.player] = {online: false};
+    updatePlayers(update);
     return;
   }
 
@@ -332,9 +334,9 @@ function resetTimer(seconds) {
 }
 
 function initGame() {
-  log('initting game');
-  log('c: ' + getCookie('sess'))
-  var init = {action: 'init', sess: getCookie('sess')}
+  var sess = getCookie('sess') || randString(10);
+  setCookie('sess', sess, 1.0/24);
+  var init = {action: 'init', sess: sess}
     , hash = window.location.hash;
   if (hash) {
     hash = hash.substring(hash.indexOf('#!/') + 3);
