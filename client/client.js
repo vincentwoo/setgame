@@ -36,16 +36,18 @@ $(document.body).ready( function() {
     }
   });
 
+  $('#share').bind('mouseup', function(event) {
+    $('#share input')[0].select();
+    event.stopImmediatePropagation();
+    return false;
+  });
+  
   $(document).bind('mouseup', function(event) {
     setTimeout(function() {
       if (getSelText() == '') {
         $('#input').focus();
       }
     }, 50);
-  });
-
-  $('#share').bind('click', function(event) {
-    $('#share input')[0].select();
   });
 });
 
