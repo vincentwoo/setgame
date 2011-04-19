@@ -336,6 +336,7 @@ function resetTimer(seconds) {
 function initGame() {
   var sess = getCookie('sess') || randString(10);
   setCookie('sess', sess, 1.0/24);
+  log('initting s: ' + sess);
   var init = {action: 'init', sess: sess}
     , hash = window.location.hash;
   if (hash) {
