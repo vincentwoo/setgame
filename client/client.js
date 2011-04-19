@@ -7,8 +7,7 @@ var socket = new io.Socket(null, {
   , cards = []
   , lastSets = {}
   , me
-  , colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728",
-              "#9467bd", "#e377c2", "#bcbd22", "#17becf"]
+  , colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#e377c2", "#bcbd22", "#17becf"]
   , lastMsg;
 
 $(document.body).ready( function() {

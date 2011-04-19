@@ -1,9 +1,9 @@
-module.exports = function Game(hash, client, sess) {
-
-  this.players = [new Player(client, sess), null, null, null, null, null, null, null];
+module.exports = function Game(hash, minPlayers) {
+  this.players = [null, null, null, null, null, null, null, null];
   this.hash = hash;
   this.puzzled = [];
   this.messages = [];
+  this.started = !minPlayers;
 
   this.reset = function() {
     this.deck = [];
@@ -87,6 +87,7 @@ module.exports = function Game(hash, client, sess) {
     this.broadcast({action: 'join', player: playerIdx});
     this.sendMsg({event: true, msg: 'Player ' + (playerIdx + 1) + ' has joined.'});
     this.players[playerIdx] = new Player(client, sess);
+    if (!this.started && this.numPlayers() >= minPlayers) this.started = true;
     return true;
   }
 

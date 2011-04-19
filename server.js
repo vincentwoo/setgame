@@ -8,7 +8,9 @@ var http = require('http')
   , assetManager = require('connect-assetmanager')
   , sys = require(process.binding('natives').util ? 'util' : 'sys')
   , Game = require('game')
-  , server;
+  , server
+  , games = {}
+  , latestPublicGame;
 
 var assetManagerGroups = {
   js: {
@@ -40,9 +42,19 @@ function niceifyURL(req, res, next){
     res.end();
     return;
   }
-  if (/^\/game/.exec(req.url)) {
+
+  if (/^\/game\/public\//.exec(req.url)) {
+    res.writeHead(302, {
+      'Location': '/game/#!/' + getLatestPublicGame().hash
+    });
+    res.end();
+    return;
+  }
+
+  if (/^\/game\//.exec(req.url)) {
     req.url = '/game.html';
   }
+
   next();
 }
 
@@ -55,24 +67,34 @@ server = connect.createServer(
 
 server.listen(80);
 
-var io = io.listen(server)
-  , games = {};
+var io = io.listen(server);
+
+function getUnusedHash() {
+  do { var hash = randString(6); } while (hash in games);
+  return hash;
+}
+function getGame(hash) {
+  if (hash && hash in games) return games[hash];
+  hash = getUnusedHash();
+  return (games[hash] = new Game(hash));
+}
+
+function getLatestPublicGame() {
+  if (!latestPublicGame || latestPublicGame.started) {
+    var hash = getUnusedHash();
+    return (latestPublicGame = games[hash] = new Game(hash, 3));
+  }
+  return latestPublicGame;
+}
 
 io.on('connection', function(client){
   var game;
   client.on('message', function(message){
     console.log(message);
     if (message.action === 'init') {
-      if (message.game && message.game in games) {
-        game = games[message.game];
-        game.registerClient(client, message.sess);
-      } else {
-        var hash;
-        do { hash = randString(6); } while (hash in games);
-        game = games[hash] = new Game(hash, client, message.sess);
-        client.send({action: 'setHash', hash: hash});
-        return;
-      }
+      game = getGame(message.game);
+      game.registerClient(client, message.sess);
+      client.send({action: 'setHash', hash: game.hash});
     }
     if (game !== null) game.message(client, message);
   });
