@@ -75,7 +75,7 @@ function select(idx) {
     unselect(search);
   } else {
     var card = cards[idx];
-    card.addClass('red');
+    card.addClass('selected');
     selected.push(idx);
     checkSet();
   }
@@ -84,12 +84,12 @@ function select(idx) {
 // takes index of selected array to unselect
 function unselect(idx) {
   var deselected = selected.splice(idx, 1)[0];
-  cards[deselected].removeClass('red');
+  cards[deselected].removeClass('selected');
 }
 
 function clearSelected() {
   selected.forEach( function(idx) {
-    cards[idx].removeClass('red');
+    cards[idx].removeClass('selected');
   });
   selected = [];
 }
@@ -99,7 +99,7 @@ function checkSet() {
     socket.send({action: 'take',
                   selected: selected});
     $.each(selected, function(idx, card) {
-      setTimeout(function() {cards[card].removeClass('red');}, 250);
+      setTimeout(function() {cards[card].removeClass('selected');}, 250);
     });
     selected = [];
     return;
@@ -246,7 +246,7 @@ socket.on('message', function(obj){
         var offsx = (j * 36) - 30 +
                     p.offset().left - dupe.offset().left
           , offsy = p.offset().top - dupe.offset().top - 4;
-        dupe.removeClass('red');
+        dupe.removeClass('selected');
         dupe.css('z-index', '10');
         dupe.animate({
             transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(450deg) scale(0.5)'}
