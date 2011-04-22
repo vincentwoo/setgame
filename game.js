@@ -79,6 +79,7 @@ module.exports = function Game(hash, minPlayers) {
         player.online = true;
         player.client = client;
         player.sess = sess;
+        this.updateRemaining();
         return true;
       }
     }
@@ -87,7 +88,16 @@ module.exports = function Game(hash, minPlayers) {
     this.broadcast({action: 'join', player: playerIdx});
     this.sendMsg({event: true, msg: 'Player ' + (playerIdx + 1) + ' has joined.'});
     this.players[playerIdx] = new Player(client, sess);
-    if (!this.started && this.numPlayers() >= minPlayers) this.started = true;
+    this.updateRemaining();
+    
+    var that = this;
+    setTimeout(function() {
+      if (!that.started && that.numPlayers() >= minPlayers) {
+        that.started = true;
+        that.broadcast({action: 'start'});
+        that.reset();
+      }
+    }, 2000);
     return true;
   }
 
@@ -96,6 +106,7 @@ module.exports = function Game(hash, minPlayers) {
     if (playerIdx === -1) return;
     this.players[playerIdx].online = false;
     this.broadcast({action: 'leave', player: playerIdx});
+    this.updateRemaining();
     this.sendMsg({event: true, msg: 'Player ' + (playerIdx + 1) + ' has disconnected.'});
     var that = this;
     setTimeout( function delayGameover() {
@@ -103,6 +114,11 @@ module.exports = function Game(hash, minPlayers) {
     }, 3600000);
   }
 
+  this.updateRemaining = function() {
+    if (this.started) return;
+    this.broadcast({action: 'remaining', remaining: minPlayers - this.numPlayers()});
+  }
+  
   this.broadcast = function(message) {
     console.log(this.hash + ' broadcasting: ');
     console.log(message);
@@ -131,6 +147,7 @@ module.exports = function Game(hash, minPlayers) {
         , players: this.playerData()
         , you: player
         , msgs: this.messages
+        , remaining: this.started ? 0 : minPlayers - this.numPlayers()
       });
       return;
     }
@@ -160,7 +177,7 @@ module.exports = function Game(hash, minPlayers) {
           }, this);
           this.board.splice(lastRow, 3);
         }
-        this.players[player].score += 3;
+        this.players[player].score += (this.started ? 3 : 0);
         var playerUpdate = {};
         playerUpdate[player] = {score: this.players[player].score};
         this.puzzled = [];

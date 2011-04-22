@@ -7,6 +7,13 @@
     <link rel="shortcut icon" href="http://vincentwoo.com/favicon.ico" />
     <script src="/socket.io/socket.io.js"></script>
     <script src="/static/client.js"></script>
+    <!--
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="/jquery.ba-bbq.js"></script>
+    <script src="/jquery.transform.lite.js"></script>
+    <script src="/util.js"></script>
+    <script src="/client.js"></script>
+    -->
   </head>
   <body>
     <div id="wrap">
@@ -66,6 +73,10 @@
       <div id="boardwrap">
         <table id="board"></table>      
         <ul>
+          <li id="training" class="message cornered">
+            This game is in practice mode<br/>
+            pending <b></b> more player(s).
+          </li>
           <li id="hint" class="message cornered">
             <a>Click me if you need a hint</a>
           </li>

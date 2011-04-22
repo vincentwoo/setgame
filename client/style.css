@@ -33,7 +33,7 @@ textarea {
   word-wrap: break-word;
 }
 h1 {
-  font: bold 2.5em/1.2em "Arial Black", sans-serif;
+  font: bold 2.3em/1.2em "Arial Black", sans-serif;
   text-shadow: 0px 2px 3px #555;
 }
 #wrap {
@@ -137,6 +137,9 @@ h1 {
 .event {
   text-align: right;
   font-style: italic;
+}
+#training {
+  display:none;
 }
 #footer {
   position: fixed;

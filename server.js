@@ -43,7 +43,7 @@ function niceifyURL(req, res, next){
     return;
   }
 
-  if (/^\/game\/public\//.exec(req.url)) {
+  if (/^\/game\/public/.exec(req.url)) {
     res.writeHead(302, {
       'Location': '/game/#!/' + getLatestPublicGame().hash
     });
@@ -53,8 +53,18 @@ function niceifyURL(req, res, next){
 
   if (/^\/game\//.exec(req.url)) {
     req.url = '/game.html';
+    next();
+    return;
   }
-
+  
+  if (/^\/game/.exec(req.url)) {
+    res.writeHead(301, {
+      'Location': '/game/'
+    });
+    res.end();
+    return;
+  }
+  
   next();
 }
 
@@ -82,7 +92,7 @@ function getGame(hash) {
 function getLatestPublicGame() {
   if (!latestPublicGame || latestPublicGame.started) {
     var hash = getUnusedHash();
-    return (latestPublicGame = games[hash] = new Game(hash, 3));
+    latestPublicGame = games[hash] = new Game(hash, 3);
   }
   return latestPublicGame;
 }

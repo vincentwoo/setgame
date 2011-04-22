@@ -161,7 +161,7 @@ function input(e) {
   }
 }
 
-function message(obj) {
+function msg(obj) {
   var skipName = obj.event !== undefined;
   if (lastMsg && !obj.event && obj.player === lastMsg.player)
   {
@@ -192,7 +192,11 @@ socket.on('message', function(obj){
     if ('board' in obj) addCards(obj.board);
     if ('players' in obj) updatePlayers(obj.players);
     if ('you' in obj) me = obj.you;
-    if ('msgs' in obj && !lastMsg) obj.msgs.forEach(message);
+    if ('msgs' in obj && !lastMsg) obj.msgs.forEach(msg);
+    if (obj.remaining) {
+      $('#training').slideDown();
+      $('#training b').text(obj.remaining);
+    }
     $('#me-indicator').prependTo($('#p' + me));
     $('#hint, #share').slideDown();
     fadeOutAllLastSets();
@@ -288,40 +292,42 @@ socket.on('message', function(obj){
     updatePlayers(update);
     return;
   }
-
+  if (obj.action === 'remaining') {
+    $('#training b').text(obj.remaining);
+    return;
+  }
   if (obj.action === 'puzzled') {
     if (obj.player != me) showPuzzled(obj.player);
     return;
   }
-
   if (obj.action === 'add') {
     hideAllPuzzled();
     addCards(obj.cards);
     return;
   }
-
   if (obj.action === 'hint') {
     hideAllPuzzled();
     cards[obj.card].parent().addClass('hint');
     return;
   }
-
   if (obj.action === 'msg') {
-    message(obj);
+    msg(obj);
     return;
   }
-
-  if (obj.action === 'win') {
+  if (obj.action === 'win' || obj.action === 'start') {
     hideAllPuzzled();
+    var message = obj.action === 'win' ?
+      ('Player ' + (obj.player + 1)+ ' wins!') :
+      'Players found, game starting.';
+    if (obj.action === 'start') $('#training').fadeOut();
     $('#board').fadeOut(650, function () {
       $('#board tr').remove();
-      $('#board').append('<tr><td class="announcement"><h1>Player ' +
-        (obj.player + 1)+ ' wins!</h1></td></tr>' +
-        '<tr><td><span id="timer">30</span> seconds until the next round</td></tr>');
+      $('#board').append('<tr><td class="announcement"><h1>' + message + '</h1></td></tr>' +
+        '<tr><td><span id="timer">30</span> seconds until round start</td></tr>');
       resetTimer(30);
       $('#board').show();
       $('#hint').hide();
-      message({event: true, msg: 'Player ' + (obj.player + 1)+ ' has won this round'});
+      msg({event: true, msg: 'Player ' + (obj.player + 1)+ ' has won this round'});
     });
   }
 });
@@ -351,14 +357,14 @@ function initGame() {
 socket.on('connect', initGame);
 
 socket.on('disconnect', function() {
-  message({event:true, msg: 'You have been disconnected'})
+  msg({event:true, msg: 'You have been disconnected'})
 });
 socket.on('reconnect', function() {
-  message({event:true, msg: 'Reconnected to server'})
+  msg({event:true, msg: 'Reconnected to server'})
 });
 socket.on('reconnecting', function(nextRetry) {
-  message({event:true, msg: ('Attempting to re-connect to the server, next attempt in ' + nextRetry + 'ms')})
+  msg({event:true, msg: ('Attempting to re-connect to the server, next attempt in ' + nextRetry + 'ms')})
 });
 socket.on('reconnect_failed', function() {
-  message({event:true, msg: 'Reconnect to server FAILED.'})
+  msg({event:true, msg: 'Reconnect to server FAILED.'})
 });
