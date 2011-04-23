@@ -90,7 +90,10 @@ function getGame(hash) {
 }
 
 function getLatestPublicGame() {
-  if (!latestPublicGame || latestPublicGame.started) {
+  if (!latestPublicGame ||
+    latestPublicGame.started ||
+    !(latestPublicGame.hash in games))
+  {
     var hash = getUnusedHash();
     latestPublicGame = games[hash] = new Game(hash, 3);
   }

@@ -315,11 +315,15 @@ socket.on('message', function(obj){
     return;
   }
   if (obj.action === 'win' || obj.action === 'start') {
+    var message;
     hideAllPuzzled();
-    var message = obj.action === 'win' ?
-      ('Player ' + (obj.player + 1)+ ' wins!') :
-      'Players found, game starting.';
-    if (obj.action === 'start') $('#training').fadeOut();
+    if (obj.action === 'start') {
+      message = 'Players found, game starting.';
+      $('#training').fadeOut();
+    } else {
+      message = 'Player ' + (obj.player + 1)+ ' wins!';
+      msg({event: true, msg: 'Player ' + (obj.player + 1)+ ' has won this round'});
+    }
     $('#board').fadeOut(650, function () {
       $('#board tr').remove();
       $('#board').append('<tr><td class="announcement"><h1>' + message + '</h1></td></tr>' +
@@ -327,7 +331,6 @@ socket.on('message', function(obj){
       resetTimer(30);
       $('#board').show();
       $('#hint').hide();
-      msg({event: true, msg: 'Player ' + (obj.player + 1)+ ' has won this round'});
     });
   }
 });
