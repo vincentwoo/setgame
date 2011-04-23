@@ -327,8 +327,8 @@ socket.on('message', function(obj){
     $('#board').fadeOut(650, function () {
       $('#board tr').remove();
       $('#board').append('<tr><td class="announcement"><h1>' + message + '</h1></td></tr>' +
-        '<tr><td><span id="timer">30</span> seconds until round start</td></tr>');
-      resetTimer(30);
+        '<tr><td><span id="timer">20</span> seconds until round start</td></tr>');
+      resetTimer(20);
       $('#board').show();
       $('#hint').hide();
     });

@@ -185,15 +185,13 @@ h1 {
 }
 #board {
   margin-bottom: 10px;
+  min-width: 300px;
 }
   #board td {
     width: 110px;
     height: 70px;
     position: relative;
     top: 0;
-  }
-  #board td.announcement {
-    width: 100%;
   }
 .cardwrap {
   position: relative;
