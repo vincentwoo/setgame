@@ -5,32 +5,18 @@ var http = require('http')
   , fs = require('fs')
   , io = require('socket.io')
   , connect = require('connect')
-  , assetManager = require('connect-assetmanager')
+  , gzip = require('connect-gzip')
+  , ams = require('ams')
   , sys = require(process.binding('natives').util ? 'util' : 'sys')
   , Game = require('game')
   , server
   , games = {}
-  , latestPublicGame;
+  , latestPublicGame
+  , clientDir = __dirname + '/client'
+  , publicDir = __dirname + '/public';
 
-var assetManagerGroups = {
-  js: {
-      route: /\/static\/client\.js/
-    , path: __dirname + '/client/'
-    , dataType: 'javascript'
-    , files: [
-      , 'http://code.jquery.com/jquery-latest.js'
-      , /jquery.*/
-      , 'util.js'
-      , 'client.js'
-      ]
-  },
-  css: {
-      route: /\/static\/style\.css/
-    , path: __dirname + '/client/'
-    , dataType: 'css'
-    , files: ['style.css']
-  }
-}
+cleanOldStaticFiles();
+buildStaticFiles();
 
 function niceifyURL(req, res, next){
   if (/^www\./.exec(req.headers.host)) {
@@ -70,9 +56,8 @@ function niceifyURL(req, res, next){
 
 server = connect.createServer(
     connect.logger()
-  , assetManager(assetManagerGroups)
   , niceifyURL
-  , connect.static(__dirname + '/client', { maxAge: 86400000 })
+  , gzip.staticGzip(publicDir, { matchType: /text|javascript/ })
 );
 
 server.listen(80);
@@ -131,4 +116,34 @@ function randString(size) {
     ret += CHARSET[Math.floor(Math.random() * CHARSET.length)];
   }
   return ret;
+}
+
+function buildStaticFiles() {
+  ams.build
+  .create(clientDir)
+  .add(clientDir + '/jquery-1.5.2.js')
+  .add(clientDir + '/jquery.transform.lite.js')
+  .add(clientDir + '/jquery.ba-bbq.js')
+  .add(clientDir + '/util.js')
+  .add(clientDir + '/client.js')
+  .add(clientDir + '/style.css')
+  .combine({js: 'client.js', css: 'style.css'})
+  .process({
+    jstransport: false,
+    cssabspath: false,
+    htmlabspath: false,
+    cssvendor: false,
+    texttransport: false,
+    cssdataimg: false})
+  .write(publicDir)
+  .end();
+}
+
+function cleanOldStaticFiles() {
+  fs.readdir(publicDir, function(err, files) {
+    if (err) throw err;
+    files.forEach(function(filename, index) {
+      if (/\.gz\./.exec(filename)) fs.unlink(publicDir + '/' + filename);
+    });
+  });
 }

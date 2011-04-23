@@ -13,8 +13,9 @@
     "node": "*"
   },
   "dependencies": {
-    "socket.io" : "*",
-    "connect"   : "*",
-    "connect-assetmanager" : "*"
+    "socket.io"     : "*",
+    "connect"       : "*",
+    "connect-gzip"  : "*",
+    "ams"           : "*"
   }
 }

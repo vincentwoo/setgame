@@ -1,0 +1,2 @@
+#!/bin/sh
+supervisor -w server.js,game.js,client server.js

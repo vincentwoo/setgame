@@ -131,7 +131,8 @@ $.cssHooks[propertyName] = propertyHook = {
 					"M22="+M22,
 					"SizingMethod='auto expand'"
 			].join();
-			filter = ( currentStyle = elem.currentStyle ) && currentStyle.filter || elemStyle.filter || "";
+			filter = ( currentStyle = elem.currentStyle ) && currentStyle.filter || "";
+      filter = filter || elemStyle.filter;
 
 			elemStyle.filter = rMatrix.test(filter) ?
 				filter.replace(rMatrix, Matrix) :
