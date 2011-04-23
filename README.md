@@ -12,8 +12,9 @@ The server runs with simplpy
 npm dependencies are
 
     connect
+    connect-gzip
     socket.io
-    connect-assetmanager
+    ams
 
 [1]: http://en.wikipedia.org/wiki/Set_(game)
 [2]: http://socket.io/

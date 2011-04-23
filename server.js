@@ -42,7 +42,7 @@ function niceifyURL(req, res, next){
     next();
     return;
   }
-  
+
   if (/^\/game/.exec(req.url)) {
     res.writeHead(301, {
       'Location': '/game/'
@@ -50,14 +50,17 @@ function niceifyURL(req, res, next){
     res.end();
     return;
   }
-  
+
   next();
 }
 
 server = connect.createServer(
     connect.logger()
   , niceifyURL
-  , gzip.staticGzip(publicDir, { matchType: /text|javascript/ })
+  , gzip.staticGzip(publicDir, {
+        matchType: /text|javascript/
+      , maxAge: process.env.NODE_ENV === 'development' ? 0 : 86400000
+    })
 );
 
 server.listen(80);

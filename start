@@ -1,2 +1,3 @@
 #!/bin/sh
+export NODE_ENV="development"
 supervisor -w server.js,game.js,client server.js
