@@ -5,16 +5,20 @@ module.exports = function Game(hash, minPlayers) {
   this.messages = [];
   this.started = !minPlayers;
 
+  this.resetDeck = function() {
+    for (var i = 0; i < 81; i++) {
+      this.deck.push( new Card(i) );
+    }
+    shuffle(this.deck);
+  }
+  
   this.reset = function() {
     this.deck = [];
     this.board = [];
     this.players.forEach(function(player) {
       if (player !== null) player.score = 0;
     });
-    for (var i = 0; i < 81; i++) {
-      this.deck.push( new Card(i) );
-    }
-    shuffle(this.deck);
+    this.resetDeck();
     for (var i = 0; i < 12; i++) {
       this.board.push(this.deck.pop());
     }
@@ -155,6 +159,7 @@ module.exports = function Game(hash, minPlayers) {
       if (this.checkSet(message.selected)) {
         console.log('take set succeed');
         var update = {};
+        if (!this.started && this.deck.length === 0) this.resetDeck();
         if (this.board.length <= 12 && this.deck.length > 0) {
             message.selected.forEach( function(val) {
               var c = this.deck.pop();
