@@ -10,6 +10,9 @@ body {
   background: #E6E6E6 url('/radialgradient.png');
   background-attachment: fixed;
 }
+p {
+  padding: 5px;
+}
 a, a:visited, a:link, a:hover {
   color: #333;
   text-decoration: none;
