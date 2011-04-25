@@ -5,9 +5,9 @@ This is a multiplayer, realtime implementation of the popular ["Set" card game][
 It uses [socket.io][2] to achieve realtime feedback with clients and [jQuery][3] for
 various clientside animations.
 
-The server runs with simplpy
+The server runs in dev mode with:
 
-    node server
+    ./start
     
 npm dependencies are
 
