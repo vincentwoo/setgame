@@ -59,7 +59,7 @@ server = connect.createServer(
   , niceifyURL
   , gzip.staticGzip(publicDir, {
         matchType: /text|javascript|image/
-      , maxAge: process.env.NODE_ENV === 'development' ? 0 : 86400000
+      , maxAge: process.env.NODE_ENV === 'development' ? 0 : 604800000
     })
 );
 
