@@ -7,7 +7,8 @@ body {
   font: 1em Tahoma, Geneva, sans-serif;
   line-height: 1.3em;
   color: #333;
-  background: #E6E6E6 url('/radialgradient.png');
+  background: #E6E6E6 url('/gradient.jpg');
+  *background: #E6E6E6 url('http://multiplayerset.com/gradient.jpg');
   background-attachment: fixed;
 }
 p {

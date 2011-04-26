@@ -15,7 +15,7 @@ var http = require('http')
   , clientDir = __dirname + '/client'
   , publicDir = __dirname + '/public';
 
-cleanOldStaticFiles();
+cleanOldStaticFiles(publicDir);
 buildStaticFiles();
 
 function niceifyURL(req, res, next){
@@ -58,7 +58,7 @@ server = connect.createServer(
     connect.logger()
   , niceifyURL
   , gzip.staticGzip(publicDir, {
-        matchType: /text|javascript/
+        matchType: /text|javascript|image/
       , maxAge: process.env.NODE_ENV === 'development' ? 0 : 86400000
     })
 );
@@ -123,7 +123,7 @@ function randString(size) {
 
 function buildStaticFiles() {
   ams.build
-  .create(clientDir)
+  .create(publicDir)
   .add(clientDir + '/jquery-1.5.2.js')
   .add(clientDir + '/jquery.transform.lite.js')
   .add(clientDir + '/jquery.ba-bbq.js')
@@ -136,17 +136,24 @@ function buildStaticFiles() {
     cssabspath: false,
     htmlabspath: false,
     cssvendor: false,
-    texttransport: false,
-    cssdataimg: false})
+    texttransport: false})
   .write(publicDir)
   .end();
 }
 
-function cleanOldStaticFiles() {
-  fs.readdir(publicDir, function(err, files) {
+function cleanOldStaticFiles(path) {
+  fs.stat(path, function(err, stats) {
     if (err) throw err;
-    files.forEach(function(filename, index) {
-      if (/\.gz\./.exec(filename)) fs.unlink(publicDir + '/' + filename);
-    });
+    if (stats.isDirectory()) {
+      fs.readdir(path, function(err, files) {
+        if (err) throw err;
+        files.forEach(function(filename, index) {
+          cleanOldStaticFiles(path + '/' + filename);
+        });
+      });  
+    } else {
+      if (/\.gz\./.exec(path)) fs.unlink(path);
+    }
   });
+  
 }
