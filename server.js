@@ -133,7 +133,6 @@ function buildStaticFiles() {
     jstransport: false,
     cssabspath: false,
     htmlabspath: false,
-    cssvendor: false,
     texttransport: false})
   .write(publicDir)
   .end();
