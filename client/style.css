@@ -112,7 +112,7 @@ h1 {
   z-index: 20;
 }
 #chat {
-  margin-left: 580px;
+  margin-left: 635px;
   margin-right: 25px;
   margin-bottom: 110px;
 }
@@ -182,7 +182,7 @@ h1 {
       text-align: right;
     }
 #boardwrap {
-  width: 330px;
+  width: 400px;
   position: fixed;
   left: 230px;
   margin-top: -4px;
@@ -192,8 +192,8 @@ h1 {
   min-width: 300px;
 }
   #board td {
-    width: 110px;
-    height: 70px;
+    width: 130px;
+    height: 78px;
     position: relative;
     top: 0;
   }
@@ -204,7 +204,11 @@ h1 {
 }
 .card {
   border: 2px solid #333;
+  background: #fff;
+  width: 120px;
+  height: 70px;
   position: absolute;
+  text-align: center;
   top: 2px;
   left: 2px;
   -webkit-user-select: none;
@@ -212,6 +216,17 @@ h1 {
   -moz-user-select: none;
   -o-user-select: none;
   user-select: none;
+}
+.shapeWrap {
+  margin: 10px auto 0 auto;
+}
+.shape {
+  width: 32px;
+  height: 52px;
+  margin-right: 5px;
+  display: inline-block;
+  background: url('/cards.png') no-repeat;
+  *background: url('http://multiplayerset.com/cards.png') no-repeat;
 }
 .clear { clear: both }
 .selected {

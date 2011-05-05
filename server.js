@@ -1,13 +1,11 @@
 require.paths.unshift('.');
 
 var http = require('http')
-  , url = require('url')
   , fs = require('fs')
   , io = require('socket.io')
   , connect = require('connect')
   , gzip = require('connect-gzip')
   , ams = require('ams')
-  , sys = require(process.binding('natives').util ? 'util' : 'sys')
   , Game = require('game')
   , server
   , games = {}

@@ -27,10 +27,8 @@ $(document.body).ready( function() {
         target.parent().attr('id') === 'hint'  ||
         id === 'input')
       return;
-    var idx = cards.map( function(v) { return v[0]; } ).indexOf(target[0]);
-    if (idx != -1) {
-      select(idx);
-    } else {
+    var klass = target.attr('class');
+    if (klass.indexOf('card') === -1 && klass.indexOf('shape') === -1) {
       clearSelected();
     }
   });
@@ -50,15 +48,33 @@ $(document.body).ready( function() {
   });
 });
 
+function generateShapes(card) {
+  var shapeWrap = $('<div/>', {
+    'class': 'shapeWrap'
+  });
+  for (var i = 0; i <= card.number; i++) {
+    var top = card.shape * 52
+      , left = (card.color * 3 + card.shading) * 32
+      , style = 'background-position: -' + left + 'px -' + top + 'px';
+    if (i === card.number) style += ';margin-right:0';
+    shapeWrap.append($('<div/>', {
+      'class': 'shape',
+      style: style
+    }));
+  }
+  return shapeWrap;
+}
+
 function addCards(newCards) {
   var tr = null;
   $.each(newCards, function(idx, card) {
     if (idx % 3 === 0) tr = $('<tr/>');
     var td = $('<td/>');
-    var c = $('<img/>', {
-      'class': 'card'
-    , src: '/cards/' + (1 + card.number  + card.color * 3 + card.shape * 9 + card.shading * 27) + '.gif'
+    var c = $('<div/>', {
+      'class': 'card',
+      click: function() { select(this) }
     });
+    c.append(generateShapes(card));
     cards.push(c);
     var w = $('<div class="cardwrap"></div>');
     w.append(c);
@@ -68,8 +84,9 @@ function addCards(newCards) {
   });
 }
 
-function select(idx) {
-  var search = selected.indexOf(idx);
+function select(elem) {
+  var idx = cards.map( function(v) { return v[0]; } ).indexOf(elem)
+    , search = selected.indexOf(idx);
   if (search != -1) {
     unselect(search);
   } else {
@@ -239,26 +256,26 @@ socket.on('message', function(obj){
           });
         })(old);
       } else if (card) {
-        cards[i].attr('src', '/cards/' + (1 + card.number  + card.color * 3 + card.shape * 9 +
-            card.shading * 27) + '.gif');
+        cards[i].empty();
+        cards[i].append(generateShapes(card));
       } else {
         cards[i].fadeOut('fast');
       }
 
       (function (j) {
-        var offsx = (j * 36) - 30 +
-                    p.offset().left - dupe.offset().left
-          , offsy = p.offset().top - dupe.offset().top - 4;
+        var xconst = (j * 36) - 35, yconst = -8
+          , offsx = xconst + p.offset().left - dupe.offset().left
+          , offsy = yconst + p.offset().top - dupe.offset().top;
         dupe.removeClass('selected');
         dupe.css('z-index', '10');
         dupe.animate({
-            transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(450deg) scale(0.5)'}
+            transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(450deg) scale(0.4)'}
           , { duration: 1000
             , easing: 'easeOutQuad'
             , complete: function() {
-                $(this).css('transform', 'translateX(0px) translateY(0px) rotate(90deg) scale(0.5)');
-                $(this).css('top', -4);
-                $(this).css('left', j * 36 - 30);
+                $(this).css('transform', 'translateX(0px) translateY(0px) rotate(90deg) scale(0.4)');
+                $(this).css('left', xconst);
+                $(this).css('top', yconst);
                 $(this).appendTo(p);
               }
         });
