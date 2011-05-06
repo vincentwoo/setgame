@@ -53,8 +53,8 @@ function generateShapes(card) {
     'class': 'shapeWrap'
   });
   for (var i = 0; i <= card.number; i++) {
-    var top = card.shape * 52
-      , left = (card.color * 3 + card.shading) * 32
+    var top = card.shape * 55
+      , left = (card.color * 3 + card.shading) * 33
       , style = 'background-position: -' + left + 'px -' + top + 'px';
     if (i === card.number) style += ';margin-right:0';
     shapeWrap.append($('<div/>', {
