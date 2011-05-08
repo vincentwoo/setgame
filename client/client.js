@@ -1,8 +1,4 @@
-var socket = new io.Socket(null, {
-        port: 80
-      , rememberTransport: false
-      , transports: ['websocket', 'flashsocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
-  })
+var socket
   , selected = []
   , cards = []
   , lastSets = {}
@@ -10,8 +6,19 @@ var socket = new io.Socket(null, {
   , colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#e377c2", "#bcbd22", "#17becf"]
   , lastMsg;
 
-$(document.body).ready( function() {
+function startGame() {
   setTimeout(function() {
+    socket = new io.Socket(null, {
+          port: 80
+        , rememberTransport: false
+        , transports: ['websocket', 'flashsocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
+    })
+    socket.on('message', socket_message);
+    socket.on('connect', initGame);
+    socket.on('disconnect', socket_disconnect);
+    socket.on('reconnect', socket_reconnect);
+    socket.on('reconnecting', socket_reconnect);
+    socket.on('reconnect_failed', socket_reconnect_failed);
     socket.connect();
   }, 250);
   $('#hint').click(hint);
@@ -46,16 +53,30 @@ $(document.body).ready( function() {
       }
     }, 50);
   });
-});
+}
+
+function parseCards() {
+  $('.cardwrap').each(function() {
+    var elem = $(this)
+      , card = {
+          number: parseInt(elem.attr('number'))
+        , color: parseInt(elem.attr('color'))
+        , shape: parseInt(elem.attr('shape'))
+        , shading: parseInt(elem.attr('shading'))}
+      , c = $('<div class="card"></div>');
+    c.append(generateShapes(card));
+    elem.append(c);
+  });
+}
 
 function generateShapes(card) {
   var shapeWrap = $('<div/>', {
-    'class': 'shapeWrap'
-  });
+        'class': 'shapeWrap'
+      })
+    , top = card.shape * 55
+    , left = (card.color * 3 + card.shading) * 33
+    , style = 'background-position: -' + left + 'px -' + top + 'px';
   for (var i = 0; i <= card.number; i++) {
-    var top = card.shape * 55
-      , left = (card.color * 3 + card.shading) * 33
-      , style = 'background-position: -' + left + 'px -' + top + 'px';
     if (i === card.number) style += ';margin-right:0';
     shapeWrap.append($('<div/>', {
       'class': 'shape',
@@ -200,7 +221,7 @@ function msg(obj) {
   $('html, body').animate({ scrollTop: $(document).height() }, 200);
 }
 
-socket.on('message', function(obj){
+function socket_message(obj) {
   log(obj);
   if (!obj.action) return;
   if (obj.action === 'init') {
@@ -350,7 +371,7 @@ socket.on('message', function(obj){
       $('#hint').hide();
     });
   }
-});
+}
 
 function resetTimer(seconds) {
   $('#timer').text('' + seconds);
@@ -374,17 +395,15 @@ function initGame() {
   socket.send(init);
 }
 
-socket.on('connect', initGame);
-
-socket.on('disconnect', function() {
+function socket_disconnect() {
   msg({event:true, msg: 'You have been disconnected'})
-});
-socket.on('reconnect', function() {
+}
+function socket_reconnect() {
   msg({event:true, msg: 'Reconnected to server'})
-});
-socket.on('reconnecting', function(nextRetry) {
+}
+function socket_reconnecting(nextRetry) {
   msg({event:true, msg: ('Attempting to re-connect to the server, next attempt in ' + nextRetry + 'ms')})
-});
-socket.on('reconnect_failed', function() {
+}
+function socket_reconnect_failed() {
   msg({event:true, msg: 'Reconnect to server FAILED.'})
-});
+}

@@ -19,17 +19,94 @@
     <ul style="margin:0 200px 0 250px;">
       <li class="message cornered">
       <p>
-      MultiplayerSet is a game about pattern matching. The idea is to find <b>sets</b> of 3 cards that 
-      meet certain requirements. Each card has a variety of shapes on it. The properties that
-      can vary are <b>number</b> (of shapes), <b>shape</b>, <b>color</b>, and <b>shading</b>.
+      MultiplayerSet is a game about pattern matching. The idea is to find 
+      <b>sets</b> of 3 cards that meet certain requirements. Each card has a 
+      four properties. The properties are <b>number</b> (of shapes), 
+      <b>shape</b>, <b>color</b>, and <b>shading</b>.
+      </p>
+      </li>
+      <li class="message cornered">
+      <p>
+      A <b>set</b> is 3 cards for which each card has, for each property, 3 
+      different properties or 1 uniform property. Two cards that are both red 
+      and a third that is green are <b>not</b> a set.
+      </p>
+      </li>
+      <li class="message cornered">
+      <h2>Examples of VALID sets</h2>
+      <div class="set">
+        <div class="cardwrap" number="0" color="0" shape="0" shading="0"></div>
+        <div class="cardwrap" number="0" color="1" shape="0" shading="1"></div>
+        <div class="cardwrap" number="0" color="2" shape="0" shading="2"></div>
+      </div>
+      <p>
+      Here all the cards have the same <b>shape</b> (oval) and <b>number</b>
+      (one) but different <b>shadings</b> and <b>colors</b>.
+      </p>
+      <div class="set">
+        <div class="cardwrap" number="2" color="2" shape="0" shading="0"></div>
+        <div class="cardwrap" number="1" color="0" shape="1" shading="1"></div>
+        <div class="cardwrap" number="0" color="1" shape="2" shading="2"></div>
+      </div>
+      <p>
+      In this set, all four attributes are different across all three cards.
+      </p>
+      </li>
+      <li class="message cornered">
+      <h2>Examples of INVALID sets</h2>
+      <p>
+      As a rule, if a set has two cards that share a property (such as two cards
+      that both have ovals), but the third one differs (it has diamonds), then
+      it is NOT a set. Here are some examples.
+      </p>
+      <div class="set">
+        <div class="cardwrap" number="0" color="0" shape="0" shading="0"></div>
+        <div class="cardwrap" number="0" color="0" shape="0" shading="1"></div>
+        <div class="cardwrap" number="0" color="2" shape="0" shading="2"></div>
+      </div>
+      <p>
+      Identical to the first example set except that two of the cards are red,
+      and the other yellow. If one of the red cards were blue or if all three
+      cards were red, it would be a set.
+      </p>
+      <div class="set">
+        <div class="cardwrap" number="1" color="0" shape="1" shading="0"></div>
+        <div class="cardwrap" number="2" color="2" shape="2" shading="1"></div>
+        <div class="cardwrap" number="0" color="1" shape="1" shading="1"></div>
+      </div>
+      <p>
+      This is not a set because there are two diamonds and two hollow-shaded cards.
+      If all the cards were diamond and hollow, it would be a set. Alternatively,
+      if the last card was a striped squiggly shape, it would also be a set.
+      </p>
+      </li>
+      <li class="message cornered">
+      <h2>How to play</h2>
+      <p>
+      If you want to play with friends, hit <b>start a private game</b> in the top
+      left. You will receive a link you can use to invite other people to join.
       </p>
       <p>
-      A <b>set</b> is 3 cards for which each card has, for each property, 3 different properties or 1
-      uniform property. Two cards that are both red and a third that is green are <b>not</b> a
-      set.
+      If you want to get into a game quickly, hit <b>join private game</b>. You will
+      be placed into a game that will start as soon as 3 people are present. You
+      can still invite your friends to join a public game in the same way.
+      </p>
+      <p>
+      Once in a game, click cards to build sets. Click on any part of the board to
+      clear your current selection. Type messages and hit enter to talk to the
+      other players in the game.
+      </p>
+      <h3>Hints</h3>
+      <p>
+      If you need a hint or don't see a set on the board (which can happen), use
+      <b>"click me if you need a hint"</b>. If the majority of players do this, the
+      game will reveal one card of a set on the board. If there are none, the game
+      will deal three additional cards.
       </p>
       </li>
     </ul>
   </div>
+  <script src="/client.js"></script>
+    <script>$(document.body).ready(parseCards);</script>
   </body>
 </html>

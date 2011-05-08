@@ -155,7 +155,10 @@ module.exports = function Game(hash, minPlayers) {
       });
       return;
     }
-    if (message.action === 'take') {
+    if (message.action === 'take' &&
+        'selected' in message &&
+        message.selected.length === 3)
+    {
       if (this.checkSet(message.selected)) {
         console.log('take set succeed');
         var update = {};
@@ -243,7 +246,10 @@ module.exports = function Game(hash, minPlayers) {
       return;
     }
 
-    if (message.action === 'msg') {
+    if (message.action === 'msg' &&
+        'msg' in message &&
+        message.msg.length < 1024)
+    {
       var msg = message.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
       this.sendMsg({ player: player, msg: msg });
       return;
