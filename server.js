@@ -132,6 +132,7 @@ function buildStaticFiles() {
   .process({
     jstransport: false,
     cssabspath: false,
+    cssdataimg: false,
     htmlabspath: false,
     texttransport: false})
   .write(publicDir)
