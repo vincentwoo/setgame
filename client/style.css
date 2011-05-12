@@ -50,23 +50,30 @@ h1 {
   width: 190px;
   position: fixed;
   left: 20px;
+  float: left;
 }
   #scoreboard li {
+    width: 100%;
     font-size: 1.1em;
     display: none;
     margin-bottom: 20px;
     position: relative;
     text-align: right;
+    float: left;
+    clear: both;
   }
     #scoreboard li h2 {
       float: right;
-      text-align: left;  
+      text-align: left;
       width: 70px;
       font: bold 2em/1em "Arial Black", sans-serif;
       text-shadow: 0px 2px 3px #555;
     }
     #scoreboard li h3 {
       clear: both;
+      float: right;
+      width: 70px;
+      text-align: left;
       font-weight: bold;
       font-size: 0.9em;
       text-shadow: 0px 1px 1px #999;
@@ -247,13 +254,6 @@ h1 {
   font-size: 1.5em;
   font-weight: bold;
   text-shadow: 0px 2px 3px #555;
-}
-#me-indicator {
-  font-size: 0.8em;
-  width: 20px;
-  margin-left: -20px;
-  display: block;
-  float: left;
 }
 #hint {
   display: none;

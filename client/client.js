@@ -143,6 +143,12 @@ function checkSet() {
   }
 }
 
+function hidePlayers() {
+  $('#scoreboard li').hide();
+  $('#scoreboard li .offline').hide();
+  $('#scoreboard li .puzzled').hide();
+}
+
 function updatePlayers(playerData) {
   for (var i in playerData) {
     var player = $('#p' + i);
@@ -227,6 +233,7 @@ function socket_message(obj) {
   if (obj.action === 'init') {
     cards = [];
     $('#board tr').remove();
+    hidePlayers();
     if ('board' in obj) addCards(obj.board);
     if ('players' in obj) updatePlayers(obj.players);
     if ('you' in obj) me = obj.you;
@@ -235,7 +242,6 @@ function socket_message(obj) {
       $('#training').slideDown();
       $('#training b').text(obj.remaining);
     }
-    $('#me-indicator').prependTo($('#p' + me));
     $('#hint, #share').slideDown();
     fadeOutAllLastSets();
     return;
@@ -284,17 +290,17 @@ function socket_message(obj) {
       }
 
       (function (j) {
-        var xconst = (j * 36) - 35, yconst = -8
+        var xconst = (j * 38) - 42, yconst = 0
           , offsx = xconst + p.offset().left - dupe.offset().left
           , offsy = yconst + p.offset().top - dupe.offset().top;
         dupe.removeClass('selected');
         dupe.css('z-index', '10');
         dupe.animate({
-            transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(450deg) scale(0.4)'}
+            transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(450deg) scale(0.45)'}
           , { duration: 1000
             , easing: 'easeOutQuad'
             , complete: function() {
-                $(this).css('transform', 'translateX(0px) translateY(0px) rotate(90deg) scale(0.4)');
+                $(this).css('transform', 'translateX(0px) translateY(0px) rotate(90deg) scale(0.45)');
                 $(this).css('left', xconst);
                 $(this).css('top', yconst);
                 $(this).appendTo(p);
