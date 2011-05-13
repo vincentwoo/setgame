@@ -134,11 +134,8 @@ function clearSelected() {
 function checkSet() {
   if (selected.length === 3) {
     socket.send({action: 'take',
-                  selected: selected});
-    $.each(selected, function(idx, card) {
-      setTimeout(function() {cards[card].removeClass('selected');}, 250);
-    });
-    selected = [];
+                 selected: selected});
+    setTimeout(clearSelected, 250);
     return;
   }
 }
