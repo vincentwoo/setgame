@@ -141,6 +141,6 @@ function cleanOldStaticFiles(path) {
           cleanOldStaticFiles(path + '/' + filename);
         });
       });
-    } else if (/\.gz\./.exec(path)) fs.unlink(path);
+    } else if (/\.gz$/.exec(path)) fs.unlink(path);
   });
 }
