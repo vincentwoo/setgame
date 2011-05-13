@@ -45,7 +45,7 @@ function startGame() {
     event.stopImmediatePropagation();
     return false;
   });
-  
+
   $(document).bind('mouseup', function(event) {
     setTimeout(function() {
       if (getSelText() == '') {

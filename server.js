@@ -5,6 +5,7 @@ var http = require('http')
   , io = require('socket.io')
   , connect = require('connect')
   , gzip = require('connect-gzip')
+  , nowww = require('connect-no-www')
   , ams = require('ams')
   , Game = require('game')
   , server
@@ -17,16 +18,6 @@ cleanOldStaticFiles(publicDir);
 buildStaticFiles();
 
 function niceifyURL(req, res, next){
-  if (/^www\./.exec(req.headers.host)) {
-    var host = req.headers.host.substring(req.headers.host.indexOf('.') + 1)
-      , url  = 'http://' + host + req.url
-    res.writeHead(302, {
-      'Location': url
-    });
-    res.end();
-    return;
-  }
-
   if (/^\/game\/public/.exec(req.url)) {
     res.writeHead(302, {
       'Location': '/game/#!/' + getLatestPublicGame().hash
@@ -54,6 +45,7 @@ function niceifyURL(req, res, next){
 
 server = connect.createServer(
     connect.logger()
+  , nowww()
   , niceifyURL
   , gzip.staticGzip(publicDir, {
         matchType: /text|javascript|image/
@@ -148,10 +140,7 @@ function cleanOldStaticFiles(path) {
         files.forEach(function(filename, index) {
           cleanOldStaticFiles(path + '/' + filename);
         });
-      });  
-    } else {
-      if (/\.gz\./.exec(path)) fs.unlink(path);
-    }
+      });
+    } else if (/\.gz\./.exec(path)) fs.unlink(path);
   });
-  
 }

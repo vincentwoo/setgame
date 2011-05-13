@@ -14,7 +14,7 @@ Game.prototype.resetDeck = function() {
   }
   shuffle(this.deck);
 }
-  
+
 Game.prototype.reset = function() {
   this.deck = [];
   this.board = [];
@@ -94,7 +94,7 @@ Game.prototype.registerClient = function(client, sess) {
   this.sendMsg({event: true, msg: 'Player ' + (playerIdx + 1) + ' has joined.'});
   this.players[playerIdx] = new Player(client, sess);
   this.updateRemaining();
-  
+
   var that = this;
   setTimeout(function() {
     if (!that.started && that.numPlayers() >= minPlayers) {

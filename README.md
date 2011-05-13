@@ -8,11 +8,12 @@ various clientside animations.
 The server runs in dev mode with:
 
     ./start
-    
+
 npm dependencies are
 
     connect
     connect-gzip
+    connect-no-www
     socket.io
     ams
 

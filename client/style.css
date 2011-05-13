@@ -86,7 +86,7 @@ h1 {
     #p5 h3 {color: #e377c2}
     #p6 h3 {color: #bcbd22}
     #p7 h3 {color: #17becf}
-    
+
 .puzzled {
   display: none;
   border-radius: 4px;
@@ -222,11 +222,11 @@ h1 {
   text-align: center;
   border-radius: 10px;
   -moz-border-radius: 10px;
-  
+
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
   -moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
   -webkit-box-shadow: 2px 2px 3x rgba(0, 0, 0, 0.15);
-  
+
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
