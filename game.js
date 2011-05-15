@@ -146,7 +146,7 @@ Game.prototype.message = function(client, message) {
   console.log('player ' + player + ' sends: ');
   console.log(message);
   if (message.action === 'init') {
-    client.send({
+    return client.send({
         action: 'init'
       , board: this.board
       , players: this.playerData()
@@ -154,7 +154,6 @@ Game.prototype.message = function(client, message) {
       , msgs: this.messages
       , remaining: this.started ? 0 : minPlayers - this.numPlayers()
     });
-    return;
   }
   if (message.action === 'take' &&
       'selected' in message &&
@@ -252,8 +251,7 @@ Game.prototype.message = function(client, message) {
       message.msg.length < 1024)
   {
     var msg = message.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
-    this.sendMsg({ player: player, msg: msg });
-    return;
+    return this.sendMsg({ player: player, msg: msg });
   }
 }
 

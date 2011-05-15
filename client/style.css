@@ -1,19 +1,52 @@
+@font-face {
+  font-family: 'DroidSansRegular';
+  src: url('DroidSans-webfont.eot');
+  src: url('DroidSans-webfont.eot?#iefix') format('embedded-opentype'),
+       url('DroidSans-webfont.woff') format('woff'),
+       url('DroidSans-webfont.ttf') format('truetype'),
+       url('DroidSans-webfont.svg#DroidSansRegular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'BebasNeueRegular';
+  src: url('BebasNeue-webfont.eot');
+  src: url('BebasNeue-webfont.eot?#iefix') format('embedded-opentype'),
+       url('BebasNeue-webfont.woff') format('woff'),
+       url('BebasNeue-webfont.ttf') format('truetype'),
+       url('BebasNeue-webfont.svg#BebasNeueRegular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html, body, div, p, ul, li, a, h1, h2, h3, table, form, input, pre {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 body {
-  font: 1em Tahoma, Geneva, sans-serif;
   line-height: 1.3em;
   color: #333;
   background: #E6E6E6 url('/gradient.jpg');
   background-attachment: fixed;
 }
+body, textarea, input { font: 16px 'DroidSansRegular', Tahoma, Geneva, sans-serif; }
 p {
   padding: 5px;
 }
-h2 { margin: 5px 0; }
+h1, h2, h3 {
+  font-family: 'BebasNeueRegular';
+  margin: 5px 0; 
+}
+h1 {
+  /* font: bold 2.3em/1.2em "Arial Black", sans-serif; */
+  text-shadow: 0px 2px 3px #555;
+}
+h3 {
+  font-size: 22px;
+  text-shadow: 0px 1px 1px #999;
+}
 a, a:visited, a:link, a:hover {
   color: #333;
   text-decoration: none;
@@ -24,7 +57,6 @@ a:hover {
   border-bottom: 1px dotted #333;
 }
 textarea {
-  font: 1em Tahoma, Geneva, sans-serif;
   line-height: 1.3em;
   color: #333;
   -webkit-appearance: textarea;
@@ -35,10 +67,6 @@ textarea {
   cursor: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
-}
-h1 {
-  font: bold 2.3em/1.2em "Arial Black", sans-serif;
-  text-shadow: 0px 2px 3px #555;
 }
 #wrap {
   margin: 50px auto;
@@ -66,7 +94,7 @@ h1 {
       float: right;
       text-align: left;
       width: 70px;
-      font: bold 2em/1em "Arial Black", sans-serif;
+      font: bold 35px/20px "Arial Black", sans-serif; 
       text-shadow: 0px 2px 3px #555;
     }
     #scoreboard li h3 {
@@ -74,9 +102,6 @@ h1 {
       float: right;
       width: 70px;
       text-align: left;
-      font-weight: bold;
-      font-size: 0.9em;
-      text-shadow: 0px 1px 1px #999;
     }
     #p0 h3 {color: #1f77b4}
     #p1 h3 {color: #ff7f0e}
@@ -119,18 +144,18 @@ h1 {
   z-index: 20;
 }
 #chat {
-  margin-left: 635px;
-  margin-right: 25px;
-  margin-bottom: 110px;
+  margin: 0 25px 110px 650px;
 }
-.name {
-  padding-top: 6px;
-  float: left;
-  font-weight: bold;
-  font-size: 0.8em;
+#chat li {
+  position: relative;
+}
+#chat li h3 {
+  position: absolute;
+  top: -3px;
+  left: 0;
 }
 .player-message {
-  margin-left: 65px;
+  margin-left: 75px;
 }
 .message {
   padding: 5px 10px;
@@ -144,10 +169,6 @@ h1 {
   -moz-border-radius: 0 0 10px 0;
   -webkit-border-radius: 0 0 10px 0;
   border-radius: 0 0 10px 0;
-}
-.event {
-  text-align: right;
-  font-style: italic;
 }
 #training {
   display:none;
@@ -165,7 +186,7 @@ h1 {
 }
   #footer form {
     min-width: 220px;
-    margin-left: 635px;
+    margin-left: 650px;
     margin-right: 25px;
   }
     #footer form #input {

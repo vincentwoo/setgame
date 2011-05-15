@@ -213,8 +213,8 @@ function msg(obj) {
   var m = $('<li>' +
     (skipName ?
       '' :
-      '<div class="name" style="color:' + colors[obj.player] +
-      '">Player ' +(obj.player+1) + '</div>') +
+      '<h3 style="color:' + colors[obj.player] +
+      '">Player ' +(obj.player+1) + '</h3>') +
     '<div class="message cornered ' + (obj.event ? 'event' : 'player-message') + '">' +
     obj.msg + '</div></li>'
   );
@@ -287,7 +287,7 @@ function socket_message(obj) {
       }
 
       (function (j) {
-        var xconst = (j * 38) - 42, yconst = 0
+        var xconst = (j * 38) - 42, yconst = -10
           , offsx = xconst + p.offset().left - dupe.offset().left
           , offsy = yconst + p.offset().top - dupe.offset().top;
         dupe.removeClass('selected');

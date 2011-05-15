@@ -22,25 +22,19 @@ function niceifyURL(req, res, next){
     res.writeHead(302, {
       'Location': '/game/#!/' + getLatestPublicGame().hash
     });
-    res.end();
-    return;
+    return res.end();
   }
 
   if (/^\/game\//.exec(req.url)) {
     req.url = '/game.html';
-    next();
-    return;
+    return next();
   }
 
   if (/^\/game/.exec(req.url)) {
-    res.writeHead(301, {
-      'Location': '/game/'
-    });
-    res.end();
-    return;
+    res.writeHead(301, { 'Location': '/game/' });
+    return res.end();
   }
-
-  next();
+  return next();
 }
 
 server = connect.createServer(
@@ -48,7 +42,7 @@ server = connect.createServer(
   , nowww()
   , niceifyURL
   , gzip.staticGzip(publicDir, {
-        matchType: /text|javascript|image/
+        matchType: /text|javascript|image|font/
       , maxAge: process.env.NODE_ENV === 'development' ? 0 : 604800000
     })
 );
@@ -114,7 +108,7 @@ function randString(size) {
 function buildStaticFiles() {
   ams.build
   .create(publicDir)
-  .add(clientDir + '/jquery-1.5.2.js')
+  .add(clientDir + '/jquery-1.6.1.js')
   .add(clientDir + '/jquery.transform.lite.js')
   .add(clientDir + '/jquery.ba-bbq.js')
   .add(clientDir + '/util.js')
