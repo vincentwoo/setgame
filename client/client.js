@@ -175,7 +175,7 @@ function fadeOutAllLastSets() {
 
 function hint(event) {
   socket.send({action: 'hint'});
-  $('#hint').hide();
+  $('#hint').animate({opacity:0});
   showPuzzled(me);
   event.preventDefault();
 }
@@ -186,7 +186,7 @@ function showPuzzled(player) {
 
 function hideAllPuzzled() {
   $('.puzzled').fadeOut(600);
-  setTimeout(function() { $('#hint').slideDown(); }, 610);
+  setTimeout(function() { $('#hint').animate({opacity:1}); }, 610);
 }
 
 function input(e) {
