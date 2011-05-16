@@ -108,6 +108,7 @@ function randString(size) {
 function buildStaticFiles() {
   ams.build
   .create(publicDir)
+  .add(clientDir + '/json2.js')
   .add(clientDir + '/jquery-1.6.1.js')
   .add(clientDir + '/jquery.transform.lite.js')
   .add(clientDir + '/jquery.ba-bbq.js')
