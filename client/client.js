@@ -287,7 +287,7 @@ function socket_message(obj) {
       }
 
       (function (j) {
-        var xconst = (j * 38) - 42, yconst = -10
+        var xconst = (j * 38) - 42, yconst = -12
           , offsx = xconst + p.offset().left - dupe.offset().left
           , offsy = yconst + p.offset().top - dupe.offset().top;
         dupe.removeClass('selected');

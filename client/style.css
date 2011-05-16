@@ -47,7 +47,6 @@ h2 {
 }
 h3 {
   font-size: 22px;
-  text-shadow: 0px 1px 1px #999;
 }
 a, a:visited, a:link, a:hover {
   color: #333;
@@ -154,7 +153,7 @@ textarea {
   left: 0;
 }
 .player-message {
-  margin-left: 75px;
+  margin-left: 85px;
 }
 .message {
   padding: 5px 10px;
@@ -300,8 +299,8 @@ li a:hover { background: #eee; }
   padding: 15px 0;
   text-align:center;
   margin-bottom: 15px;
-  border-radius: 15px;
-  -moz-border-radius: 15px;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
 }
 .set {
   margin: 10px 0 10px 25px;
@@ -310,3 +309,4 @@ li a:hover { background: #eee; }
   float: right;
 }
 #explanation p { margin-bottom: 25px; }
+#explanation h2 { margin: 15px 0 5px 0 }
