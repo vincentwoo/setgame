@@ -30,12 +30,13 @@ function startGame() {
     var target = $(event.target)
       , id = target.attr('id');
 
-    if (id === 'hint' |
+    if (id === 'hint' ||
         target.parent().attr('id') === 'hint'  ||
         id === 'input')
       return;
     var klass = target.attr('class');
-    if (klass.indexOf('card') === -1 && klass.indexOf('shape') === -1) {
+    if (klass === undefined || 
+		(klass.indexOf('card') === -1 && klass.indexOf('shape') === -1)) {
       clearSelected();
     }
   });
