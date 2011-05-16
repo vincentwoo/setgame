@@ -172,10 +172,12 @@ textarea {
   display:none;
   float: left;
   width: 50%;
+  position: absolute;
+  bottom: 0px;
 }
 #hint .button {
-  margin-left: 60%;
-  width: 40%;
+  margin-left: 75%;
+  width: 25%;
 }
 #footer {
   position: fixed;
@@ -278,13 +280,13 @@ textarea {
 #hint {
   display: none;
   cursor: pointer;
+  position: relative;
 }
 #share {
   display: none;
 }
 #share input {
-  width: 100%;
-  font-family: 'Courier', monospace
+  width: 80%;
 }
 li a { width: 100%; height: 100%; display:block }
 li a:hover { background: #eee; }
