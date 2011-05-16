@@ -37,11 +37,15 @@ p {
 }
 h1, h2, h3 {
   font-family: 'BebasNeueRegular';
-  margin: 5px 0; 
+  line-height: 1em;
+  margin: 3px;
 }
 h1 {
   /* font: bold 2.3em/1.2em "Arial Black", sans-serif; */
   text-shadow: 0px 2px 3px #555;
+}
+h2 {
+  font-size: 30px;
 }
 h3 {
   font-size: 22px;
@@ -224,11 +228,6 @@ textarea {
   width: 130px;
   height: 78px;
 }
-.set {
-  margin: 10px auto;
-  width: 400px;
-  height: 80px;
-}
 .set .cardwrap {
   float: left;
 }
@@ -290,3 +289,13 @@ textarea {
 li a { width: 100%; height: 100%; display:block }
 li a:hover { background: #eee }
 .centered { margin: 0 auto; }
+
+#explanation { margin:0 200px 0 285px; }
+#menu { width: 260px; float: left; position: fixed; }
+.set {
+  margin: 10px 0 10px 25px;
+  width: 400px;
+  height: 80px;
+  float: right;
+}
+#explanation p { margin-bottom: 25px; }
