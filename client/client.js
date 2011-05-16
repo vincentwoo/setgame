@@ -215,7 +215,7 @@ function msg(obj) {
       '' :
       '<h3 style="color:' + colors[obj.player] +
       '">Player ' +(obj.player+1) + '</h3>') +
-    '<div class="message cornered ' + (obj.event ? 'event' : 'player-message') + '">' +
+    '<div class="message cornered ' + (obj.event ? '' : 'player-message') + '">' +
     obj.msg + '</div></li>'
   );
   lastMsg = {player: obj.player, event: obj.event};

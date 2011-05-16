@@ -3,6 +3,7 @@ var Game = function(hash, minPlayers) {
   this.hash = hash;
   this.puzzled = [];
   this.messages = [];
+  this.minPlayers = minPlayers;
   this.started = !minPlayers;
 
   this.reset();
@@ -97,7 +98,7 @@ Game.prototype.registerClient = function(client, sess) {
 
   var that = this;
   setTimeout(function() {
-    if (!that.started && that.numPlayers() >= minPlayers) {
+    if (!that.started && that.numPlayers() >= that.minPlayers) {
       that.started = true;
       that.broadcast({action: 'start'});
       that.reset();
@@ -121,7 +122,7 @@ Game.prototype.unregisterClient = function(client, gameOver) {
 
 Game.prototype.updateRemaining = function() {
   if (this.started) return;
-  this.broadcast({action: 'remaining', remaining: minPlayers - this.numPlayers()});
+  this.broadcast({action: 'remaining', remaining: this.minPlayers - this.numPlayers()});
 }
 
 Game.prototype.broadcast = function(message) {
@@ -152,7 +153,7 @@ Game.prototype.message = function(client, message) {
       , players: this.playerData()
       , you: player
       , msgs: this.messages
-      , remaining: this.started ? 0 : minPlayers - this.numPlayers()
+      , remaining: this.started ? 0 : this.minPlayers - this.numPlayers()
     });
   }
   if (message.action === 'take' &&

@@ -26,19 +26,17 @@ html, body, div, p, ul, li, a, h1, h2, h3, table, form, input, pre {
   list-style: none;
 }
 body {
-  line-height: 1.3em;
   color: #333;
   background: #E6E6E6 url('/gradient.jpg');
   background-attachment: fixed;
 }
-body, textarea, input { font: 16px 'DroidSansRegular', Tahoma, Geneva, sans-serif; }
+body, textarea, input { font: 13px/19px 'DroidSansRegular', Tahoma, Geneva, sans-serif !important; }
 p {
   padding: 5px;
 }
 h1, h2, h3 {
   font-family: 'BebasNeueRegular';
-  line-height: 1em;
-  margin: 3px;
+  line-height: 0.7em;
 }
 h1 {
   /* font: bold 2.3em/1.2em "Arial Black", sans-serif; */
@@ -54,11 +52,7 @@ h3 {
 a, a:visited, a:link, a:hover {
   color: #333;
   text-decoration: none;
-  border-bottom: 1px solid transparent;
   font-weight: bold;
-}
-a:hover {
-  border-bottom: 1px dotted #333;
 }
 textarea {
   line-height: 1.3em;
@@ -106,6 +100,7 @@ textarea {
       float: right;
       width: 70px;
       text-align: left;
+      margin-top: 15px;
     }
     #p0 h3 {color: #1f77b4}
     #p1 h3 {color: #ff7f0e}
@@ -155,7 +150,7 @@ textarea {
 }
 #chat li h3 {
   position: absolute;
-  top: -3px;
+  top: 10px;
   left: 0;
 }
 .player-message {
@@ -176,6 +171,12 @@ textarea {
 }
 #training {
   display:none;
+  float: left;
+  width: 50%;
+}
+#hint .button {
+  margin-left: 60%;
+  width: 40%;
 }
 #footer {
   position: fixed;
@@ -207,7 +208,6 @@ textarea {
     }
     #footer form label {
       font-weight: bold;
-      font-size: 0.8em;
       float: left;
       width: 150px;
       margin-left: -170px;
@@ -287,11 +287,22 @@ textarea {
   font-family: 'Courier', monospace
 }
 li a { width: 100%; height: 100%; display:block }
-li a:hover { background: #eee }
+li a:hover { background: #eee; }
 .centered { margin: 0 auto; }
 
-#explanation { margin:0 200px 0 285px; }
-#menu { width: 260px; float: left; position: fixed; }
+#explanation { margin:0 200px 0 310px; }
+#menu { width: 260px; float: left; position: fixed; margin-left: 25px; }
+.button {
+  background: #fff;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+  padding: 15px 0;
+  text-align:center;
+  margin-bottom: 15px;
+  border-radius: 15px;
+  -moz-border-radius: 15px;
+}
 .set {
   margin: 10px 0 10px 25px;
   width: 400px;
