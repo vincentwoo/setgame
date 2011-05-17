@@ -240,7 +240,7 @@ function socket_message(obj) {
       $('#training').slideDown();
       $('#training b').text(obj.remaining);
     }
-    $('#hint, #share').slideDown();
+    $('#hint, #share').css({display:'block'});
     fadeOutAllLastSets();
     return;
   }
