@@ -73,10 +73,10 @@ function getLatestPublicGame() {
 }
 
 io.on('connection', function(client){
-  var game;
+  var game = null;
   client.on('message', function(message){
     console.log(message);
-    if (message.action === 'init') {
+    if ('action' in message && message.action === 'init') {
       game = getGame(message.game);
       game.registerClient(client, message.sess);
       client.send({action: 'setHash', hash: game.hash});
