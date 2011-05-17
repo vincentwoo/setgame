@@ -84,7 +84,8 @@ io.on('connection', function(client){
     if (game !== null) game.message(client, message);
   });
 
-  client.on('disconnect', function(){
+  client.on('disconnect', function() {
+    if (!game) return;
     var hash = game.hash;
     game.unregisterClient(client, function gameOver() {
       console.log('gameover called');
