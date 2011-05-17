@@ -275,7 +275,7 @@ Game.prototype.checkSetExistence = function() {
     var _i = (i + randoffs) % this.board.length
       , _j = (j + randoffs) % this.board.length
       , _k = (k + randoffs) % this.board.length;
-    if (this.verifySet(this.board[_i],this.board[_j],this.board[_k])) return [_i,_j,_k];
+    if (this.verifySet(this.board[_i],this.board[_j],this.board[_k])) return shuffle([_i,_j,_k]);
   }}}
   return false;
 }
