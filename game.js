@@ -5,6 +5,7 @@ var Game = function(hash, minPlayers) {
   this.messages = [];
   this.minPlayers = minPlayers;
   this.started = !minPlayers;
+  this.hinted = null;
 
   this.reset();
 }
@@ -73,7 +74,8 @@ Game.prototype.playerData = function() {
 
 Game.prototype.registerClient = function(client, sess) {
   if (this.numPlayers() >= this.players.length) return false;
-
+  var self = this;
+  
   for (var i = 0; i < this.players.length; i++) {
     var player = this.players[i];
     if (player === null) continue;
@@ -96,12 +98,11 @@ Game.prototype.registerClient = function(client, sess) {
   this.players[playerIdx] = new Player(client, sess);
   this.updateRemaining();
 
-  var that = this;
   setTimeout(function() {
-    if (!that.started && that.numPlayers() >= that.minPlayers) {
-      that.started = true;
-      that.broadcast({action: 'start'});
-      that.reset();
+    if (!self.started && self.numPlayers() >= self.minPlayers) {
+      self.started = true;
+      self.broadcast({action: 'start'});
+      self.reset();
     }
   }, 2000);
   return true;
@@ -110,13 +111,14 @@ Game.prototype.registerClient = function(client, sess) {
 Game.prototype.unregisterClient = function(client, gameOver) {
   var playerIdx = this.getPlayerIdx(client);
   if (playerIdx === -1) return;
+  var self = this;
+  
   this.players[playerIdx].online = false;
   this.broadcast({action: 'leave', player: playerIdx});
   this.updateRemaining();
   this.sendMsg({event: true, msg: 'Player ' + (playerIdx + 1) + ' has disconnected.'});
-  var that = this;
   setTimeout( function delayGameover() {
-    if (that.numPlayers() === 0) gameOver();
+    if (self.numPlayers() === 0) gameOver();
   }, 3600000);
 }
 
@@ -144,8 +146,10 @@ Game.prototype.message = function(client, message) {
   if (!message.action) return;
   var player = this.getPlayerIdx(client);
   if (player === -1) return;
+  var self = this;
   console.log('player ' + player + ' sends: ');
   console.log(message);
+  
   if (message.action === 'init') {
     return client.send({
         action: 'init'
@@ -156,6 +160,7 @@ Game.prototype.message = function(client, message) {
       , remaining: this.started ? 0 : this.minPlayers - this.numPlayers()
     });
   }
+  
   if (message.action === 'take' &&
       'selected' in message &&
       message.selected.length === 3)
@@ -190,6 +195,7 @@ Game.prototype.message = function(client, message) {
       var playerUpdate = {};
       playerUpdate[player] = {score: this.players[player].score};
       this.puzzled = [];
+      this.hinted = null;
       this.broadcast({
           action: 'taken'
         , update: update
@@ -206,8 +212,7 @@ Game.prototype.message = function(client, message) {
               return prev;
             }, null)
         };
-        var that = this;
-        setTimeout(function() { that.broadcast(message); }, 2000);
+        setTimeout(function() { self.broadcast(message); }, 2000);
         this.reset();
       }
     } else {
@@ -223,26 +228,31 @@ Game.prototype.message = function(client, message) {
         action: 'puzzled'
       , player: player
     });
-    var that = this;
+    var self = this;
     setTimeout(function() {
       console.log('hint timeout executing');
-      if (that.puzzled.length < Math.ceil(that.numPlayers() * 0.51)) return;
-      var setExists = that.checkSetExistence();
-      if (setExists) {
-        that.broadcast({
+      if (self.puzzled.length < Math.ceil(self.numPlayers() * 0.51)) return;
+      if (!self.hinted) {
+        var setExists = self.checkSetExistence();
+        if (setExists) {
+          self.hinted = setExists;
+        } else if (self.deck.length > 0) {
+          var newCards = [];
+          for (var i = 0; i < 3; i++) newCards.push(self.deck.pop());
+          self.board = self.board.concat(newCards);
+          self.broadcast({
+              action: 'add'
+            , cards: newCards
+          });
+        }
+      }
+      if (self.hinted && self.hinted.length > 0) {
+        self.broadcast({
             action: 'hint'
-          , card: setExists[Math.floor(Math.random()*3)]
-        });
-      } else if (that.deck.length > 0) {
-        var newCards = [];
-        for (var i = 0; i < 3; i++) newCards.push(that.deck.pop());
-        that.board = that.board.concat(newCards);
-        that.broadcast({
-            action: 'add'
-          , cards: newCards
+          , card: self.hinted.pop()
         });
       }
-      that.puzzled = [];
+      self.puzzled = [];
     }, 1000);
     return;
   }
@@ -258,10 +268,14 @@ Game.prototype.message = function(client, message) {
 
 Game.prototype.checkSetExistence = function() {
   if (this.board.length < 3) return false;
+  var randoffs = Math.floor(Math.random() * this.board.length);
   for (var i = 0; i < this.board.length - 2; i++) {
   for (var j = i + 1; j < this.board.length - 1; j++) {
   for (var k = j + 1; k < this.board.length; k++) {
-    if (this.verifySet(this.board[i],this.board[j],this.board[k])) return [i,j,k];
+    var _i = (i + randoffs) % this.board.length
+      , _j = (j + randoffs) % this.board.length
+      , _k = (k + randoffs) % this.board.length;
+    if (this.verifySet(this.board[_i],this.board[_j],this.board[_k])) return [_i,_j,_k];
   }}}
   return false;
 }
@@ -313,7 +327,7 @@ function Player(client, sess) {
 function shuffle(v){
     for(var j, x, i = v.length;
       i;
-      j = parseInt(Math.random() * i), x = v[--i], v[i] = v[j], v[j] = x)
+      j = Math.floor(Math.random() * i), x = v[--i], v[i] = v[j], v[j] = x)
     ;
     return v;
 };
