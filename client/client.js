@@ -6,24 +6,24 @@ var socket
   , lastMsg;
 
 function startGame() {
-  setTimeout(function() {
-    socket = new io.Socket(null, {
-          port: 80
-        , rememberTransport: false
-        , transports: ['websocket', 'flashsocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
-    })
-    socket.on('message', socket_message);
-    socket.on('connect', initGame);
-    socket.on('disconnect', socket_disconnect);
-    socket.on('reconnect', socket_reconnect);
-    socket.on('reconnecting', socket_reconnect);
-    socket.on('reconnect_failed', socket_reconnect_failed);
-    socket.connect();
-  }, 250);
+  socket = new io.Socket(null, {
+      port: 80
+    , rememberTransport: false
+    , transports: ['websocket', 'flashsocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
+  })
+  socket.on('message', socket_message);
+  socket.on('connect', initGame);
+  socket.on('disconnect', socket_disconnect);
+  socket.on('reconnect', socket_reconnect);
+  socket.on('reconnecting', socket_reconnect);
+  socket.on('reconnect_failed', socket_reconnect_failed);
+  socket.connect();
   $('#hint').click(hint);
   $('#input').keypress(input);
   $('#input').focus();
-  $(window).hashchange(initGame);
+  $(window).hashchange(function() {
+	  location.reload();
+  });
 
   $(document).bind('mousedown', function(event) {
     var target = $(event.target)
