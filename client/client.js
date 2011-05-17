@@ -3,7 +3,8 @@ var socket
   , cards = []
   , lastSets = {}
   , me
-  , lastMsg;
+  , lastMsg
+  , preventRefresh = false;
 
 function startGame() {
   socket = new io.Socket(null, {
@@ -22,6 +23,10 @@ function startGame() {
   $('#input').keypress(input);
   $('#input').focus();
   $(window).hashchange(function() {
+    if (preventRefresh) {
+      preventRefresh = false;
+      return;
+    }
 	  location.reload();
   });
 
@@ -312,6 +317,7 @@ function socket_message(obj) {
     return;
   }
   if (obj.action === 'setHash') {
+    preventRefresh = true;
     window.location.hash = '#!/' + obj.hash;
     return;
   }
