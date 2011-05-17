@@ -100,14 +100,15 @@ textarea {
       text-align: left;
       margin-top: 15px;
     }
-    #p0 h3 {color: #1f77b4}
-    #p1 h3 {color: #ff7f0e}
-    #p2 h3 {color: #2ca02c}
-    #p3 h3 {color: #d62728}
-    #p4 h3 {color: #9467bd}
-    #p5 h3 {color: #e377c2}
-    #p6 h3 {color: #bcbd22}
-    #p7 h3 {color: #17becf}
+
+.p0 {color: #771536} 
+.p1 {color: #0E4647} 
+.p2 {color: #597725}
+.p3 {color: #302649}
+.p4 {color: #CCAA17}
+.p5 {color: #28A09A}
+.p6 {color: #9FBC42}
+.p7 {color: #D84E86}
 
 .puzzled {
   display: none;

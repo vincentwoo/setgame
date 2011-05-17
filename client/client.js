@@ -3,7 +3,6 @@ var socket
   , cards = []
   , lastSets = {}
   , me
-  , colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#e377c2", "#bcbd22", "#17becf"]
   , lastMsg;
 
 function startGame() {
@@ -214,7 +213,7 @@ function msg(obj) {
   var m = $('<li>' +
     (skipName ?
       '' :
-      '<h3 style="color:' + colors[obj.player] +
+      '<h3 class="p' + obj.player +
       '">Player ' +(obj.player+1) + '</h3>') +
     '<div class="message cornered ' + (obj.event ? '' : 'player-message') + '">' +
     obj.msg + '</div></li>'
