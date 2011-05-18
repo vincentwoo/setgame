@@ -245,6 +245,7 @@ function socket_message(obj) {
       $('#training b').text(obj.remaining);
     }
     $('#hint, #share').css({display:'block'});
+    $('#footer h3').addClass('p' + me).text('Player ' + (me + 1));
     fadeOutAllLastSets();
     return;
   }

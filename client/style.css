@@ -185,7 +185,7 @@ textarea {
 }
   #footer form {
     min-width: 220px;
-    margin-left: 650px;
+    margin-left: 735px;
     margin-right: 25px;
   }
     #footer form #input {
@@ -201,12 +201,15 @@ textarea {
       box-sizing: border-box;
     }
     #footer form label {
-      font-weight: bold;
       float: left;
-      width: 150px;
-      margin-left: -170px;
+      width: 210px;
+      margin-left: -220px;
       margin-top: 10px;
       text-align: right;
+    }
+    #footer form label h3 {
+      float: right;
+      margin: 3px 5px 0 15px;
     }
 #boardwrap {
   width: 400px;
