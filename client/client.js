@@ -207,8 +207,8 @@ function input(e) {
     e.preventDefault();
   }
   setTimeout(function() {
-    if (self.value) $(self).prev().fadeOut();
-    else $(self).prev().fadeIn();
+    if (self.value) $(self).prev().fadeOut('fast');
+    else $(self).prev().fadeIn('fast');
   }, 15);
 }
 

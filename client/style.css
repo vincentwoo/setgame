@@ -20,15 +20,17 @@
   font-style: normal;
 }
 
-html, body, div, p, ul, li, a, h1, h2, h3, table, form, input, pre {
+* {
   margin: 0;
   padding: 0;
   list-style: none;
 }
+html, body { width: 100% }
 body {
   color: #333;
-  background: #E6E6E6 url('/gradient.jpg');
+  background: #cecece url('/gradient.jpg');
   background-attachment: fixed;
+  overflow-x: hidden;
 }
 body, textarea, input { font: 13px/19px 'DroidSansRegular', Tahoma, Geneva, sans-serif !important; }
 p {
@@ -64,6 +66,16 @@ textarea {
   white-space: pre-wrap;
   word-wrap: break-word;
 }
+#fixwrap {
+  position: fixed;
+  width: 100%;
+  z-index: 10;
+}
+#fixinner {
+  margin: 0 auto;
+  position: relative;
+  width: 990px;
+}
 #wrap {
   margin: 50px auto;
   position: relative;
@@ -72,8 +84,7 @@ textarea {
 }
 #scoreboard {
   width: 190px;
-  position: fixed;
-  left: 20px;
+  margin-top: 10px;
   float: left;
 }
   #scoreboard li {
@@ -140,7 +151,10 @@ textarea {
   z-index: 20;
 }
 #chat {
-  margin: 0 25px 110px 650px;
+  width: 350px;
+  padding-left: 640px;
+  margin: 0 auto;
+  z-index: 1;
 }
 #chat li {
   position: relative;
@@ -177,23 +191,21 @@ textarea {
   width: 100%;
   left: 0;
   bottom: 0;
-  height: 40px;
-  box-shadow: 0 -4px 0 0 rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 0 -4px 0 0 rgba(0, 0, 0, 0.1);
-  -webkit-box-shadow: 0 -4px 0 0 rgba(0, 0, 0, 0.1);
-  background: #E6E6E6;
+  height: 36px;
+  border-top: 4px solid #aaa;
+  background: #cecece;
 }
   #footer form {
-    min-width: 220px;
-    margin-left: 735px;
-    margin-right: 25px;
+    width: 265px;
     position: relative;
+    padding-left: 725px;
+    margin: 0 auto;
   }
     #footer form #input {
       height: 35px;
       width: 100%;
       border: 0;
-      overflow: auto;
+      overflow: hidden;
       vertical-align: baseline;
       outline: 0;
       padding: 10px;
@@ -203,22 +215,19 @@ textarea {
     }
     #footer form label {
       position: absolute;
-      left: 15px;
+      left: 745px;
       top: 10px;
       color: #999;
     }
     #footer form h3 {
       position: absolute;
-      left: -115px;
-      width: 100px;
+      right: 280px;
       top: 12px;
       text-align: right;
     }
 #boardwrap {
-  width: 400px;
-  position: fixed;
-  left: 230px;
-  margin-top: -4px;
+  width: 390px;
+  margin-left: 215px;
 }
 #board {
   margin-bottom: 10px;
