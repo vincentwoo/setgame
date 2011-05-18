@@ -238,7 +238,7 @@ textarea {
   height: 78px;
 }
 .card {
-  border: 2px solid #333;
+  border: 2px solid #666;
   background: #fff;
   width: 120px;
   height: 70px;
@@ -321,10 +321,18 @@ li a:hover { background: #eee; }
   -moz-border-radius: 10px;
 }
 .set {
+  position:relative;
+  z-index:-10;
   margin: 0px -415px 10px 0;
   width: 390px;
   height: 80px;
   float: right;
+  background: #fff;
+  padding: 10px 10px 10px 25px;
+  border-radius: 10px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
 }
 .set .cardwrap {
   float: left;
