@@ -30,7 +30,6 @@ body {
   color: #333;
   background: #cecece url('/gradient.jpg');
   background-attachment: fixed;
-  overflow-x: hidden;
 }
 body, textarea, input { font: 13px/19px 'DroidSansRegular', Tahoma, Geneva, sans-serif !important; }
 p {
@@ -79,8 +78,7 @@ textarea {
 #wrap {
   margin: 50px auto;
   position: relative;
-  width: 100%;
-  min-width: 900px;
+  width: 990px;
 }
 #scoreboard {
   width: 190px;
@@ -152,8 +150,7 @@ textarea {
 }
 #chat {
   width: 350px;
-  padding-left: 640px;
-  margin: 0 auto;
+  float: right;
   z-index: 1;
 }
 #chat li {

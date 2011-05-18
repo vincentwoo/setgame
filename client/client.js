@@ -4,7 +4,8 @@ var socket
   , lastSets = {}
   , me
   , lastMsg
-  , preventRefresh = false;
+  , preventRefresh = false
+  , fixwrap;
 
 function startGame() {
   socket = new io.Socket(null, {
@@ -22,12 +23,18 @@ function startGame() {
   $('#hint').click(hint);
   $('#input').keydown(input);
   $('#input').focus();
+  
   $(window).hashchange(function() {
     if (preventRefresh) {
       preventRefresh = false;
       return;
     }
 	  location.reload();
+  });
+  
+  fixwrap = $('#fixwrap');
+  $(window).scroll(function() {
+    fixwrap.css('left', $(this).scrollLeft() * -1);
   });
 
   $(document).bind('mousedown', function(event) {
