@@ -68,7 +68,6 @@ textarea {
 #fixwrap {
   position: fixed;
   width: 100%;
-  z-index: 10;
 }
 #fixinner {
   margin: 0 auto;
@@ -191,6 +190,7 @@ textarea {
   height: 36px;
   border-top: 4px solid #aaa;
   background: #cecece;
+  z-index: 20;
 }
   #footer form {
     width: 265px;
@@ -225,6 +225,8 @@ textarea {
 #boardwrap {
   width: 390px;
   margin-left: 215px;
+  position: relative;
+  z-index: 10;
 }
 #board {
   margin-bottom: 10px;
@@ -234,9 +236,6 @@ textarea {
   position: relative;
   width: 130px;
   height: 78px;
-}
-.set .cardwrap {
-  float: left;
 }
 .card {
   border: 2px solid #333;
@@ -299,11 +298,16 @@ textarea {
 li a { width: 100%; height: 100%; display:block }
 li a:hover { background: #eee; }
 .centered { margin: 0 auto; }
-#menu { width: 260px; margin-left: 25px; }
+#menu { width: 260px; }
 #wrap #explanation {
-  margin-left: 300px;
-  width: 690px;
+  margin: -38px 0 0 275px;
+  padding-bottom: 25px;
+  width: 310px;
   float: left;
+  z-index: 30;
+}
+#wrap #explanation .full {
+  width: 700px;
 }
 .button {
   background: #fff;
@@ -317,10 +321,14 @@ li a:hover { background: #eee; }
   -moz-border-radius: 10px;
 }
 .set {
-  margin: 7px 0 10px 25px;
-  width: 400px;
+  margin: 0px -415px 10px 0;
+  width: 390px;
   height: 80px;
   float: right;
 }
-#explanation p { margin-bottom: 25px; }
-#explanation h2 { margin: 15px 0 5px 0 }
+.set .cardwrap {
+  float: left;
+}
+#explanation p { margin-bottom: 10px; }
+#explanation h1 { margin: 0 0 10px 15px }
+#explanation h2 { margin: 25px 0 10px 15px }
