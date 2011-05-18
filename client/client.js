@@ -20,7 +20,7 @@ function startGame() {
   socket.on('reconnect_failed', socket_reconnect_failed);
   socket.connect();
   $('#hint').click(hint);
-  $('#input').keypress(input);
+  $('#input').keydown(input);
   $('#input').focus();
   $(window).hashchange(function() {
     if (preventRefresh) {
@@ -196,15 +196,20 @@ function hideAllPuzzled() {
 
 function input(e) {
   e = e || event;
+  var self = this;
   if (e.which === 13) {
     if (!e.ctrlKey) {
-      if (this.value !== "") socket.send({action: 'msg', msg: this.value});
+      if (this.value) socket.send({action: 'msg', msg: this.value});
       this.value = "";
     } else {
       this.value += "\n";
     }
     e.preventDefault();
   }
+  setTimeout(function() {
+    if (self.value) $(self).prev().fadeOut();
+    else $(self).prev().fadeIn();
+  }, 15);
 }
 
 function msg(obj) {
