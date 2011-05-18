@@ -7,6 +7,13 @@ var socket
   , preventRefresh = false
   , fixwrap;
 
+$(function() {
+  fixwrap = $('#fixwrap');
+  $(window).scroll(function() {
+    fixwrap.css('left', $(this).scrollLeft() * -1);
+  });
+});
+
 function startGame() {
   socket = new io.Socket(null, {
       port: 80
@@ -30,11 +37,6 @@ function startGame() {
       return;
     }
 	  location.reload();
-  });
-  
-  fixwrap = $('#fixwrap');
-  $(window).scroll(function() {
-    fixwrap.css('left', $(this).scrollLeft() * -1);
   });
 
   $(document).bind('mousedown', function(event) {
