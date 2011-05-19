@@ -187,7 +187,7 @@ textarea {
   width: 100%;
   left: 0;
   bottom: 0;
-  height: 36px;
+  height: 60px;
   border-top: 4px solid #aaa;
   background: #cecece;
   z-index: 20;
@@ -199,7 +199,7 @@ textarea {
     margin: 0 auto;
   }
     #footer form #input {
-      height: 35px;
+      height: 60px;
       width: 100%;
       border: 0;
       overflow: hidden;
@@ -221,6 +221,12 @@ textarea {
       right: 280px;
       top: 12px;
       text-align: right;
+    }
+    #footer form #footer_center {
+      width: 468px;
+      height: 60px;
+      position: absolute;
+      left: 140px;
     }
 #boardwrap {
   width: 390px;
