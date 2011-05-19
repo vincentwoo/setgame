@@ -1,0 +1,12 @@
+[submodule "deps/jquery.transform.js"]
+	path = deps/jquery.transform.js
+	url = https://github.com/louisremi/jquery.transform.js.git
+[submodule "deps/jquery-bbq"]
+	path = deps/jquery-bbq
+	url = https://github.com/cowboy/jquery-bbq.git
+[submodule "deps/JSON-js"]
+	path = deps/JSON-js
+	url = https://github.com/douglascrockford/JSON-js.git
+[submodule "deps/headjs"]
+	path = deps/headjs
+	url = https://github.com/headjs/headjs.git

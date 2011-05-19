@@ -12,7 +12,8 @@ var http = require('http')
   , games = {}
   , latestPublicGame
   , clientDir = __dirname + '/client'
-  , publicDir = __dirname + '/public';
+  , publicDir = __dirname + '/public'
+  , depsDir = __dirname + '/deps';
 
 cleanOldStaticFiles(publicDir);
 buildStaticFiles();
@@ -107,23 +108,44 @@ function randString(size) {
 }
 
 function buildStaticFiles() {
-  ams.build
-  .create(publicDir)
-  .add(clientDir + '/json2.js')
-  .add(clientDir + '/jquery-1.6.1.js')
-  .add(clientDir + '/jquery.transform.lite.js')
-  .add(clientDir + '/jquery.ba-bbq.js')
-  .add(clientDir + '/util.js')
-  .add(clientDir + '/client.js')
-  .add(clientDir + '/style.css')
-  .combine({js: 'client.js', css: 'style.css'})
-  .process({
+  var options = {
     jstransport: false,
     cssabspath: false,
     cssdataimg: false,
     htmlabspath: false,
-    texttransport: false})
-  .write(publicDir)
+    texttransport: false
+  };
+  ams.build
+    .create(publicDir)
+    .add(clientDir + '/client.js')
+    .add(clientDir + '/style.css')
+    .combine({js: 'client.js', css: 'style.css'})
+    .process(options)
+    .write(publicDir)
+  .end();
+  ams.build
+    .create(publicDir)
+    .add(depsDir + '/JSON-js/json2.js')
+    .add(clientDir + '/util.js')
+    .combine({js: 'util.js'})
+    .process(options)
+    .write(publicDir)
+  .end();
+  ams.build
+    .create(publicDir)
+    .add(depsDir + '/jquery-bbq/jquery.ba-bbq.js')
+    .add(depsDir + '/jquery.transform.js/jquery.transform.light.js')
+    .add(clientDir + '/effects_extend.js')
+    .combine({js: 'effects.js'})
+    .process(options)
+    .write(publicDir)
+  .end();
+ ams.build
+    .create(publicDir)
+    .add(depsDir + '/headjs/src/load.js')
+    .combine({js: 'head.load.js'})
+    .process(options)
+    .write(publicDir)
   .end();
 }
 

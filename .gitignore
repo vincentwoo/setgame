@@ -1,4 +1,4 @@
-public/client.js
-public/style.css
+public/*.js
+public/*.css
 *.gz
 *.tmproj

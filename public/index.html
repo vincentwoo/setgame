@@ -5,6 +5,7 @@
     <title>set - the game</title>
     <link rel="stylesheet" href="/style.css"/>
     <link rel="shortcut icon" href="http://vincentwoo.com/favicon.ico"/>
+    <script src="/head.load.js"></script>
   </head>
   <body>
   <div id="fixwrap"><div id="fixinner">
@@ -126,7 +127,14 @@
       </li>
     </ul>
   </div>
-  <script src="/client.js"></script>
-  <script>$(parseCards);</script>
+  <script>
+    head.js('/util.js'
+    ,  'http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js'
+    ,  '/client.js');
+    
+    head.ready('client.js', function() {
+      $(parseCards);
+    });
+  </script>
   </body>
 </html>

@@ -30,14 +30,6 @@ function startGame() {
   $('#hint').click(hint);
   $('#input').keydown(input);
   $('#input').focus();
-  
-  $(window).hashchange(function() {
-    if (preventRefresh) {
-      preventRefresh = false;
-      return;
-    }
-	  location.reload();
-  });
 
   $(document).bind('mousedown', function(event) {
     var target = $(event.target)
