@@ -73,7 +73,7 @@
           </li>
           <li id ="share" class="message cornered">
             Share this URL to invite other people to join this game:
-            <input type="text" value="Test"></input>
+            <input type="text"></input>
           </li>
         </ul>
       </div>
@@ -106,8 +106,8 @@
       </form>
     </div>
     <script>
-      head.js('/socket.io/socket.io.js');
-      head.js('http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js'
+      head.js('/socket.io/socket.io.js'
+      , 'http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js'
       , '/client.js'
       , function() {
         $(startGame);
