@@ -106,13 +106,10 @@
       </form>
     </div>
     <script>
-      head.js('/util.js'
-      ,  '/socket.io/socket.io.js'
-      ,  'http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js'
-      ,  '/client.js'
-      ,  '/effects.js');
-      
-      head.ready('client.js', function() {
+      head.js('/socket.io/socket.io.js');
+      head.js('http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js'
+      , '/client.js'
+      , function() {
         $(startGame);
       });
     </script>

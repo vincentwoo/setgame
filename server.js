@@ -117,6 +117,10 @@ function buildStaticFiles() {
   };
   ams.build
     .create(publicDir)
+    .add(depsDir + '/JSON-js/json2.js')
+    .add(clientDir + '/util.js')
+    .add(depsDir + '/jquery-bbq/jquery.ba-bbq.js')
+    .add(depsDir + '/jquery.transform.js/jquery.transform.light.js')
     .add(clientDir + '/client.js')
     .add(clientDir + '/style.css')
     .combine({js: 'client.js', css: 'style.css'})
@@ -124,23 +128,6 @@ function buildStaticFiles() {
     .write(publicDir)
   .end();
   ams.build
-    .create(publicDir)
-    .add(depsDir + '/JSON-js/json2.js')
-    .add(clientDir + '/util.js')
-    .combine({js: 'util.js'})
-    .process(options)
-    .write(publicDir)
-  .end();
-  ams.build
-    .create(publicDir)
-    .add(depsDir + '/jquery-bbq/jquery.ba-bbq.js')
-    .add(depsDir + '/jquery.transform.js/jquery.transform.light.js')
-    .add(clientDir + '/effects_extend.js')
-    .combine({js: 'effects.js'})
-    .process(options)
-    .write(publicDir)
-  .end();
- ams.build
     .create(publicDir)
     .add(depsDir + '/headjs/src/load.js')
     .combine({js: 'head.load.js'})
