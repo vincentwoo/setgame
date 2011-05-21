@@ -10,3 +10,6 @@
 [submodule "deps/headjs"]
 	path = deps/headjs
 	url = https://github.com/headjs/headjs.git
+[submodule "deps/Socket.IO"]
+	path = deps/Socket.IO
+	url = https://github.com/LearnBoost/Socket.IO.git
