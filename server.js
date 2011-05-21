@@ -118,6 +118,7 @@ function buildStaticFiles() {
   ams.build
     .create(publicDir)
     .add(depsDir + '/JSON-js/json2.js')
+    .add(depsDir + '/Socket.IO/socket.io.js')
     .add(clientDir + '/util.js')
     .add(depsDir + '/jquery-bbq/jquery.ba-bbq.js')
     .add(depsDir + '/jquery.transform.js/jquery.transform.light.js')
