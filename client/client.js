@@ -334,6 +334,7 @@ function socket_message(obj) {
   if (obj.action === 'setHash') {
     preventRefresh = true;
     window.location.hash = '#!/' + obj.hash;
+    $('#share input').attr('value', window.location.href);
     return;
   }
   if (obj.action === 'join') {
