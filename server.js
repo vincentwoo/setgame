@@ -135,6 +135,12 @@ function buildStaticFiles() {
     .process(options)
     .write(publicDir)
   .end();
+  ams.build
+    .create(publicDir)
+    .add(clientDir + '/index.html')
+    .add(clientDir + '/game.html')
+    .write(publicDir)
+  .end()
 }
 
 function cleanOldStaticFiles(path) {
