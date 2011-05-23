@@ -266,7 +266,7 @@ function socket_message(obj) {
   if (obj.action === 'taken') {
     var j = 0;
     fadeOutLastSet(obj.player);
-    var deleteLastRow = 0;
+    var deleteLastRow = cards.length > 12;
     for (var i in obj.update) {
       if (i in selected) unselect(i);
       var card = obj.update[i]
@@ -278,7 +278,6 @@ function socket_message(obj) {
         var replace = cards[card]
           , old = cards[i];
         cards[i] = replace;
-        deleteLastRow++;
         (function (old) {
           var offsx = old.offset().left - replace.offset().left
             , offsy = old.offset().top - replace.offset().top;
@@ -292,10 +291,6 @@ function socket_message(obj) {
                   old.hide();
                   old.after($(this));
                   old.remove();
-                  if (--deleteLastRow === 0) {
-                    $('#board tr:last').remove();
-                    cards.splice(cards.length-3, 3);
-                  }
                 }
           });
         })(old);
@@ -326,6 +321,14 @@ function socket_message(obj) {
       })(j++);
       lastSets[obj.player].push(dupe);
     }
+    
+    if (deleteLastRow) {
+      setTimeout(function() {
+        $('#board tr:last').remove();
+        cards.splice(cards.length-3, 3);
+      }, 1350);
+    }
+    
     updatePlayers(obj.players);
     hideAllPuzzled();
     $('.hint').removeClass('hint');
