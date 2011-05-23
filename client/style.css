@@ -30,6 +30,7 @@ body {
   color: #333;
   background: #cecece url('/gradient.jpg');
   background-attachment: fixed;
+  padding-top: 40px;
 }
 body, textarea, input { font: 13px/19px 'DroidSansRegular', Tahoma, Geneva, sans-serif !important; }
 p {
@@ -65,9 +66,19 @@ textarea {
   white-space: pre-wrap;
   word-wrap: break-word;
 }
+#header {
+  position: fixed;
+  width: 100%;
+  top: 10px;
+  height: 40px;
+}
+  #header h1 {
+    text-align: center;
+  }
 #fixwrap {
   position: fixed;
   width: 100%;
+  top: 50px;
 }
 #fixinner {
   margin: 0 auto;
@@ -75,7 +86,7 @@ textarea {
   width: 990px;
 }
 #wrap {
-  margin: 50px auto;
+  margin: 10px auto 50px auto;
   position: relative;
   width: 990px;
 }
@@ -151,6 +162,9 @@ textarea {
   filter:alpha(opacity=70);
   opacity: .70;
   z-index: 20;
+}
+#chat {
+  margin-top: 5px;
 }
 #chat li {
   position: relative;
@@ -306,7 +320,7 @@ li a:hover { background: #eee; }
 .centered { margin: 0 auto; }
 #menu { width: 260px; }
 #wrap #explanation {
-  margin: -38px 0 0 275px;
+  margin-left: 275px;
   padding-bottom: 25px;
   width: 310px;
   float: left;
