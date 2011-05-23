@@ -91,7 +91,7 @@
     </div>
     <div id="footer">
       <form>
-        <div id="footer_center">
+        <div id="display_ad">
         </div>
         <h3></h3><label for="input">Type here to chat</label>
         <textarea wrap="hard" autocomplete="off" spellcheck="false" id="input"></textarea>
@@ -114,7 +114,17 @@
         _gat._getTracker('UA-267782-3')._trackPageview();
       });
       document.write = function(text) {
-        document.getElementById('footer_center').innerHTML = text;
+        var d = document.getElementById('display_ad');
+        if (text.substr(1,6) === 'script') {
+          var s = document.createElement('script');
+          s.type = 'text/javascript';
+          s.async = true;
+          if (text.substr(8,3) === 'src') s.src = text.split('"')[1];
+          else s.text = text.substring(text.indexOf('>')+1, text.lastIndexOf('<'));
+          d.parentNode.insertBefore(s, d)
+        } else {
+          d.innerHTML = text;
+        }
       }
       head.js('http://pagead2.googlesyndication.com/pagead/show_ads.js');
     </script>

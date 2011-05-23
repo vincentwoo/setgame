@@ -134,8 +134,19 @@
       head.js('http://www.google-analytics.com/ga.js', function () {
         _gat._getTracker('UA-267782-3')._trackPageview();
       });
+      
       document.write = function(text) {
-        document.getElementById('display_ad').innerHTML = text;
+        var d = document.getElementById('display_ad');
+        if (text.substr(1,6) === 'script') {
+          var s = document.createElement('script');
+          s.type = 'text/javascript';
+          s.async = true;
+          if (text.substr(8,3) === 'src') s.src = text.split('"')[1];
+          else s.text = text.substring(text.indexOf('>')+1, text.lastIndexOf('<'));
+          d.parentNode.insertBefore(s, d)
+        } else {
+          d.innerHTML = text;
+        }
       }
       head.js('http://pagead2.googlesyndication.com/pagead/show_ads.js');
     </script>
