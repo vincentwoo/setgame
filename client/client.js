@@ -266,7 +266,6 @@ function socket_message(obj) {
   if (obj.action === 'taken') {
     var j = 0;
     fadeOutLastSet(obj.player);
-    var deleteLastRow = cards.length > 12;
     for (var i in obj.update) {
       if (i in selected) unselect(i);
       var card = obj.update[i]
@@ -322,7 +321,7 @@ function socket_message(obj) {
       lastSets[obj.player].push(dupe);
     }
     
-    if (deleteLastRow) {
+    if (cards.length > 12) {
       setTimeout(function() {
         $('#board tr:last').remove();
         cards.splice(cards.length-3, 3);
