@@ -39,7 +39,7 @@ function niceifyURL(req, res, next){
 }
 
 server = connect.createServer(
-    connect.logger()
+    connect.logger(':remote-addr :status :url in :response-timems')
   , nowww()
   , niceifyURL
   , gzip.staticGzip(publicDir, {
@@ -80,7 +80,7 @@ io.on('connection', function(client){
     if ('action' in message && message.action === 'init') {
       game = getGame(message.game);
       game.registerClient(client, message.sess);
-      client.send({action: 'setHash', hash: game.hash});
+      if (message.game !== game.hash) client.send({action: 'setHash', hash: game.hash});
     }
     if (game !== null) game.message(client, message);
   });

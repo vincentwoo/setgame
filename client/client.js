@@ -19,7 +19,7 @@ function startGame() {
       port: 80
     , rememberTransport: false
     , transports: ['websocket', 'flashsocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
-  })
+  });
   socket.on('message', socket_message);
   socket.on('connect', initGame);
   socket.on('disconnect', socket_disconnect);
@@ -49,7 +49,7 @@ function startGame() {
       return;
     var klass = target.attr('class');
     if (klass === undefined || 
-		(klass.indexOf('card') === -1 && klass.indexOf('shape') === -1)) {
+		    (klass.indexOf('card') === -1 && klass.indexOf('shape') === -1)) {
       clearSelected();
     }
   });
@@ -65,7 +65,7 @@ function startGame() {
       if (getSelText() == '') {
         $('#input').focus();
       }
-    }, 50);
+    }, 1000);
   });
 }
 
@@ -333,7 +333,7 @@ function socket_message(obj) {
   }
   if (obj.action === 'setHash') {
     preventRefresh = true;
-    window.location.hash = '#!/' + obj.hash;
+    window.location.replace(window.location.href.split('#')[0] + '#!/' + obj.hash);
     $('#share input').attr('value', window.location.href);
     return;
   }
