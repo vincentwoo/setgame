@@ -67,7 +67,7 @@ textarea {
   word-wrap: break-word;
 }
 #header {
-  position: fixed;
+  position: absolute;
   width: 100%;
   top: 10px;
   height: 40px;
