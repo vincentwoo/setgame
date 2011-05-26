@@ -75,10 +75,8 @@ textarea {
   #header h1 {
     width: 990px;
     margin: 0 auto;
+    text-align: right;
   }
-    #header h1 a {
-     margin-left: 275px;
-    }
 #fixwrap {
   position: fixed;
   width: 100%;
