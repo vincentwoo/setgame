@@ -12,10 +12,10 @@ var Game = function(hash, minPlayers) {
 }
 
 Game.prototype.resetDeck = function() {
-  for (var i = 0; i < 12; i++) {
+  for (var i = 0; i < 81; i++) {
     this.deck.push( new Card(i) );
   }
-  //shuffle(this.deck);
+  shuffle(this.deck);
 }
 
 Game.prototype.reset = function() {
