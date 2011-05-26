@@ -89,13 +89,14 @@ textarea {
   width: 990px;
 }
 #wrap {
-  margin: 20px auto 50px auto;
+  margin: 20px auto 0 auto;
   position: relative;
   width: 990px;
 }
   #wrap ul {
     width: 350px;
     float: right;
+    padding-bottom: 70px;
   }
 #scoreboard {
   width: 190px;
