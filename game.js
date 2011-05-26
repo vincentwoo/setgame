@@ -6,15 +6,16 @@ var Game = function(hash, minPlayers) {
   this.minPlayers = minPlayers;
   this.started = !minPlayers;
   this.hinted = null;
+  this.winner = null;
 
   this.reset();
 }
 
 Game.prototype.resetDeck = function() {
-  for (var i = 0; i < 81; i++) {
+  for (var i = 0; i < 12; i++) {
     this.deck.push( new Card(i) );
   }
-  shuffle(this.deck);
+  //shuffle(this.deck);
 }
 
 Game.prototype.reset = function() {
@@ -192,6 +193,13 @@ Game.prototype.message = function(client, message) {
         this.board.splice(lastRow, 3);
       }
       this.players[player].score += (this.started ? 3 : 0);
+
+      if (this.winner === null ||
+          !this.players[this.winner].online ||
+          this.players[player].score > this.players[this.winner].score) {
+        this.winner = player;
+      }
+        
       var playerUpdate = {};
       playerUpdate[player] = {score: this.players[player].score};
       this.puzzled = [];
@@ -206,11 +214,7 @@ Game.prototype.message = function(client, message) {
       if (this.deck.length === 0 && !this.checkSetExistence()) {
         var message = {
             action: 'win'
-          , player: this.players.reduce(function(prev, cur, idx, arr) {
-              if (cur === null) return prev;
-              if (prev === null || cur.score > arr[prev].score) return idx;
-              return prev;
-            }, null)
+          , player: this.winner
         };
         setTimeout(function() { self.broadcast(message); }, 2000);
         this.reset();

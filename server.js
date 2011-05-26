@@ -53,7 +53,7 @@ server.listen(80);
 var io = io.listen(server);
 
 function getUnusedHash() {
-  do { var hash = randString(6); } while (hash in games);
+  do { var hash = randString(4); } while (hash in games);
   return hash;
 }
 function getGame(hash) {
@@ -96,8 +96,7 @@ io.on('connection', function(client){
   });
 });
 
-var CHARSET = ['2','3','4','6','7','9','A','C','D','E','F','G','H','J','K','L','M','N','P','Q','R',
-              'T','V','W','X','Y','Z'];
+var CHARSET = ['A','C','D','E','F','G','H','J','K','L','M','N','P','Q','R','T','V','W','X','Y','Z'];
 
 function randString(size) {
   var ret = "";

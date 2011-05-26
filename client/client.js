@@ -380,20 +380,22 @@ function socket_message(obj) {
     return;
   }
   if (obj.action === 'win' || obj.action === 'start') {
-    var message;
+    var message
+      , time = 20;
     hideAllPuzzled();
     if (obj.action === 'start') {
-      message = 'Players found, game starting.';
+      message = 'Game Starting';
       $('#training').fadeOut();
+      time = 9;
     } else {
-      message = 'Player ' + (obj.player + 1)+ ' wins!';
-      msg({event: true, msg: 'Player ' + (obj.player + 1)+ ' has won this round'});
+      message = 'Player ' + (obj.player + 1) + ' wins!';
+      msg({event: true, msg: 'Player ' + (obj.player + 1) + ' has won this round'});
     }
     $('#board').fadeOut(650, function () {
       $('#board tr').remove();
       $('#board').append('<tr><td class="announcement"><h1>' + message + '</h1></td></tr>' +
-        '<tr><td><span id="timer">20</span> seconds until round start</td></tr>');
-      resetTimer(20);
+        '<tr><td><span id="timer">' + time + '</span> seconds until round start</td></tr>');
+      resetTimer(time);
       $('#board').show();
       $('#hint').hide();
     });
