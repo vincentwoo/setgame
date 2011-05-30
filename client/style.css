@@ -39,6 +39,7 @@ p {
 h1, h2, h3 {
   font-family: 'BebasNeueRegular';
   line-height: 0.7em;
+  font-weight: normal;
 }
 h1 {
   font-size: 40px;
