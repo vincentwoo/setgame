@@ -110,8 +110,10 @@ function buildStaticFiles() {
   var options = {
     jstransport: false,
     cssabspath: false,
+    csshost: false,
     cssdataimg: false,
     htmlabspath: false,
+    htmlhost: false,
     texttransport: false
   };
   ams.build
