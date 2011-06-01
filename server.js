@@ -39,7 +39,7 @@ function niceifyURL(req, res, next){
 }
 
 server = connect.createServer(
-    connect.logger(':remote-addr :status :url in :response-timems')
+    connect.logger(':status :remote-addr :url in :response-timems')
   , nowww()
   , niceifyURL
   , gzip.staticGzip(publicDir, {

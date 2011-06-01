@@ -20,8 +20,16 @@ function startGame() {
     , rememberTransport: false
     , transports: ['websocket', 'flashsocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
   });
+  socket.on('connect', function() {
+    $('#announcement').html('<h1>Connected!</h1>');
+    $('#announcement').removeClass('loading');
+    setTimeout(function() {
+      $('#announcement').fadeOut(function() {
+        initGame();
+      });
+    }, 1500);
+  });
   socket.on('message', socket_message);
-  socket.on('connect', initGame);
   socket.on('disconnect', socket_disconnect);
   socket.on('reconnect', socket_reconnect);
   socket.on('reconnecting', socket_reconnect);
@@ -260,6 +268,7 @@ function socket_message(obj) {
     }
     $('#hint, #share').css({display:'block'});
     $('#footer h3').addClass('p' + me).text('Player ' + (me + 1));
+    $('#announcement').remove();
     fadeOutAllLastSets();
     return;
   }
@@ -393,8 +402,8 @@ function socket_message(obj) {
     }
     $('#board').fadeOut(650, function () {
       $('#board tr').remove();
-      $('#board').append('<tr><td class="announcement"><h1>' + message + '</h1></td></tr>' +
-        '<tr><td><span id="timer">' + time + '</span> seconds until round start</td></tr>');
+      $('#boardwrap').prepend('<div id="announcement"><h1>' + message + '</h1>' +
+        '<span id="timer">' + time + '</span> seconds until round start</div>');
       resetTimer(time);
       $('#board').show();
       $('#hint').hide();

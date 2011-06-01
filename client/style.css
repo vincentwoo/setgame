@@ -42,6 +42,7 @@ h1, h2, h3 {
 }
 h1 {
   font-size: 40px;
+  text-shadow: -1px -1px 0 rgba(80, 80, 80, 0.5)
 }
 h2 {
   font-size: 30px;
@@ -81,7 +82,6 @@ textarea {
   position: fixed;
   width: 100%;
   top: 60px;
-  z-index: -10;
 }
 #fixinner {
   margin: 0 auto;
@@ -164,7 +164,7 @@ textarea {
   -moz-opacity: .70;
   filter:alpha(opacity=70);
   opacity: .70;
-  z-index: 20;
+  z-index: 2;
 }
 #chat {
   margin-top: 5px;
@@ -244,6 +244,17 @@ textarea {
       position: absolute;
       left: 140px;
     }
+#announcement {
+  text-align: center;
+  margin: 0 auto;
+  color: #666;
+  height: 80px;
+}
+.loading {
+  background: no-repeat center bottom;
+  background-image: url('data:image/gif;base64,R0lGODlhEAAQAPQAAM7OzmZmZsvLy3x8fJubm2dnZ3R0dL29vaqqqm5ubpWVlY+Pj8LCwqOjo7a2toODg4iIiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAAFUCAgjmRpnqUwFGwhKoRgqq2YFMaRGjWA8AbZiIBbjQQ8AmmFUJEQhQGJhaKOrCksgEla+KIkYvC6SJKQOISoNSYdeIk1ayA8ExTyeR3F749CACH5BAkKAAAALAAAAAAQABAAAAVoICCKR9KMaCoaxeCoqEAkRX3AwMHWxQIIjJSAZWgUEgzBwCBAEQpMwIDwY1FHgwJCtOW2UDWYIDyqNVVkUbYr6CK+o2eUMKgWrqKhj0FrEM8jQQALPFA3MAc8CQSAMA5ZBjgqDQmHIyEAIfkECQoAAAAsAAAAABAAEAAABWAgII4j85Ao2hRIKgrEUBQJLaSHMe8zgQo6Q8sxS7RIhILhBkgumCTZsXkACBC+0cwF2GoLLoFXREDcDlkAojBICRaFLDCOQtQKjmsQSubtDFU/NXcDBHwkaw1cKQ8MiyEAIfkECQoAAAAsAAAAABAAEAAABVIgII5kaZ6AIJQCMRTFQKiDQx4GrBfGa4uCnAEhQuRgPwCBtwK+kCNFgjh6QlFYgGO7baJ2CxIioSDpwqNggWCGDVVGphly3BkOpXDrKfNm/4AhACH5BAkKAAAALAAAAAAQABAAAAVgICCOZGmeqEAMRTEQwskYbV0Yx7kYSIzQhtgoBxCKBDQCIOcoLBimRiFhSABYU5gIgW01pLUBYkRItAYAqrlhYiwKjiWAcDMWY8QjsCf4DewiBzQ2N1AmKlgvgCiMjSQhACH5BAkKAAAALAAAAAAQABAAAAVfICCOZGmeqEgUxUAIpkA0AMKyxkEiSZEIsJqhYAg+boUFSTAkiBiNHks3sg1ILAfBiS10gyqCg0UaFBCkwy3RYKiIYMAC+RAxiQgYsJdAjw5DN2gILzEEZgVcKYuMJiEAOwAAAAAAAAAAAA==');
+  *background-image: url('/ajax-loader.gif');
+}
 #boardwrap {
   width: 390px;
   margin-left: 215px;
@@ -300,7 +311,6 @@ textarea {
 #timer {
   font-size: 1.5em;
   font-weight: bold;
-  text-shadow: 0px 2px 3px #555;
 }
 #hint {
   display: none;
@@ -325,6 +335,8 @@ li a:hover { background: #eee; }
   padding-bottom: 25px;
   width: 310px;
   float: left;
+  position: relative;
+  z-index: 2;
 }
 #wrap #explanation .full {
   width: 700px;
@@ -352,7 +364,7 @@ li a:hover { background: #eee; }
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
   -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
   -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
-  z-index: -10;
+  z-index: -1;
 }
 .set .cardwrap {
   float: left;
