@@ -25,15 +25,17 @@ function niceifyURL(req, res, next){
     });
     return res.end();
   }
-
   if (/^\/game\//.exec(req.url)) {
     req.url = '/game.html';
     return next();
   }
-
   if (/^\/game/.exec(req.url)) {
     res.writeHead(301, { 'Location': '/game/' });
     return res.end();
+  }
+  if (/^\/about/.exec(req.url)) {
+    req.url = '/about.html';
+    return next();
   }
   return next();
 }
@@ -124,15 +126,7 @@ function buildStaticFiles() {
     .add(depsDir + '/jquery-bbq/jquery.ba-bbq.js')
     .add(depsDir + '/jquery.transform.js/jquery.transform.light.js')
     .add(clientDir + '/client.js')
-    .add(clientDir + '/style.css')
-    .combine({js: 'client.js', css: 'style.css'})
-    .process(options)
-    .write(publicDir)
-  .end();
-  ams.build
-    .create(publicDir)
-    .add(depsDir + '/headjs/src/load.js')
-    .combine({js: 'head.load.js'})
+    .combine({js: 'client.js'})
     .process(options)
     .write(publicDir)
   .end();
@@ -140,6 +134,10 @@ function buildStaticFiles() {
     .create(publicDir)
     .add(clientDir + '/index.html')
     .add(clientDir + '/game.html')
+    .add(clientDir + '/about.html')
+    .add(clientDir + '/style.css')
+    .add(depsDir + '/headjs/src/load.js')
+    .process(options)
     .write(publicDir)
   .end()
 }

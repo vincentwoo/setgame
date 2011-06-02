@@ -25,6 +25,12 @@
   padding: 0;
   list-style: none;
 }
+li ul {
+  margin-left: 25px;
+}
+li li {
+  list-style: circle;
+}
 html, body { width: 100% }
 body {
   color: #333;
@@ -37,7 +43,7 @@ p {
   padding: 5px;
 }
 h1, h2, h3 {
-  font-family: 'BebasNeueRegular';
+  font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
   line-height: 0.7em;
   font-weight: normal;
 }
@@ -94,11 +100,6 @@ textarea {
   position: relative;
   width: 990px;
 }
-  #wrap ul {
-    width: 350px;
-    float: right;
-    padding-bottom: 70px;
-  }
 #scoreboard {
   width: 190px;
   margin-top: 10px;
@@ -169,6 +170,9 @@ textarea {
 }
 #chat {
   margin-top: 5px;
+  width: 350px;
+  float: right;
+  padding-bottom: 70px;
 }
 #chat li {
   position: relative;
@@ -303,12 +307,8 @@ textarea {
   background: url('/cards.png') no-repeat;
 }
 .clear { clear: both }
-.selected {
-  border: 2px solid red !important
-}
-.hint {
-  background: #BDF271
-}
+.selected { border: 2px solid red !important }
+.hint { background: #BDF271 }
 #timer {
   font-size: 1.5em;
   font-weight: bold;
@@ -320,15 +320,11 @@ textarea {
   margin-left: 75%;
   width: 25%;
 }
-#share {
-  display: none;
-}
+#share { display: none; }
 #share input {
   width: 80%;
   margin: 5px 0;
 }
-li a { width: 100%; height: 100%; display:block }
-li a:hover { background: #eee; }
 .centered { margin: 0 auto; }
 #menu { width: 260px; }
 #wrap #explanation {
@@ -339,9 +335,7 @@ li a:hover { background: #eee; }
   position: relative;
   z-index: 2;
 }
-#wrap #explanation .full {
-  width: 700px;
-}
+#wrap #explanation .full { width: 700px; }
 .button {
   background: #fff;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
@@ -352,6 +346,15 @@ li a:hover { background: #eee; }
   margin-bottom: 15px;
   border-radius: 10px;
   -moz-border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  display:block;
+}
+.button:hover { background: #eee; }
+li#display_ad {
+  width: 240px;
+  height: 250px;
+  margin-bottom: 15px;
 }
 .set {
   position:relative;
@@ -367,9 +370,7 @@ li a:hover { background: #eee; }
   -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
   z-index: -1;
 }
-.set .cardwrap {
-  float: left;
-}
+.set .cardwrap { float: left; }
 #explanation p { margin-bottom: 10px; }
 #explanation h1 { margin: 0 0 10px 15px }
 #explanation h2 { margin: 25px 0 10px 15px }

@@ -96,41 +96,29 @@
     <div id="footer">
       <form>
         <div id="display_ad">
+          <script>
+          google_ad_client = "ca-pub-6528147086648678";
+          window.google_analytics_uacct = "UA-267782-3";
+          google_ad_slot = "6619357501";
+          google_ad_width = 468;
+          google_ad_height = 60;
+          </script>
+          <script src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
         </div>
         <h3></h3><label for="input">Type here to chat</label>
         <textarea wrap="hard" autocomplete="off" spellcheck="false" id="input"></textarea>
       </form>
     </div>
-    <script src="/head.load.js"></script>
+    <script src="/load.js"></script>
     <script>
       head.js('http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js'
       , '/client.js'
       , function() {
         $(startGame);
       });
-      
-      google_ad_client = "ca-pub-6528147086648678";
-      window.google_analytics_uacct = "UA-267782-3";
-      google_ad_slot = "6619357501";
-      google_ad_width = 468;
-      google_ad_height = 60;
       head.js ('http://www.google-analytics.com/ga.js', function () {
         _gat._getTracker('UA-267782-3')._trackPageview();
       });
-      document.write = function(text) {
-        var d = document.getElementById('display_ad');
-        if (text.substr(1,6) === 'script') {
-          var s = document.createElement('script');
-          s.type = 'text/javascript';
-          s.async = true;
-          if (text.substr(8,3) === 'src') s.src = text.split('"')[1];
-          else s.text = text.substring(text.indexOf('>')+1, text.lastIndexOf('<'));
-          d.parentNode.insertBefore(s, d)
-        } else {
-          d.innerHTML = text;
-        }
-      }
-      head.js('http://pagead2.googlesyndication.com/pagead/show_ads.js');
     </script>
   </body>
 </html>
