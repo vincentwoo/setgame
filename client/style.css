@@ -355,6 +355,7 @@ li#display_ad {
   width: 240px;
   height: 250px;
   margin-bottom: 15px;
+  background: #cecece;
 }
 .set {
   position:relative;
