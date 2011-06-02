@@ -85,6 +85,9 @@ textarea {
     margin: 0 auto;
     text-align: right;
   }
+  #header h1 span {
+    color: #999;
+  }
 #fixwrap {
   position: fixed;
   width: 100%;
