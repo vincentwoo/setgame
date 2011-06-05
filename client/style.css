@@ -335,7 +335,7 @@ p { margin-bottom: 10px; }
 #explanation h1 { margin: 0 0 10px 15px }
 #explanation h2 { margin: 25px 0 10px 15px }
 #wrap #explanation .full { width: 700px; }
-li ul { margin-left: 25px; }
+li ul { margin: 0 0 10px 25px; }
 li li { list-style: circle; }
 .button {
   background: #fff;
