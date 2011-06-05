@@ -115,7 +115,7 @@ function addCards(newCards) {
     var td = $('<td/>');
     var c = $('<div/>', {
       'class': 'card',
-      click: function() { select(this) }
+      mousedown: function() { select(this) }
     });
     c.append(generateShapes(card));
     cards.push(c);

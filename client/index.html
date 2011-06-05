@@ -15,67 +15,84 @@
       <ul id="explanation">
         <li class="message cornered full">
         <p>
-        MultiplayerSet is a game about pattern matching. The idea is to find
-        <b>sets</b> of three cards that meet certain requirements. Each card has a
-        four properties. The properties are <b>amount</b> (of shapes),
-        <b>shape</b>, <b>color</b>, and <b>shading</b>.
+        MultiplayerSet is a game in which you try to find <b>sets</b> of three cards
+        out of twelve cards. Which cards form sets has to do with the <b>four traits</b>
+        that each card has:
         </p>
-        <p>
-        A <b>set</b> is three cards for which each card has, for each property, three
-        different properties or one uniform property. Two cards that are both red
-        and a third that is green are <b>not</b> a set.
-        </p>
+        <ul>
+          <li><b>Shape</b>: oval, diamond, or squiggle</li>
+          <li><b>Color</b>: red, blue, or green</li>
+          <li><b>Amount</b> of shapes: one, two, or three</li>
+          <li><b>Shading</b>: solid, hollow, or striped</li>
+        </ul>
         </li>
-        <li><h2>Examples of VALID sets</h2></li>
+        <li><h2>Sets</h2></li>
         <li class="message cornered">
-        <div class="clear"></div>
-        <div class="set">
-          <div class="cardwrap" number="0" color="0" shape="0" shading="0"></div>
-          <div class="cardwrap" number="0" color="1" shape="0" shading="1"></div>
-          <div class="cardwrap" number="0" color="2" shape="0" shading="2"></div>
+        <div class="sidebar">
+          <div class="set">
+            <div class="cardwrap" number="0" color="0" shape="0" shading="0"></div>
+            <div class="cardwrap" number="0" color="0" shape="0" shading="0"></div>
+            <div class="cardwrap" number="0" color="0" shape="0" shading="0"></div>
+          </div>
         </div>
         <p>
-        Here all the cards have the same <b>shape</b> (oval) and <b>amount</b>
-        (one) but different <b>shadings</b> and <b>colors</b>.
+          A set is three cards where all the traits on the three cards are either
+          <b>all the same</b>&hellip;
         </p>
         <div class="clear"></div>
-        <div class="set">
-          <div class="cardwrap" number="2" color="2" shape="0" shading="0"></div>
-          <div class="cardwrap" number="1" color="0" shape="1" shading="1"></div>
-          <div class="cardwrap" number="0" color="1" shape="2" shading="2"></div>
+        <div class="sidebar">
+          <div class="set">
+            <div class="cardwrap" number="0" color="0" shape="0" shading="0"></div>
+            <div class="cardwrap" number="1" color="1" shape="1" shading="1"></div>
+            <div class="cardwrap" number="2" color="2" shape="2" shading="2"></div>
+          </div>
         </div>
         <p>
-        In this set, all four attributes are different across all three cards.
+          or <b>all different</b>&hellip;
+        </p>
+        <div class="clear"></div>
+        <div class="sidebar">
+          <div class="set">
+            <div class="cardwrap" number="0" color="0" shape="1" shading="0"></div>
+            <div class="cardwrap" number="0" color="1" shape="1" shading="1"></div>
+            <div class="cardwrap" number="0" color="2" shape="1" shading="2"></div>
+          </div>
+        </div>
+        <p>
+          or <b>any mixture of same and different traits</b>. Here the cards have 
+          number and shape <b>in common</b> with <b>different</b> color and shading.
         </p>
         <div class="clear"></div>
         </li>
-        <li><h2>Examples of INVALID sets</h2></li>
+        <li><h2>The rule of thumb</h2></li>
         <li class="message cornered">
         <p>
-        As a rule, if a set has two cards that share a property (such as two cards
-        that both have ovals), but the third one differs (it has diamonds), then
-        it is NOT a set. Here are some examples.
+        If you're not sure if you've found a set, just ask yourself, <b>"Are there
+        only two of something?"</b> If so, then you don't have a set. Here are some
+        examples:
         </p>
-        <div class="set">
-          <div class="cardwrap" number="0" color="0" shape="0" shading="0"></div>
-          <div class="cardwrap" number="0" color="0" shape="0" shading="1"></div>
-          <div class="cardwrap" number="0" color="2" shape="0" shading="2"></div>
+        <div class="sidebar">
+          <div class="set">
+            <div class="cardwrap" number="2" color="2" shape="0" shading="0"></div>
+            <div class="cardwrap" number="2" color="1" shape="0" shading="1"></div>
+            <div class="cardwrap" number="2" color="1" shape="0" shading="2"></div>
+          </div>
         </div>
         <p>
-        Identical to the first example set except that two of the cards are red,
-        and the other green. If one of the red cards were blue or if all three
-        cards were red, it would be a set.
+          This would be a set except that <b>two of the cards</b> are blue. If they
+          were all blue or there was one of each color, you would have a real set.
         </p>
         <div class="clear"></div>
-        <div class="set">
-          <div class="cardwrap" number="1" color="0" shape="1" shading="0"></div>
-          <div class="cardwrap" number="2" color="2" shape="2" shading="1"></div>
-          <div class="cardwrap" number="0" color="1" shape="1" shading="1"></div>
+        <div class="sidebar">
+          <div class="set">
+            <div class="cardwrap" number="1" color="1" shape="1" shading="0"></div>
+            <div class="cardwrap" number="2" color="0" shape="0" shading="1"></div>
+            <div class="cardwrap" number="0" color="2" shape="2" shading="0"></div>
+          </div>
         </div>
         <p>
-        This is not a set because there are two diamonds and two hollow-shaded cards.
-        If all the cards were diamond and hollow, it would be a set. Alternatively,
-        if the last card was a striped squiggly shape, it would also be a set.
+          Similar problem here: <b>two of the cards</b> are solidly shaded. If all
+          three were solid or there were one of each shading, it'd be correct.
         </p>
         <div class="clear"></div>
         </li>
