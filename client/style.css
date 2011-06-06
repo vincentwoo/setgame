@@ -351,11 +351,11 @@ li li { list-style: circle; }
   height: 100%;
   display:block;
 }
+.spaced { margin: 30px 0; }
 .button:hover { background: #eee; }
 li#display_ad {
   width: 240px;
   height: 250px;
-  margin-bottom: 15px;
   background: #cecece;
 }
 .sidebar {
@@ -370,5 +370,10 @@ li#display_ad {
   -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
   -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
   z-index: -1;
+}
+.sidecol {
+  margin: -5px -415px 0 0;
+  padding: 10px;
+  width: 370px;
 }
 .set .cardwrap { float: left; }
