@@ -9,7 +9,13 @@
   </head>
   <body>
     <div id="header">
-      <h1><a href="/">Multiplayer<span>Set</span></a></h1>
+      <h1>
+        <a href="/">Multiplayer<span class="grey">Set</span></a>
+        <span class="social">
+          <g:plusone href="http://multiplayerset.com"></g:plusone>
+          <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://multiplayerset.com" data-count="horizontal" data-via="tffny"></a>
+        </span>
+      </h1>
     </div>
     <div id="wrap">
       <ul id="explanation">
@@ -154,6 +160,8 @@
       head.js('http://www.google-analytics.com/ga.js', function () {
         _gat._getTracker('UA-267782-3')._trackPageview();
       });
+      head.js('http://apis.google.com/js/plusone.js');
+      head.js('http://platform.twitter.com/widgets.js');
     </script>
   </body>
 </html>

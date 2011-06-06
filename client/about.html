@@ -9,7 +9,13 @@
   </head>
   <body>
     <div id="header">
-      <h1><a href="/">Multiplayer<span>Set</span></a></h1>
+      <h1>
+        <a href="/">Multiplayer<span class="grey">Set</span></a>
+        <span class="social">
+          <g:plusone href="http://multiplayerset.com"></g:plusone>
+          <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://multiplayerset.com" data-count="horizontal" data-via="tffny"></a>
+        </span>
+      </h1>
     </div>
     <div id="wrap">
       <ul id="explanation">
@@ -17,14 +23,16 @@
           <div class="sidebar sidecol">
             <p>MultiplayerSet exists thanks to the following open source projects:</p>
             <ul>
-              <li><a href="http://headjs.com/">headJS</a>, by Tero Piirainen</li>
+              <li><a href="http://senchalabs.github.com/connect">Connect</a>, by Sencha Inc.</li>
+              <li><a href="http://headjs.com">headJS</a>, by Tero Piirainen</li>
               <li><a href="http://jquery.com">jQuery</a>, by John Resig</li>
               <li><a href="http://benalman.com/projects/jquery-bbq-plugin/">jQuery BBQ</a>, by "Cowboy" Ben Alman</li>
               <li><a href="https://github.com/louisremi/jquery.transform.js">jquery.transform.js</a>, Louis-Rémi Babé</li>
               <li><a href="https://github.com/douglascrockford/JSON-js">JSON-js</a>, by Douglas Crockford</li>
               <li><a href="https://developer.mozilla.org">Mozilla Developer Center</a></li>
               <li><a href="http://nodejs.org">nodeJS</a>, by Ryan Dahl</li>
-              <li><a href="http://socket.io/">Socket.IO</a>, by Guillermo Rauch</li>
+              <li><a href="https://github.com/kof/node-ams">node-ams</a>, by Oleg Slobodskoi</li>
+              <li><a href="http://socket.io">Socket.IO</a>, by Guillermo Rauch</li>
             </ul>
           </div>
           <p>
@@ -73,6 +81,8 @@
       head.js('http://www.google-analytics.com/ga.js', function () {
         _gat._getTracker('UA-267782-3')._trackPageview();
       });
+      head.js('http://apis.google.com/js/plusone.js');
+      head.js('http://platform.twitter.com/widgets.js');
     </script>
   </body>
 </html>

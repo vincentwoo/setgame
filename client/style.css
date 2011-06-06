@@ -80,8 +80,11 @@ textarea {
     margin: 0 auto;
     text-align: left;
   }
-  #header h1 span {
+  #header h1 span.grey {
     color: #999;
+  }
+  #header h1 span.social {
+    float:right;
   }
 #fixwrap {
   position: fixed;
