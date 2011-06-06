@@ -289,7 +289,7 @@ function socket_message(obj) {
         (function (old) {
           var offsx = old.offset().left - replace.offset().left
             , offsy = old.offset().top - replace.offset().top;
-          replace.css('z-index', '10');
+          replace.css('z-index', '3');
           replace.animate({
               transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(360deg)'}
             , { duration: 1250
@@ -314,7 +314,7 @@ function socket_message(obj) {
           , offsx = xconst + p.offset().left - dupe.offset().left
           , offsy = yconst + p.offset().top - dupe.offset().top;
         dupe.removeClass('selected');
-        dupe.css('z-index', '10');
+        dupe.css('z-index', '3');
         dupe.animate({
             transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(450deg) scale(0.45)'}
           , { duration: 1000
