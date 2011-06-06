@@ -17,7 +17,7 @@ $(function() {
 function startGame() {
   socket = new io.Socket(null, {
       port: 80
-    , rememberTransport: false
+    , rememberTransport: true
     , transports: ['websocket', 'flashsocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
   });
   socket.on('connect', function() {
