@@ -83,9 +83,6 @@ textarea {
   #header h1 span.grey {
     color: #999;
   }
-  #header h1 span.social {
-    float:right;
-  }
 #fixwrap {
   position: fixed;
   width: 100%;
@@ -355,6 +352,12 @@ li li { list-style: circle; }
   display:block;
 }
 .spaced { margin: 30px 0; }
+.social {
+  height: 30px;
+  width: 200px;
+  padding-top: 10px;
+  margin: 0 auto;
+}
 .button:hover { background: #eee; }
 li#display_ad {
   width: 240px;
