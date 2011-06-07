@@ -239,12 +239,6 @@ textarea {
       top: 12px;
       text-align: right;
     }
-    #footer form #display_ad {
-      width: 468px;
-      height: 60px;
-      position: absolute;
-      left: 140px;
-    }
 #announcement {
   text-align: center;
   margin: 0 auto;
@@ -357,11 +351,6 @@ li li { list-style: circle; }
   margin: 0 auto;
 }
 .button:hover { background: #eee; }
-li#display_ad {
-  width: 240px;
-  height: 250px;
-  background: #cecece;
-}
 .sidebar {
   position:relative;
   margin: 0px -415px 10px 0;
