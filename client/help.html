@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="description" content="Intellectual card game online with your friends in realtime"/>
+    <title>MultiplayerSet - realtime online card game</title>
+    <link rel="stylesheet" href="/style.css"/>
+    <link rel="shortcut icon" href="/favicon.ico"/>
+  </head>
+  <body>
+    
+<ul id="explanation">
+  <li class="message cornered full">
+  <p>
+  MultiplayerSet is a game in which you try to find <b>sets</b> of three cards
+  out of a board of twelve cards. Which cards form sets depends on the <b>four
+  traits</b> that each card has:
+  </p>
+  <ul>
+    <li><b>Shape</b>: oval, diamond, or squiggle</li>
+    <li><b>Color</b>: red, blue, or green</li>
+    <li><b>Amount</b> of shapes: one, two, or three</li>
+    <li><b>Shading</b>: solid, hollow, or striped</li>
+  </ul>
+  </li>
+  <li><h2>Sets</h2></li>
+  <li class="message cornered">
+  <div class="sidebar">
+    <div class="set">
+      <div class="cardwrap" number="0" color="0" shape="0" shading="0"></div>
+      <div class="cardwrap" number="0" color="0" shape="0" shading="0"></div>
+      <div class="cardwrap" number="0" color="0" shape="0" shading="0"></div>
+    </div>
+  </div>
+  <p>
+    A set is three cards where all the traits on the three cards are either
+    <b>all the same</b>&hellip;
+  </p>
+  <div class="clear"></div>
+  <div class="sidebar">
+    <div class="set">
+      <div class="cardwrap" number="0" color="0" shape="0" shading="0"></div>
+      <div class="cardwrap" number="1" color="1" shape="1" shading="1"></div>
+      <div class="cardwrap" number="2" color="2" shape="2" shading="2"></div>
+    </div>
+  </div>
+  <p>
+    or <b>all different</b>&hellip;
+  </p>
+  <div class="clear"></div>
+  <div class="sidebar">
+    <div class="set">
+      <div class="cardwrap" number="0" color="0" shape="1" shading="0"></div>
+      <div class="cardwrap" number="0" color="1" shape="1" shading="1"></div>
+      <div class="cardwrap" number="0" color="2" shape="1" shading="2"></div>
+    </div>
+  </div>
+  <p>
+    or <b>any mixture of same and different traits</b>. Here the cards have 
+    number and shape <b>in common</b> with <b>different</b> color and shading.
+  </p>
+  <div class="clear"></div>
+  </li>
+  <li><h2>The rule of thumb</h2></li>
+  <li class="message cornered">
+  <p>
+  If you're not sure if you've found a set, just ask yourself, <b>"Are there
+  only two of something?"</b> If so, then you don't have a set. Here are some
+  examples:
+  </p>
+  <div class="sidebar">
+    <div class="set">
+      <div class="cardwrap" number="2" color="2" shape="0" shading="0"></div>
+      <div class="cardwrap" number="2" color="1" shape="0" shading="1"></div>
+      <div class="cardwrap" number="2" color="1" shape="0" shading="2"></div>
+    </div>
+  </div>
+  <p>
+    This would be a set except that <b>two of the cards</b> are blue. If they
+    were all blue or there was one of each color, you would have a real set.
+  </p>
+  <div class="clear"></div>
+  <div class="sidebar">
+    <div class="set">
+      <div class="cardwrap" number="1" color="1" shape="1" shading="0"></div>
+      <div class="cardwrap" number="2" color="0" shape="0" shading="1"></div>
+      <div class="cardwrap" number="0" color="2" shape="2" shading="0"></div>
+    </div>
+  </div>
+  <p>
+    Similar problem here: <b>two of the cards</b> are solidly shaded. If all
+    three were solid or there were one of each shading, it'd be correct.
+  </p>
+  <div class="clear"></div>
+  </li>
+  <li><h2>Starting a game</h2></li>
+  <li class="message cornered full">
+  <p>
+  If you want to play with friends, hit <b>start a private game</b> in the top
+  left corner. You can use the URL of your game room to invite your friends.
+  </p>
+  <p>
+  If you want to get into a game quickly, hit <b>join a public game</b>. You will
+  be placed into a game that will start as soon as three people are present. While
+  the room fills up, you can warm up in an unscored practice game.
+  </p>
+  <p>
+  Click cards to build sets. To clear your current selection, click on any part
+  of the board. Type messages and hit enter to talk to the other players.
+  </p>
+  <h3>Hints</h3>
+  <p>
+  If you need a hint or don't see a set on the board (which can happen), use
+  the <b>HINT</b> button. If the majority of players do this, the
+  game will reveal one card of a set on the board. If there are none, the game
+  will deal three additional cards.
+  </p>
+  </li>
+</ul>
+<script src="/load.js"></script>
+<script>
+  head.js('http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js'
+  , '/client.js'
+  , function() {
+    $(parseCards);
+  });
+</script>
+</body>
+</html>

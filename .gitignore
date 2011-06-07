@@ -3,3 +3,4 @@ public/*.css
 public/*.html
 *.gz
 *.tmproj
+*.DS_Store

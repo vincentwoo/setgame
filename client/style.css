@@ -317,6 +317,10 @@ textarea {
 }
 .centered { margin: 0 auto; }
 #menu { width: 260px; }
+#explanation {
+  width: 215px;
+  margin: 0 0 30px 30px;
+}
 #wrap #explanation {
   margin-left: 275px;
   padding-bottom: 25px;
@@ -328,6 +332,7 @@ textarea {
 p { margin-bottom: 10px; }
 #explanation h1 { margin: 0 0 10px 15px }
 #explanation h2 { margin: 25px 0 10px 15px }
+#explanation .full { width: 600px; }
 #wrap #explanation .full { width: 700px; }
 li ul { margin: 0 0 10px 25px; }
 li li { list-style: circle; }

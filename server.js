@@ -37,6 +37,10 @@ function niceifyURL(req, res, next){
     req.url = '/about.html';
     return next();
   }
+  if (/^\/help/.exec(req.url)) {
+    req.url = '/help.html';
+    return next();
+  }
   return next();
 }
 
@@ -45,7 +49,11 @@ server = connect.createServer(
   , nowww()
   , niceifyURL
   , gzip.staticGzip(publicDir, {
-        matchType: /text|javascript|image|font/
+        matchType: /text|javascript/
+      , maxAge: process.env.NODE_ENV === 'development' ? 0 : 86400000
+    })
+  , gzip.staticGzip(publicDir + '/perm', {
+        matchType: /image|font/
       , maxAge: process.env.NODE_ENV === 'development' ? 0 : 604800000
     })
 );
@@ -135,6 +143,7 @@ function buildStaticFiles() {
     .add(clientDir + '/index.html')
     .add(clientDir + '/game.html')
     .add(clientDir + '/about.html')
+    .add(clientDir + '/help.html')
     .add(clientDir + '/style.css')
     .add(depsDir + '/headjs/src/load.js')
     .process(options)
