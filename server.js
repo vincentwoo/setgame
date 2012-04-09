@@ -2,7 +2,7 @@ var http = require('http')
   , fs = require('fs')
   , io = require('socket.io')
   , connect = require('connect')
-  , gzip = require('connect-gzip')
+  , gzip = require('gzippo')
   , nowww = require('connect-no-www')
   , ams = require('ams')
   , Game = require('./game')
@@ -13,7 +13,6 @@ var http = require('http')
   , publicDir = __dirname + '/public'
   , depsDir = __dirname + '/deps';
 
-cleanOldStaticFiles(publicDir);
 buildStaticFiles();
 
 function niceifyURL(req, res, next){
@@ -23,21 +22,18 @@ function niceifyURL(req, res, next){
     });
     return res.end();
   }
-  if (/^\/game\//.exec(req.url)) {
-    req.url = '/game.html';
-    return next();
-  }
   if (/^\/game/.exec(req.url)) {
     res.writeHead(301, { 'Location': '/game/' });
     return res.end();
   }
-  if (/^\/about/.exec(req.url)) {
+  if (/^\/game\//.exec(req.url)) {
+    req.url = '/game.html';
+  } else if (/^\/about/.exec(req.url)) {
     req.url = '/about.html';
-    return next();
-  }
-  if (/^\/help/.exec(req.url)) {
+  } else if (/^\/help/.exec(req.url)) {
     req.url = '/help.html';
-    return next();
+  } else if (/^\/?$/.exec(req.url)) {
+    req.url = '/index.html';
   }
   return next();
 }
@@ -46,7 +42,6 @@ server = connect.createServer(
     connect.logger(':status :remote-addr :url in :response-timems')
   , nowww()
   , niceifyURL
-  , connect.static('public')
   , gzip.staticGzip(publicDir, {
         matchType: /text|javascript/
       , maxAge: process.env.NODE_ENV === 'development' ? 0 : 86400000
@@ -57,7 +52,7 @@ server = connect.createServer(
     })
 );
 
-server.listen(80);
+server.listen(8000);
 
 var io = io.listen(server);
 
@@ -148,18 +143,4 @@ function buildStaticFiles() {
     .process(options)
     .write(publicDir)
   .end()
-}
-
-function cleanOldStaticFiles(path) {
-  fs.stat(path, function(err, stats) {
-    if (err) throw err;
-    if (stats.isDirectory()) {
-      fs.readdir(path, function(err, files) {
-        if (err) throw err;
-        files.forEach(function(filename, index) {
-          cleanOldStaticFiles(path + '/' + filename);
-        });
-      });
-    } else if (/\.gz$/.exec(path)) fs.unlink(path);
-  });
 }
