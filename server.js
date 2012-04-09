@@ -52,7 +52,7 @@ server = connect.createServer(
     })
 );
 
-server.listen(8000);
+server.listen(process.env.NODE_ENV === 'development' ? 8000 : 80);
 
 var io = io.listen(server);
 
