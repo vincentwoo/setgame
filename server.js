@@ -1,5 +1,3 @@
-require.paths.unshift('.');
-
 var http = require('http')
   , fs = require('fs')
   , io = require('socket.io')
@@ -7,7 +5,7 @@ var http = require('http')
   , gzip = require('connect-gzip')
   , nowww = require('connect-no-www')
   , ams = require('ams')
-  , Game = require('game')
+  , Game = require('./game')
   , server
   , games = {}
   , latestPublicGame
@@ -48,6 +46,7 @@ server = connect.createServer(
     connect.logger(':status :remote-addr :url in :response-timems')
   , nowww()
   , niceifyURL
+  , connect.static('public')
   , gzip.staticGzip(publicDir, {
         matchType: /text|javascript/
       , maxAge: process.env.NODE_ENV === 'development' ? 0 : 86400000
