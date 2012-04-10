@@ -13,3 +13,6 @@
 [submodule "deps/socket.io"]
 	path = deps/socket.io
 	url = https://github.com/LearnBoost/socket.io.git
+[submodule "deps/socket.io-client"]
+	path = deps/socket.io-client
+	url = https://github.com/LearnBoost/socket.io-client.git
