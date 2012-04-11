@@ -15,9 +15,8 @@ $(function() {
 });
 
 function startGame() {
-  socket = new io.Socket(null, {
-      port: 80
-    , rememberTransport: true
+  socket = io.connect(null, {
+      rememberTransport: true
     , transports: ['websocket', 'flashsocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
   });
   socket.on('connect', function() {
@@ -29,12 +28,25 @@ function startGame() {
       });
     }, 1500);
   });
-  socket.on('message', socket_message);
+  
+  socket.on('init', init);
+  socket.on('join', join);
+  socket.on('rejoin', rejoin);
+  socket.on('taken', taken);
+  socket.on('setHash', setHash);
+  socket.on('remaining', remaining);
+  socket.on('puzzled', puzzled);
+  socket.on('add', add);
+  socket.on('hint', hint);
+  socket.on('start', start);
+  socket.on('win', win);
+  socket.on('msg', msg);
+  
   socket.on('disconnect', socket_disconnect);
   socket.on('reconnect', socket_reconnect);
   socket.on('reconnecting', socket_reconnect);
   socket.on('reconnect_failed', socket_reconnect_failed);
-  socket.connect();
+
   $('#hint').click(hint);
   $('#input').keydown(input);
   $('#input').focus();
@@ -155,8 +167,7 @@ function clearSelected() {
 
 function checkSet() {
   if (selected.length === 3) {
-    socket.send({action: 'take',
-                 selected: selected});
+    socket.emit('take', selected);
     setTimeout(clearSelected, 250);
     return;
   }
@@ -196,7 +207,7 @@ function fadeOutAllLastSets() {
 }
 
 function hint(event) {
-  socket.send({action: 'hint'});
+  socket.emit('hint');
   $('#hint').animate({opacity:0});
   showPuzzled(me);
   event.preventDefault();
@@ -216,7 +227,7 @@ function input(e) {
   var self = this;
   if (e.which === 13) {
     if (!e.ctrlKey) {
-      if (this.value) socket.send({action: 'msg', msg: this.value});
+      if (this.value) socket.emit('msg', this.value);
       this.value = "";
     } else {
       this.value += "\n";
@@ -251,164 +262,157 @@ function msg(obj) {
   $('html, body').animate({ scrollTop: $(document).height() }, 200);
 }
 
-function socket_message(obj) {
-  log(obj);
-  if (!obj.action) return;
-  if (obj.action === 'init') {
-    cards = [];
-    $('#board tr').remove();
-    hidePlayers();
-    if ('board' in obj) addCards(obj.board);
-    if ('players' in obj) updatePlayers(obj.players);
-    if ('you' in obj) me = obj.you;
-    if ('msgs' in obj && !lastMsg) obj.msgs.forEach(msg);
-    if (obj.remaining) {
-      $('#training').slideDown();
-      $('#training b').text(obj.remaining);
-    }
-    $('#hint, #share').css({display:'block'});
-    $('#footer h3').addClass('p' + me).text('Player ' + (me + 1));
-    $('#announcement').remove();
-    fadeOutAllLastSets();
-    return;
+function join(player) {
+  update = {};
+  update[player] = {score: 0, online: true};
+  updatePlayers(update);
+}
+
+function rejoin(player) {
+  var update = {};
+  update[player] = {online: true};
+  updatePlayers(update);
+}
+
+function init(game) {
+  cards = [];
+  $('#board tr').remove();
+  hidePlayers();
+  if ('board' in game) addCards(game.board);
+  if ('players' in game) updatePlayers(game.players);
+  if ('you' in game) me = game.you;
+  if ('msgs' in game && !lastMsg) game.msgs.forEach(msg);
+  if (game.remaining) {
+    $('#training').slideDown();
+    $('#training b').text(game.remaining);
   }
-  if (obj.action === 'taken') {
-    var j = 0;
-    fadeOutLastSet(obj.player);
-    for (var i in obj.update) {
-      if (i in selected) unselect(i);
-      var card = obj.update[i]
-        , dupe = cards[i].clone()
-        , p = $('#p' + obj.player);
-      cards[i].after(dupe);
+  $('#hint, #share').css({display:'block'});
+  $('#footer h3').addClass('p' + me).text('Player ' + (me + 1));
+  $('#announcement').remove();
+  fadeOutAllLastSets();
+}
+function taken(newBoard) {
+  var j = 0;
+  fadeOutLastSet(newBoard.player);
+  for (var i in newBoard.update) {
+    if (i in selected) unselect(i);
+    var card = newBoard.update[i]
+      , dupe = cards[i].clone()
+      , p = $('#p' + newBoard.player);
+    cards[i].after(dupe);
 
-      if (typeof card === 'number') {
-        var replace = cards[card]
-          , old = cards[i];
-        cards[i] = replace;
-        (function (old) {
-          var offsx = old.offset().left - replace.offset().left
-            , offsy = old.offset().top - replace.offset().top;
-          replace.css('z-index', '3');
-          replace.animate({
-              transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(360deg)'}
-            , { duration: 1250
-              , easing: 'easeOutQuad'
-              , complete: function() {
-                  $(this).css('transform', 'translateX(0px) translateY(0px)');
-                  old.hide();
-                  old.after($(this));
-                  old.remove();
-                }
-          });
-        })(old);
-      } else if (card) {
-        cards[i].empty();
-        cards[i].append(generateShapes(card));
-      } else {
-        cards[i].fadeOut('fast');
-      }
-
-      (function (j) {
-        var xconst = (j * 38) - 42, yconst = -12
-          , offsx = xconst + p.offset().left - dupe.offset().left
-          , offsy = yconst + p.offset().top - dupe.offset().top;
-        dupe.removeClass('selected');
-        dupe.css('z-index', '3');
-        dupe.animate({
-            transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(450deg) scale(0.45)'}
-          , { duration: 1000
+    if (typeof card === 'number') {
+      var replace = cards[card]
+        , old = cards[i];
+      cards[i] = replace;
+      (function (old) {
+        var offsx = old.offset().left - replace.offset().left
+          , offsy = old.offset().top - replace.offset().top;
+        replace.css('z-index', '3');
+        replace.animate({
+            transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(360deg)'}
+          , { duration: 1250
             , easing: 'easeOutQuad'
             , complete: function() {
-                $(this).css('transform', 'translateX(0px) translateY(0px) rotate(90deg) scale(0.45)');
-                $(this).css('left', xconst);
-                $(this).css('top', yconst);
-                $(this).appendTo(p);
+                $(this).css('transform', 'translateX(0px) translateY(0px)');
+                old.hide();
+                old.after($(this));
+                old.remove();
               }
         });
-      })(j++);
-      lastSets[obj.player].push(dupe);
-    }
-    
-    if (cards.length > 12) {
-      setTimeout(function() {
-        $('#board tr:last').remove();
-        cards.splice(cards.length-3, 3);
-      }, 1350);
-    }
-    
-    updatePlayers(obj.players);
-    hideAllPuzzled();
-    $('.hint').removeClass('hint');
-    return;
-  }
-  if (obj.action === 'setHash') {
-    preventRefresh = true;
-    window.location.replace(window.location.href.split('#')[0] + '#!/' + obj.hash);
-    $('#share input').attr('value', window.location.href);
-    return;
-  }
-  if (obj.action === 'join') {
-    var update = {};
-    update[obj.player] = {score: 0, online: true};
-    updatePlayers(update);
-    return;
-  }
-  if (obj.action === 'rejoin') {
-    var update = {};
-    update[obj.player] = {online: true};
-    updatePlayers(update);
-    return;
-  }
-  if (obj.action === 'leave') {
-    var update = {};
-    update[obj.player] = {online: false};
-    updatePlayers(update);
-    return;
-  }
-  if (obj.action === 'remaining') {
-    $('#training b').text(obj.remaining);
-    return;
-  }
-  if (obj.action === 'puzzled') {
-    if (obj.player != me) showPuzzled(obj.player);
-    return;
-  }
-  if (obj.action === 'add') {
-    hideAllPuzzled();
-    addCards(obj.cards);
-    return;
-  }
-  if (obj.action === 'hint') {
-    hideAllPuzzled();
-    cards[obj.card].parent().addClass('hint');
-    return;
-  }
-  if (obj.action === 'msg') {
-    msg(obj);
-    return;
-  }
-  if (obj.action === 'win' || obj.action === 'start') {
-    var message
-      , time = 20;
-    hideAllPuzzled();
-    if (obj.action === 'start') {
-      message = 'Game Starting';
-      $('#training').fadeOut();
-      time = 9;
+      })(old);
+    } else if (card) {
+      cards[i].empty();
+      cards[i].append(generateShapes(card));
     } else {
-      message = 'Player ' + (obj.player + 1) + ' wins!';
-      msg({event: true, msg: 'Player ' + (obj.player + 1) + ' has won this round'});
+      cards[i].fadeOut('fast');
     }
-    $('#board').fadeOut(650, function () {
-      $('#board tr').remove();
-      $('#boardwrap').prepend('<div id="announcement"><h1>' + message + '</h1>' +
-        '<span id="timer">' + time + '</span> seconds until round start</div>');
-      resetTimer(time);
-      $('#board').show();
-      $('#hint').hide();
-    });
+
+    (function (j) {
+      var xconst = (j * 38) - 42, yconst = -12
+        , offsx = xconst + p.offset().left - dupe.offset().left
+        , offsy = yconst + p.offset().top - dupe.offset().top;
+      dupe.removeClass('selected');
+      dupe.css('z-index', '3');
+      dupe.animate({
+          transform: 'translateX(' + offsx + 'px) translateY(' + offsy + 'px) rotate(450deg) scale(0.45)'}
+        , { duration: 1000
+          , easing: 'easeOutQuad'
+          , complete: function() {
+              $(this).css('transform', 'translateX(0px) translateY(0px) rotate(90deg) scale(0.45)');
+              $(this).css('left', xconst);
+              $(this).css('top', yconst);
+              $(this).appendTo(p);
+            }
+      });
+    })(j++);
+    lastSets[newBoard.player].push(dupe);
   }
+  
+  if (cards.length > 12) {
+    setTimeout(function() {
+      $('#board tr:last').remove();
+      cards.splice(cards.length-3, 3);
+    }, 1350);
+  }
+  
+  updatePlayers(newBoard.players);
+  hideAllPuzzled();
+  $('.hint').removeClass('hint');
+}
+
+function setHash(hash) {
+  preventRefresh = true;
+  window.location.replace(window.location.href.split('#')[0] + '#!/' + hash);
+  $('#share input').attr('value', window.location.href);
+}
+
+function leave(player) {
+  var update = {};
+  update[obj.player] = {online: false};
+  updatePlayers(update);
+}
+
+function remaining(left) {
+  $('#training b').text(left);
+}
+
+function puzzled(player) {
+  if (player != me) showPuzzled(player);
+}
+
+function add(cards) {
+  hideAllPuzzled();
+  addCards(cards);
+}
+
+function hint(card) {
+  hideAllPuzzled();
+  cards[card].parent().addClass('hint');
+}
+
+function win(winner) {
+  message = 'Player ' + (winner+ 1) + ' wins!';
+  msg({event: true, msg: 'Player ' + (winner + 1) + ' has won this round'});
+  newGame();
+}
+
+function start() {
+  message = 'Game Starting';
+  $('#training').fadeOut();
+  time = 9;
+  newGame();
+}
+
+function newGame() {
+  $('#board').fadeOut(650, function () {
+    $('#board tr').remove();
+    $('#boardwrap').prepend('<div id="announcement"><h1>' + message + '</h1>' +
+      '<span id="timer">' + time + '</span> seconds until round start</div>');
+    resetTimer(time);
+    $('#board').show();
+    $('#hint').hide();
+  });
 }
 
 function resetTimer(seconds) {
@@ -423,14 +427,14 @@ function initGame() {
   var sess = getCookie('sess') || randString(10);
   setCookie('sess', sess, 1.0/24);
   log('initting s: ' + sess);
-  var init = {action: 'init', sess: sess}
+  var init = {sess: sess}
     , hash = window.location.hash;
   if (hash) {
     hash = hash.substring(hash.indexOf('#!/') + 3);
     init.game = hash;
     $('#share input').attr('value', window.location.href);
   }
-  socket.send(init);
+  socket.emit('init', init);
 }
 
 function socket_disconnect() {

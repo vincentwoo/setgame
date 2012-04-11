@@ -22,7 +22,7 @@ function niceifyURL(req, res, next){
     });
     return res.end();
   }
-  if (/^\/game/.exec(req.url)) {
+  if (/^\/game$/.exec(req.url)) {
     res.writeHead(301, { 'Location': '/game/' });
     return res.end();
   }
@@ -44,17 +44,22 @@ server = connect.createServer(
   , niceifyURL
   , gzip.staticGzip(publicDir, {
         matchType: /text|javascript/
-      , maxAge: process.env.NODE_ENV === 'development' ? 0 : 86400000
+      , maxAge: process.env.NODE_ENV === 'production' ? 86400000 : 0
     })
   , gzip.staticGzip(publicDir + '/perm', {
         matchType: /image|font/
-      , maxAge: process.env.NODE_ENV === 'development' ? 0 : 604800000
+      , maxAge: process.env.NODE_ENV === 'production' ? 604800000 : 0
     })
 );
 
-server.listen(process.env.NODE_ENV === 'development' ? 8000 : 80);
+server.listen(process.env.NODE_ENV === 'production' ? 80 : 8000);
 
-var io = io.listen(server);
+io = io.listen(server);
+io.configure('production', function() {
+  io.enable('browser client minification');  // send minified client
+  io.enable('browser client etag');          // apply etag caching logic based on version number
+  io.enable('browser client gzip');          // gzip the file
+});
 
 function getUnusedHash() {
   do { var hash = randString(4); } while (hash in games);
@@ -63,7 +68,7 @@ function getUnusedHash() {
 function getGame(hash) {
   if (hash && hash in games) return games[hash];
   hash = getUnusedHash();
-  return (games[hash] = new Game(hash));
+  return (games[hash] = new Game(io, hash));
 }
 
 function getLatestPublicGame() {
@@ -72,27 +77,24 @@ function getLatestPublicGame() {
     !(latestPublicGame.hash in games))
   {
     var hash = getUnusedHash();
-    latestPublicGame = games[hash] = new Game(hash, 3);
+    latestPublicGame = games[hash] = new Game(io, hash, 3);
   }
   return latestPublicGame;
 }
 
-io.on('connection', function(client){
+io.sockets.on('connection', function(socket){
   var game = null;
-  client.on('message', function(message){
+  socket.on('init', function(message){
     console.log(message);
-    if ('action' in message && message.action === 'init') {
-      game = getGame(message.game);
-      game.registerClient(client, message.sess);
-      if (message.game !== game.hash) client.send({action: 'setHash', hash: game.hash});
-    }
-    if (game !== null) game.message(client, message);
+    game = getGame(message.game);
+    game.registerClient(socket, message.sess);
+    if (message.game !== game.hash) socket.emit('setHash', game.hash);
   });
 
-  client.on('disconnect', function() {
+  socket.on('disconnect', function() {
     if (!game) return;
     var hash = game.hash;
-    game.unregisterClient(client, function gameOver() {
+    game.unregisterClient(socket, function gameOver() {
       console.log('gameover called');
       delete games[hash];
     });
@@ -123,7 +125,6 @@ function buildStaticFiles() {
   ams.build
     .create(publicDir)
     .add(depsDir + '/JSON-js/json2.js')
-    .add(depsDir + '/socket.io-client/dist/socket.io.js')
     .add(clientDir + '/util.js')
     .add(depsDir + '/jquery-bbq/jquery.ba-bbq.js')
     .add(depsDir + '/jquery.transform.js/jquery.transform.light.js')
