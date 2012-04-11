@@ -88,6 +88,7 @@ io.sockets.on('connection', function(socket){
     console.log(message);
     game = getGame(message.game);
     game.registerClient(socket, message.sess);
+    (game.handleClientMessage('init', socket)).call(game, message);
     if (message.game !== game.hash) socket.emit('setHash', game.hash);
   });
 

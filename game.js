@@ -1,3 +1,5 @@
+var CLIENT_MSGS = ['init', 'take', 'hint', 'msg'];
+
 var Game = function(io, hash, minPlayers) {
   this.io = io;
   this.players = [null, null, null, null, null, null, null, null];
@@ -51,10 +53,10 @@ Game.prototype.firstAvailablePlayerSlot = function() {
   return 0;
 }
 
-Game.prototype.getPlayerIdx = function(client) {
+Game.prototype.getPlayerIdx = function(socket) {
   for (var i = 0; i < this.players.length; i++) {
     if (this.players[i] !== null &&
-        this.players[i].client.sessionId === client.sessionId)
+        this.players[i].socket.sessionId === socket.sessionId)
       return i;
   }
   return -1;
@@ -74,20 +76,23 @@ Game.prototype.playerData = function() {
   return ret;
 }
 
-Game.prototype.registerClient = function(client, sess) {
+Game.prototype.registerClient = function(socket, sess) {
   if (this.numPlayers() >= this.players.length) return false;
   var self = this;
-  client.join(this.hash);
+  socket.join(this.hash);
+  for (var msg in CLIENT_MSGS) {
+    socket.on(msg, this.handleClientMessage(msg, socket));
+  }
   for (var i = 0; i < this.players.length; i++) {
     var player = this.players[i];
     if (player === null) continue;
-    if (player.client.sessionId === client.sessionId || player.sess === sess) {
+    if (player.socket.sessionId === socket.sessionId || player.sess === sess) {
       if (!player.online) {
         this.broadcast('rejoin', i);
         this.sendMsg({event: true, msg: 'Player ' + (i + 1) + ' has reconnected.'});
       }
       player.online = true;
-      player.client = client;
+      player.socket = socket;
       player.sess = sess;
       this.updateRemaining();
       return true;
@@ -97,7 +102,7 @@ Game.prototype.registerClient = function(client, sess) {
   var playerIdx = this.firstAvailablePlayerSlot();
   this.broadcast('join', playerIdx);
   this.sendMsg({event: true, msg: 'Player ' + (playerIdx + 1) + ' has joined.'});
-  this.players[playerIdx] = new Player(client, sess);
+  this.players[playerIdx] = new Player(socket, sess);
   this.updateRemaining();
 
   setTimeout(function() {
@@ -110,8 +115,8 @@ Game.prototype.registerClient = function(client, sess) {
   return true;
 }
 
-Game.prototype.unregisterClient = function(client, gameOver) {
-  var playerIdx = this.getPlayerIdx(client);
+Game.prototype.unregisterClient = function(socket, gameOver) {
+  var playerIdx = this.getPlayerIdx(socket);
   if (playerIdx === -1) return;
   var self = this;
   
@@ -122,6 +127,16 @@ Game.prototype.unregisterClient = function(client, gameOver) {
   setTimeout( function delayGameover() {
     if (self.numPlayers() === 0) gameOver();
   }, 3600000);
+}
+
+Game.prototype.handleClientMessage = function(message, socket) {
+  var func = this[message];
+  var player = this.getPlayerIdx(socket);
+  return function(message) {
+    console.log('receiving ' + message + ' event with payload' + message);
+    if (player === -1) return;
+    func.call(this, player, message);
+  };
 }
 
 Game.prototype.updateRemaining = function() {
@@ -141,118 +156,103 @@ Game.prototype.sendMsg = function(msg) {
   this.broadcast('msg', msg);
 }
 
-Game.prototype.message = function(client, message) {
-  if (!message.action) return;
-  var player = this.getPlayerIdx(client);
-  if (player === -1) return;
-  var self = this;
-  console.log('player ' + player + ' sends: ');
-  console.log(message);
-  
-  if (message.action === 'init') {
-    return client.send({
-        action: 'init'
-      , board: this.board
-      , players: this.playerData()
-      , you: player
-      , msgs: this.messages
-      , remaining: this.started ? 0 : this.minPlayers - this.numPlayers()
-    });
-  }
-  
-  if (message.action === 'take' &&
-      'selected' in message &&
-      message.selected.length === 3)
-  {
-    if (this.checkSet(message.selected)) {
-      console.log('take set succeed');
-      var update = {};
-      if (!this.started && this.deck.length === 0) this.resetDeck();
-      if (this.board.length <= 12 && this.deck.length > 0) {
-          message.selected.forEach( function(val) {
-            var c = this.deck.pop();
-            update[val] = c;
-            this.board[val] = c;
-          }, this );
-      } else {
-        var lastRow = this.board.length - 3;
-        var lastReplace = this.board.length - 1;
-        message.selected.sort( function reverse(a, b) { return b - a; } );
-        message.selected.forEach( function(val) {
-          if (val >= lastRow) {
-            update[val] = false;
-          } else {
-            while (message.selected.indexOf(lastReplace) != -1)
-              lastReplace--;
-            update[val] = lastReplace--;
-            this.board[val] = this.board[update[val]];
-          }
-        }, this);
-        this.board.splice(lastRow, 3);
-      }
-      this.players[player].score += (this.started ? 3 : 0);
+Game.prototype.init = function(player) {
+  this.players[player].socket.emit('init', {
+      board: this.board
+    , players: this.playerData()
+    , you: player
+    , msgs: this.messages
+    , remaining: this.started ? 0 : this.minPlayers - this.numPlayers()
+  });
+}
 
-      if (this.winner === null ||
-          !this.players[this.winner].online ||
-          this.players[player].score > this.players[this.winner].score) {
-        this.winner = player;
-      }
-        
-      var playerUpdate = {};
-      playerUpdate[player] = {score: this.players[player].score};
-      this.puzzled = [];
-      this.hinted = null;
-      this.broadcast('taken', {
-          update: update
-        , player: player
-        , players: playerUpdate
-      });
-
-      if (this.deck.length === 0 && !this.checkSetExistence()) {
-        var winner = this.winner;
-        setTimeout(function() { self.broadcast('win', winner); }, 2000);
-        this.reset();
-      }
+Game.prototype.take = function(player, selected) {
+  if (selected.length !== 3) return;
+  if (this.checkSet(selected)) {
+    console.log('take set succeed');
+    var update = {};
+    if (!this.started && this.deck.length === 0) this.resetDeck();
+    if (this.board.length <= 12 && this.deck.length > 0) {
+        selected.forEach( function(val) {
+          var c = this.deck.pop();
+          update[val] = c;
+          this.board[val] = c;
+        }, this );
     } else {
-      console.log('take set failed');
-    }
-    return;
-  }
-
-  if (message.action === 'hint') {
-    if (this.puzzled.indexOf(player) != -1) return;
-    this.puzzled.push(player);
-    this.broadcast('puzzled', player);
-    var self = this;
-    setTimeout(function() {
-      console.log('hint timeout executing');
-      if (self.puzzled.length < Math.ceil(self.numPlayers() * 0.51)) return;
-      if (!self.hinted) {
-        var setExists = self.checkSetExistence();
-        if (setExists) {
-          self.hinted = setExists;
-        } else if (self.deck.length > 0) {
-          var newCards = [];
-          for (var i = 0; i < 3; i++) newCards.push(self.deck.pop());
-          self.board = self.board.concat(newCards);
-          self.broadcast('add', newCards);
+      var lastRow = this.board.length - 3;
+      var lastReplace = this.board.length - 1;
+      selected.sort( function reverse(a, b) { return b - a; } );
+      selected.forEach( function(val) {
+        if (val >= lastRow) {
+          update[val] = false;
+        } else {
+          while (selected.indexOf(lastReplace) != -1)
+            lastReplace--;
+          update[val] = lastReplace--;
+          this.board[val] = this.board[update[val]];
         }
-      }
-      if (self.hinted && self.hinted.length > 0) {
-        self.broadcast('hint', self.hinted.pop());
-      }
-      self.puzzled = [];
-    }, 1000);
-    return;
-  }
+      }, this);
+      this.board.splice(lastRow, 3);
+    }
+    this.players[player].score += (this.started ? 3 : 0);
 
-  if (message.action === 'msg' &&
-      'msg' in message &&
-      message.msg.length < 1024)
-  {
-    var msg = message.msg.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
-    return this.sendMsg({ player: player, msg: msg });
+    if (this.winner === null ||
+        !this.players[this.winner].online ||
+        this.players[player].score > this.players[this.winner].score) {
+      this.winner = player;
+    }
+      
+    var playerUpdate = {};
+    playerUpdate[player] = {score: this.players[player].score};
+    this.puzzled = [];
+    this.hinted = null;
+    this.broadcast('taken', {
+        update: update
+      , player: player
+      , players: playerUpdate
+    });
+
+    if (this.deck.length === 0 && !this.checkSetExistence()) {
+      var winner = this.winner;
+      var self = this;
+      setTimeout(function() { self.broadcast('win', winner); }, 2000);
+      this.reset();
+    }
+  } else {
+    console.log('take set failed');
   }
+}
+
+Game.prototype.hint = function(player) {
+  if (this.puzzled.indexOf(player) != -1) return;
+  this.puzzled.push(player);
+  this.broadcast('puzzled', player);
+  var self = this;
+  setTimeout(function() {
+    console.log('hint timeout executing');
+    if (self.puzzled.length < Math.ceil(self.numPlayers() * 0.51)) return;
+    if (!self.hinted) {
+      var setExists = self.checkSetExistence();
+      if (setExists) {
+        self.hinted = setExists;
+      } else if (self.deck.length > 0) {
+        var newCards = [];
+        for (var i = 0; i < 3; i++) newCards.push(self.deck.pop());
+        self.board = self.board.concat(newCards);
+        self.broadcast('add', newCards);
+      }
+    }
+    if (self.hinted && self.hinted.length > 0) {
+      self.broadcast('hint', self.hinted.pop());
+    }
+    self.puzzled = [];
+  }, 1000);
+}
+
+Game.prototype.msg = function(player, msg) {
+  if (msg.length > 1024) return;
+  msg = msg.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
+  return this.sendMsg({ player: player, msg: msg });
 }
 
 Game.prototype.checkSetExistence = function() {
@@ -304,8 +304,8 @@ function Card(idx) {
   this.shading = idx % 3;
 }
 
-function Player(client, sess) {
-  this.client = client;
+function Player(socket, sess) {
+  this.socket = socket;
   this.score = 0;
   this.sess = sess;
   this.online = true;
