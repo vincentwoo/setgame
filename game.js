@@ -1,4 +1,4 @@
-var CLIENT_MSGS = ['init', 'take', 'hint', 'msg'];
+var CLIENT_EVENTS = ['init', 'take', 'hint', 'msg'];
 
 var Game = function(io, hash, minPlayers) {
   this.io = io;
@@ -56,7 +56,7 @@ Game.prototype.firstAvailablePlayerSlot = function() {
 Game.prototype.getPlayerIdx = function(socket) {
   for (var i = 0; i < this.players.length; i++) {
     if (this.players[i] !== null &&
-        this.players[i].socket.sessionId === socket.sessionId)
+        this.players[i].socket.id === socket.id)
       return i;
   }
   return -1;
@@ -79,14 +79,11 @@ Game.prototype.playerData = function() {
 Game.prototype.registerClient = function(socket, sess) {
   if (this.numPlayers() >= this.players.length) return false;
   var self = this;
-  socket.join(this.hash);
-  for (var msg in CLIENT_MSGS) {
-    socket.on(msg, this.handleClientMessage(msg, socket));
-  }
+
   for (var i = 0; i < this.players.length; i++) {
     var player = this.players[i];
     if (player === null) continue;
-    if (player.socket.sessionId === socket.sessionId || player.sess === sess) {
+    if (player.socket.id === socket.id || player.sess === sess) {
       if (!player.online) {
         this.broadcast('rejoin', i);
         this.sendMsg({event: true, msg: 'Player ' + (i + 1) + ' has reconnected.'});
@@ -98,6 +95,10 @@ Game.prototype.registerClient = function(socket, sess) {
       return true;
     }
   }
+  //socket.join(this.hash);
+  CLIENT_EVENTS.forEach(function(event) {
+    socket.on(event, self.handleClientMessage(event, socket));
+  });
 
   var playerIdx = this.firstAvailablePlayerSlot();
   this.broadcast('join', playerIdx);
@@ -124,18 +125,19 @@ Game.prototype.unregisterClient = function(socket, gameOver) {
   this.broadcast('leave', playerIdx);
   this.updateRemaining();
   this.sendMsg({event: true, msg: 'Player ' + (playerIdx + 1) + ' has disconnected.'});
+  //socket.leave(this.hash);
   setTimeout( function delayGameover() {
     if (self.numPlayers() === 0) gameOver();
   }, 3600000);
 }
 
-Game.prototype.handleClientMessage = function(message, socket) {
-  var func = this[message];
-  var player = this.getPlayerIdx(socket);
+Game.prototype.handleClientMessage = function(event, socket) {
+  var self = this;
   return function(message) {
-    console.log('receiving ' + message + ' event with payload' + message);
+    var player = self.getPlayerIdx(socket);
+    console.log('receiving ' + event + ' from player ' + player + ' with payload ' + message);
     if (player === -1) return;
-    func.call(this, player, message);
+    self[event].call(self, player, message);
   };
 }
 
@@ -147,7 +149,9 @@ Game.prototype.updateRemaining = function() {
 Game.prototype.broadcast = function(event, message) {
   console.log(this.hash + ' broadcasting: ');
   console.log(message);
-  this.io.sockets.in(this.hash).emit(event, message);
+  this.players.forEach( function(player) {
+    if (player !== null) player.socket.emit(event, message);
+  });
 }
 
 Game.prototype.sendMsg = function(msg) {

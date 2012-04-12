@@ -85,7 +85,7 @@ function getLatestPublicGame() {
 io.sockets.on('connection', function(socket){
   var game = null;
   socket.on('init', function(message){
-    console.log(message);
+    console.log('connecting socket ' + socket.id);
     game = getGame(message.game);
     game.registerClient(socket, message.sess);
     (game.handleClientMessage('init', socket)).call(game, message);

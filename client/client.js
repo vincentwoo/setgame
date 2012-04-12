@@ -5,7 +5,9 @@ var socket
   , me
   , lastMsg
   , preventRefresh = false
-  , fixwrap;
+  , fixwrap
+  , SERVER_EVENTS = ['init', 'join', 'rejoin', 'taken', 'setHash', 'remaining', 'puzzled',
+      'add', 'hint', 'start', 'win', 'msg'];
 
 $(function() {
   fixwrap = $('#fixwrap');
@@ -29,18 +31,9 @@ function startGame() {
     }, 1500);
   });
   
-  socket.on('init', init);
-  socket.on('join', join);
-  socket.on('rejoin', rejoin);
-  socket.on('taken', taken);
-  socket.on('setHash', setHash);
-  socket.on('remaining', remaining);
-  socket.on('puzzled', puzzled);
-  socket.on('add', add);
-  socket.on('hint', hint);
-  socket.on('start', start);
-  socket.on('win', win);
-  socket.on('msg', msg);
+  SERVER_EVENTS.forEach(function(event) {
+    socket.on(event, window[event]);
+  });
   
   socket.on('disconnect', socket_disconnect);
   socket.on('reconnect', socket_reconnect);
