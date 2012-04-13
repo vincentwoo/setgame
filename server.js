@@ -11,7 +11,8 @@ var http = require('http')
   , latestPublicGame
   , clientDir = __dirname + '/client'
   , publicDir = __dirname + '/public'
-  , depsDir = __dirname + '/deps';
+  , depsDir = __dirname + '/deps'
+  , prod = process.env.NODE_ENV === 'production';
 
 buildStaticFiles();
 
@@ -44,21 +45,29 @@ server = connect.createServer(
   , niceifyURL
   , gzip.staticGzip(publicDir, {
         matchType: /text|javascript/
-      , maxAge: process.env.NODE_ENV === 'production' ? 86400000 : 0
+      , maxAge: prod ? 86400000 : 0
     })
   , gzip.staticGzip(publicDir + '/perm', {
         matchType: /image|font/
-      , maxAge: process.env.NODE_ENV === 'production' ? 604800000 : 0
+      , maxAge: prod ? 604800000 : 0
     })
 );
 
-server.listen(process.env.NODE_ENV === 'production' ? 80 : 8000);
+server.listen(prod ? 80 : 8000);
 
 io = io.listen(server);
 io.configure('production', function() {
   io.enable('browser client minification');  // send minified client
   io.enable('browser client etag');          // apply etag caching logic based on version number
   io.enable('browser client gzip');          // gzip the file
+  io.set('log level', 1);                    // reduce logging
+  io.set('transports', [                     // enable all transports (optional if you want flashsocket)
+      'websocket'
+    , 'flashsocket'
+    , 'htmlfile'
+    , 'xhr-polling'
+    , 'jsonp-polling'
+  ]);
 });
 
 function getUnusedHash() {
@@ -115,6 +124,7 @@ function randString(size) {
 
 function buildStaticFiles() {
   var options = {
+    uglifyjs: prod,
     jstransport: false,
     cssabspath: false,
     csshost: false,

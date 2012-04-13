@@ -7,7 +7,8 @@ var socket
   , preventRefresh = false
   , fixwrap
   , SERVER_EVENTS = ['init', 'join', 'leave', 'rejoin', 'taken', 'setHash', 'remaining', 'puzzled',
-      'add', 'hint', 'start', 'win', 'msg'];
+      'add', 'hint', 'start', 'win', 'msg', 'disconnect', 'reconnect', 'reconnecting',
+      'reconnect_failed'];
 
 $(function() {
   fixwrap = $('#fixwrap');
@@ -17,10 +18,8 @@ $(function() {
 });
 
 function startGame() {
-  socket = io.connect(null, {
-      rememberTransport: true
-    , transports: ['websocket', 'flashsocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
-  });
+  socket = io.connect();
+  
   socket.on('connect', function() {
     $('#announcement').html('<h1>Connected!</h1>');
     $('#announcement').removeClass('loading');
@@ -34,11 +33,6 @@ function startGame() {
   SERVER_EVENTS.forEach(function(event) {
     socket.on(event, window[event]);
   });
-  
-  socket.on('disconnect', socket_disconnect);
-  socket.on('reconnect', socket_reconnect);
-  socket.on('reconnecting', socket_reconnect);
-  socket.on('reconnect_failed', socket_reconnect_failed);
 
   $('#hint').click(requestHint);
   $('#input').keydown(input);
@@ -430,15 +424,15 @@ function initGame() {
   socket.emit('init', init);
 }
 
-function socket_disconnect() {
+function disconnect() {
   msg({event:true, msg: 'You have been disconnected'})
 }
-function socket_reconnect() {
+function reconnect() {
   msg({event:true, msg: 'Reconnected to server'})
 }
-function socket_reconnecting(nextRetry) {
+function reconnecting(nextRetry) {
   msg({event:true, msg: ('Attempting to re-connect to the server, next attempt in ' + nextRetry + 'ms')})
 }
-function socket_reconnect_failed() {
+function reconnect_failed() {
   msg({event:true, msg: 'Reconnect to server FAILED.'})
 }
