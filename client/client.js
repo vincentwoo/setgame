@@ -6,7 +6,7 @@ var socket
   , lastMsg
   , preventRefresh = false
   , fixwrap
-  , SERVER_EVENTS = ['init', 'join', 'rejoin', 'taken', 'setHash', 'remaining', 'puzzled',
+  , SERVER_EVENTS = ['init', 'join', 'leave', 'rejoin', 'taken', 'setHash', 'remaining', 'puzzled',
       'add', 'hint', 'start', 'win', 'msg'];
 
 $(function() {
@@ -40,7 +40,7 @@ function startGame() {
   socket.on('reconnecting', socket_reconnect);
   socket.on('reconnect_failed', socket_reconnect_failed);
 
-  $('#hint').click(hint);
+  $('#hint').click(requestHint);
   $('#input').keydown(input);
   $('#input').focus();
   
@@ -199,7 +199,7 @@ function fadeOutAllLastSets() {
   }
 }
 
-function hint(event) {
+function requestHint(event) {
   socket.emit('hint');
   $('#hint').animate({opacity:0});
   showPuzzled(me);
@@ -362,7 +362,7 @@ function setHash(hash) {
 
 function leave(player) {
   var update = {};
-  update[obj.player] = {online: false};
+  update[player] = {online: false};
   updatePlayers(update);
 }
 

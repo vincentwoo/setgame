@@ -80,6 +80,11 @@ Game.prototype.registerClient = function(socket, sess) {
   if (this.numPlayers() >= this.players.length) return false;
   var self = this;
 
+  //socket.join(this.hash);
+  CLIENT_EVENTS.forEach(function(event) {
+    socket.on(event, self.handleClientMessage(event, socket));
+  });
+
   for (var i = 0; i < this.players.length; i++) {
     var player = this.players[i];
     if (player === null) continue;
@@ -95,10 +100,6 @@ Game.prototype.registerClient = function(socket, sess) {
       return true;
     }
   }
-  //socket.join(this.hash);
-  CLIENT_EVENTS.forEach(function(event) {
-    socket.on(event, self.handleClientMessage(event, socket));
-  });
 
   var playerIdx = this.firstAvailablePlayerSlot();
   this.broadcast('join', playerIdx);
@@ -147,7 +148,7 @@ Game.prototype.updateRemaining = function() {
 }
 
 Game.prototype.broadcast = function(event, message) {
-  console.log(this.hash + ' broadcasting: ');
+  console.log(this.hash + ' broadcasting event ' + event + ': ');
   console.log(message);
   this.players.forEach( function(player) {
     if (player !== null) player.socket.emit(event, message);
