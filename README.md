@@ -5,17 +5,19 @@ This is a multiplayer, realtime implementation of the popular ["Set" card game][
 It uses [socket.io][2] to achieve realtime feedback with clients and [jQuery][3] for
 various clientside animations.
 
+After cloning:
+
+    git submodule init
+    git submodule update
+    npm install
+
 The server runs in dev mode with:
 
-    ./start
+    npm run-script dev
 
-npm dependencies are
+or prod (requires sudo for port 80):
 
-    connect
-    connect-gzip
-    connect-no-www
-    socket.io
-    ams
+    sudo npm run-script prod
 
 [1]: http://en.wikipedia.org/wiki/Set_(game)
 [2]: http://socket.io/

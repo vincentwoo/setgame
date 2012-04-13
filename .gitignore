@@ -1,6 +1,6 @@
 public/*.js
 public/*.css
-public/*.html
-*.gz
+node_modules
 *.tmproj
 *.DS_Store
+*.log

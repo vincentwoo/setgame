@@ -127,10 +127,7 @@ function buildStaticFiles() {
     uglifyjs: prod,
     jstransport: false,
     cssabspath: false,
-    csshost: false,
     cssdataimg: false,
-    htmlabspath: false,
-    htmlhost: false,
     texttransport: false
   };
   ams.build
@@ -146,10 +143,6 @@ function buildStaticFiles() {
   .end();
   ams.build
     .create(publicDir)
-    .add(clientDir + '/index.html')
-    .add(clientDir + '/game.html')
-    .add(clientDir + '/about.html')
-    .add(clientDir + '/help.html')
     .add(clientDir + '/style.css')
     .add(depsDir + '/headjs/src/load.js')
     .process(options)

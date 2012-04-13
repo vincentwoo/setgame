@@ -1,0 +1,25 @@
+{
+  "name": "setgame",
+  "version": "0.2.0",
+  "author": "Vincent Woo <me@vincentwoo.com>",
+  "description": "Real-time multiplayer set in the browser",
+  "private": true,
+  "scripts": {
+    "dev": "./start_dev",
+    "prod": "./start_prod"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://vincentwoo@github.com/vincentwoo/setgame.git"
+  },
+  "dependencies" : {
+    "ams"            : "0.0.x",
+    "connect"        : "1.0.x",
+    "connect-no-www" : "0.1.x",
+    "gzippo"         : "0.1.x",
+    "socket.io"      : "0.9.x",
+    "supervisor"     : "0.3.x" 
+  },
+  "engine": "node = 0.6.x",
+  "license": "MIT"
+}
