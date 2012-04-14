@@ -7,8 +7,7 @@ various clientside animations.
 
 After cloning:
 
-    git submodule init
-    git submodule update
+    git submodule update --init --recursive
     npm install
 
 The server runs in dev mode with:
