@@ -1,3 +1,12 @@
+May 2016 Update
+===============
+
+Set Enterprises, Inc has been after me for a few years to take down multiplayerset.com.
+I've sort of lost the willpower to deal with them, so I've just taken down the hosted
+version of the game and redirected it to here. If you want to play with the code to see
+how it worked, go nuts. Sorry to any longtime fans. If you're in SFBA, hit me up, let's
+get coffee: me@vincentwoo.com.
+
 nodeJS + set
 ============
 
